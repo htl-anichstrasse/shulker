@@ -31,7 +31,7 @@ Step 2 here
 If you have any questions about this project, please feel free to contact us.
 
 Alexander Heim - alexheim@tsn.at<br>
-Moritz Laichner - kalol@tsn.at<br>
+Moritz Laichner - mlaichner@tsn.at<br>
 HTL Anichstraße - htlinn@tsn.at
 
 <a href="https://htl-anichstrasse.tirol" target="_blank"><img src=".github/htl-anichstrasse-logo.svg" width="200px"></a>
