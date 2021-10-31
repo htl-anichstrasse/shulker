@@ -1,97 +1,74 @@
-use std::{convert::TryFrom};
+use std::time::{SystemTime};
+use serde::{Serialize, Deserialize};
+use uuid::Uuid;
 
 
-// PinCode:
-// A PinCode is a password only containing digits (0-9)
-#[derive(Debug, PartialEq)]
-struct PinCode(String);
+pub enum UserInput {
+    PinCode(String),
+    Password(String),
+}
+#[derive(Serialize, Clone, Deserialize, PartialEq, Eq)]
+pub struct Credential {
+    pub uuid: Uuid,
+    pub time_frame: Option<TimeFrame>,
+    pub uses_left: Option<u32>,
+    pub secret: Secret,
+}
 
-impl TryFrom<&str> for PinCode {
-    type Error = PinConversionError;
-    fn try_from(code: &str) -> Result<PinCode, PinConversionError> {
-        // Pincode needs to be numeric
-        for c in code.chars() {
-            if !c.is_numeric() {
-                return Err(PinConversionError::IsNotNumeric)
+impl Credential {
+    pub fn check_if_useable(&self) -> bool {
+        let mut useable = true;
+        if self.uses_left.is_some() {
+            if self.uses_left.unwrap() == 0 {
+                useable = false;
             }
         }
-
-        // Pincode needs to be at least 1 char
-        if code.len() == 0 {
-            return Err(PinConversionError::TooShort)
+        if self.time_frame.is_some() {
+            if !self.time_frame.as_ref().unwrap().is_now() {
+                useable = false;
+            }
         }
-
-        return Ok(PinCode(String::from(code)))
+        useable
     }
-}
 
-#[derive(Debug, PartialEq, Eq)]
-enum PinConversionError {
-    IsNotNumeric,
-    TooShort,
-}
-
-
-
-#[derive(Debug, PartialEq, Eq)]
-struct Password(String);
-
-impl TryFrom<&str> for Password {
-    type Error = PasswordConversionError;
-    fn try_from(code: &str) -> Result<Password, PasswordConversionError> {
-
-        // Password needs to be at least 1 char
-        if code.len() == 0 {
-            return Err(PasswordConversionError::TooShort)
+    pub fn reduce_uses(&mut self) {
+        if self.uses_left.is_some() {
+            let uses = self.uses_left.unwrap();
+            if uses > 0 {
+                self.uses_left = Some(uses - 1);
+            }
         }
-
-        return Ok(Password(String::from(code)))
     }
 }
 
-#[derive(Debug, PartialEq, Eq)]
-enum PasswordConversionError {
-    TooShort,
+#[derive(Serialize, Clone, Deserialize, PartialEq, Eq)]
+pub enum Secret {
+    PinCode(String),
+    Password(String),
 }
 
+#[derive(Serialize, Clone, Deserialize, PartialEq, Eq)]
+pub struct TimeFrame {
+    pub start_time: SystemTime,
+    pub end_time: SystemTime,
+}
 
-
-
-#[cfg(test)]
-mod tests {
-    use std::convert::TryFrom;
-
-    use crate::credential_types::{Password, PasswordConversionError, PinCode, PinConversionError};
-
-    #[test]
-    fn pincode_tryfrom_string() {
-        let pin_code0 = String::from("61230");
-        let pin_code1 = String::from("");
-        let pin_code2 = String::from("412F23482341BXa++-*");
-
-        let pin0 = PinCode::try_from(pin_code0.as_str());
-        let pin1 = PinCode::try_from(pin_code1.as_str());
-        let pin2 = PinCode::try_from(pin_code2.as_str());
-
-        assert!(pin0.is_ok());
-        assert_eq!(pin0.unwrap().0, "61230");
-        assert_eq!(pin1, Err(PinConversionError::TooShort));
-        assert_eq!(pin2, Err(PinConversionError::IsNotNumeric));
+impl TimeFrame {
+    pub fn is_now(&self) -> bool {
+        let now = SystemTime::now();
+        if self.start_time < now && self.end_time > now {
+            return true;
+        }
+        false
     }
+}
 
-    #[test]
-    fn password_tryfrom_string() {
-        let pw_code0 = String::from("Alexander334");
-        let pw_code1 = String::from("");
-        let pw_code2 = String::from("412F23482341BXa++-*");
+#[derive(Serialize, Clone, Deserialize, PartialEq, Eq)]
+pub struct PinCodeData {
+    pub data: String,
+}
 
-        let pw0 = Password::try_from(pw_code0.as_str());
-        let pw1 = Password::try_from(pw_code1.as_str());
-        let pw2 = Password::try_from(pw_code2.as_str());
-
-        assert!(pw0.is_ok());
-        assert_eq!(pw0.unwrap().0, "Alexander334");
-        assert_eq!(pw1, Err(PasswordConversionError::TooShort));
-        assert!(pw2.is_ok());
-    }
+#[derive(Serialize, Clone, Deserialize, PartialEq, Eq)]
+pub struct PasswordData {
+    pub data: String,
 }

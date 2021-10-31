@@ -1,5 +1,2 @@
-mod credential_types;
-
-struct Shulker {
-    
-}
+pub mod credential_types;
+pub mod shulker_db;
