@@ -2,12 +2,7 @@ use std::time::{SystemTime};
 use serde::{Serialize, Deserialize};
 use uuid::Uuid;
 
-
-pub enum UserInput {
-    PinCode(String),
-    Password(String),
-}
-#[derive(Serialize, Clone, Deserialize, PartialEq, Eq)]
+#[derive(Serialize, Clone, Deserialize, PartialEq, Eq, Debug)]
 pub struct Credential {
     pub uuid: Uuid,
     pub time_frame: Option<TimeFrame>,
@@ -41,13 +36,13 @@ impl Credential {
     }
 }
 
-#[derive(Serialize, Clone, Deserialize, PartialEq, Eq)]
+#[derive(Serialize, Clone, Deserialize, PartialEq, Eq, Debug)]
 pub enum Secret {
     PinCode(String),
     Password(String),
 }
 
-#[derive(Serialize, Clone, Deserialize, PartialEq, Eq)]
+#[derive(Serialize, Clone, Deserialize, PartialEq, Eq, Debug)]
 pub struct TimeFrame {
     pub start_time: SystemTime,
     pub end_time: SystemTime,
@@ -61,14 +56,4 @@ impl TimeFrame {
         }
         false
     }
-}
-
-#[derive(Serialize, Clone, Deserialize, PartialEq, Eq)]
-pub struct PinCodeData {
-    pub data: String,
-}
-
-#[derive(Serialize, Clone, Deserialize, PartialEq, Eq)]
-pub struct PasswordData {
-    pub data: String,
 }

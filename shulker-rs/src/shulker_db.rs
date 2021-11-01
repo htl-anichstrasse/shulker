@@ -2,6 +2,7 @@ use std::{path::{PathBuf}};
 use serde::{Serialize, Deserialize};
 use rustbreak::{Database, PathDatabase, RustbreakError, backend::PathBackend};
 use rustbreak::deser::Bincode;
+use uuid::Uuid;
 
 use crate::credential_types::{Credential, Secret};
 
@@ -27,6 +28,32 @@ impl ShulkerDB {
         })?;
         self.rustbreak.save()?;
         Ok(())
+    }
+
+    pub fn remove(&mut self, uuid: Uuid) -> Result<(), RustbreakError> {
+        self.rustbreak.load()?;
+        self.rustbreak.write_safe(|db| {
+            db.remove(uuid);
+        })?;
+        self.rustbreak.save()?;
+        Ok(())
+    }
+
+    pub fn get_all(&self, credential_type: Option<Secret>) -> Result<Credentials, RustbreakError> {
+        let data = self.rustbreak.get_data(true)?;
+        if credential_type.is_none() {
+            return Ok(data);
+        }
+        let ctype = credential_type.unwrap();
+        let mut result = Vec::new();
+        for i in 0..data.data.len() {
+            if std::mem::discriminant(&data.data[i].secret) == std::mem::discriminant(&ctype) {
+                result.push(data.data[i].clone());
+            }
+        }
+        Ok(Credentials {
+            data: result,
+        })
     }
 
     pub fn use_credential(&mut self, user_input: Secret) -> Result<bool, RustbreakError> {
@@ -61,7 +88,7 @@ impl ShulkerDB {
 
 
 
-#[derive(Clone, Serialize, Deserialize)]
+#[derive(Clone, Serialize, Deserialize, Debug)]
 pub struct Credentials {
     data: Vec<Credential>,
 }
@@ -69,5 +96,13 @@ pub struct Credentials {
 impl Credentials {
     pub fn add(&mut self, credential: Credential) {
         self.data.push(credential);
+    }
+
+    pub fn remove(&mut self, uuid: Uuid) {
+        for i in 0..self.data.len() {
+            if self.data[i].uuid == uuid {
+                self.data.remove(i);
+            }
+        }
     }
 }

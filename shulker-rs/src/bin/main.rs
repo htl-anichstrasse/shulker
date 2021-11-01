@@ -8,13 +8,14 @@ use uuid::Uuid;
 fn main() {
     let current_dir = env::current_dir().unwrap();
     let mut shulker_db = ShulkerDB::new(current_dir.with_file_name("credentials"));
+    let uuid = Uuid::new_v4();
     shulker_db.add(Credential {
-        uuid: Uuid::new_v4(),
+        uuid,
         time_frame: None,
         uses_left: Some(2),
-        secret: Secret::Password(String::from("passwort123")),
+        secret: Secret::PinCode(String::from("32")),
     }).unwrap();
-    let correct = shulker_db.use_credential(Secret::Password(String::from("passwort123")));
+    let correct = shulker_db.get_all(Some(Secret::PinCode(String::new()))).unwrap();
 
     println!("{:#?}", correct);
 }
