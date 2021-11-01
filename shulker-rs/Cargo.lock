@@ -261,7 +261,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "shulker"
+name = "shulker-rs"
 version = "0.1.0"
 dependencies = [
  "argon2",

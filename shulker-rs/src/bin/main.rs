@@ -1,8 +1,7 @@
 // ONLY FOR TESTING PURPOSES
 
 use std::{env};
-
-use shulker::{credential_types::{Credential, Secret}, shulker_db::{ShulkerDB}};
+use shulker_rs::{credential_types::{Credential, Secret}, shulker_db::ShulkerDB};
 use uuid::Uuid;
 
 
