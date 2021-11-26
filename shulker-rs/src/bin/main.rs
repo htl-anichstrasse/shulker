@@ -9,7 +9,29 @@ use uuid::Uuid;
 
 fn main() {
     let current_dir = env::current_dir().unwrap();
-    let password = "1234";
-    let shulker_db = ShulkerDB::new(PathBuf::from("credentials.skr"));
-    
+    let mut shulker_db = ShulkerDB::new(PathBuf::from("credentials.skr"));
+
+    let credential_1 = Credential {
+        uuid: Uuid::new_v4(),
+        time_frame: None,
+        uses_left: None,
+        secret: Secret::PinCode(String::from("32142")),
+    };
+    let credential_2 = Credential {
+        uuid: Uuid::new_v4(),
+        time_frame: None,
+        uses_left: None,
+        secret: Secret::Password(String::from("alexander")),
+    };
+    let credential_3 = Credential {
+        uuid: Uuid::new_v4(),
+        time_frame: None,
+        uses_left: None,
+        secret: Secret::Password(String::from("449")),
+    };
+    shulker_db.add(credential_1).unwrap();
+    shulker_db.add(credential_2).unwrap();
+    shulker_db.add(credential_3).unwrap();
+
+    println!("{:#?}", shulker_db.get_all(None));
 }
