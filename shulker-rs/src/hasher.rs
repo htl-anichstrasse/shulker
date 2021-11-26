@@ -1,4 +1,4 @@
-use argon2::{Argon2, Params, ParamsBuilder, PasswordHash, PasswordHasher, PasswordVerifier, password_hash::SaltString};
+use argon2::{Argon2, ParamsBuilder, PasswordHash, PasswordHasher, PasswordVerifier, password_hash::SaltString};
 use rand_core::OsRng;
 
 pub struct Hasher<'a> {
