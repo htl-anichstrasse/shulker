@@ -4,13 +4,14 @@ use rustbreak::{Database, PathDatabase, RustbreakError, backend::PathBackend};
 use rustbreak::deser::Bincode;
 use uuid::Uuid;
 
-use crate::credential_types::{Credential, Secret};
+use crate::{credential_types::{Credential, Secret}, hasher::Hasher};
 
-pub struct ShulkerDB {
+pub struct ShulkerDB<'a> {
     rustbreak: Database<Credentials, PathBackend, Bincode>,
+    hasher: Hasher<'a>,
 }
 
-impl ShulkerDB {
+impl<'a> ShulkerDB<'a> {
     pub fn new(file_path: PathBuf) -> Self {
         let path_clone = file_path.clone();
         let rustbreak = PathDatabase::<Credentials, Bincode>::create_at_path(file_path, Credentials { data: Vec::new() })
@@ -18,6 +19,7 @@ impl ShulkerDB {
         
         ShulkerDB {
             rustbreak,
+            hasher: Hasher::new(),
         }
     }
 
