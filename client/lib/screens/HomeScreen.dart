@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:doorlock_app/widgets/Sidenav.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
@@ -45,6 +46,7 @@ class _HomeScreenState extends State<HomeScreen> {
             appBar: AppBar(
               title: Text("Home screen"),
             ),
+            drawer: Sidenav(),
             body: Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
