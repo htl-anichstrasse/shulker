@@ -1,9 +1,8 @@
-import 'dart:convert';
-
 import 'package:doorlock_app/widgets/Sidenav.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'dart:async';
+
+import 'package:doorlock_app/services/ServerCommunication.dart';
+
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -13,71 +12,57 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   bool _locked = false;
 
-  Future<http.Response> changeDoorStateASNYC() async {
+  int selectedSidenavIndex = 0;
+
+  changeLockStatus() {
     setState(() {
       _locked = !_locked;
     });
 
-    final url = "http://10.0.2.2:63444/api/Lock/lockDoor";
-    try {
-      print("test");
-
-      return await http.post(Uri.parse(url),
-          body: jsonEncode(<String, bool>{
-            "open": _locked,
-          })).timeout(Duration(seconds: 5));
-    } on TimeoutException {
-      print("timeout");
-    }
-    catch (ex) {
-      print(ex);
-      print("catch");
-    }
-    finally {
-      print("finally");
-    }
+    changeDoorStateAsync(!_locked);
   }
 
   @override
   Widget build(BuildContext context) {
     return new Builder(
-      builder: (context) =>
-          Scaffold(
-            appBar: AppBar(
-              title: Text("Home screen"),
-            ),
-            drawer: Sidenav(),
-            body: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: <Widget>[
-                  SizedBox(
-                    height: 70,
-                  ),
-                  ConstrainedBox(
-                    constraints: BoxConstraints.tightFor(
-                        width: 200, height: 200),
-                    child: ElevatedButton(
-                        onPressed: changeDoorStateASNYC,
-                        child: Text(_locked ? "Tür öffnen" : "Tür sperren"),
-                        style: ElevatedButton.styleFrom(
-                            shape: CircleBorder())),
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Text(
-                    _locked ? "Die Tür ist gesperrt" : "Die Tür ist geöffnet",
-                    style: TextStyle(
-                      color: _locked ? Colors.green : Colors.deepOrange,
-                      fontSize: 15,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  )
-                ],
+      builder: (context) => Scaffold(
+        appBar: AppBar(
+          title: Text("Home screen"),
+        ),
+        drawer: Sidenav((int index) {
+          setState(() {
+            selectedSidenavIndex = index;
+          });
+        }),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              SizedBox(
+                height: 70,
               ),
-            ),
+              ConstrainedBox(
+                constraints: BoxConstraints.tightFor(width: 200, height: 200),
+                child: ElevatedButton(
+                    onPressed: changeLockStatus,
+                    child: Text(_locked ? "Tür öffnen" : "Tür sperren"),
+                    style: ElevatedButton.styleFrom(shape: CircleBorder())),
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              Text(
+                _locked ? "Die Tür ist gesperrt" : "Die Tür ist geöffnet",
+                style: TextStyle(
+                  color: _locked ? Colors.green : Colors.deepOrange,
+                  fontSize: 15,
+                  fontWeight: FontWeight.bold,
+                ),
+              )
+            ],
           ),
+        ),
+      ),
     );
   }
 }
