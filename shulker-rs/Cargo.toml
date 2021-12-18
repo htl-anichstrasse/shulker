@@ -2,8 +2,11 @@
 name = "shulker-rs"
 version = "0.1.0"
 edition = "2018"
+build = "build.rs"
+resolver = "2"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
 
 [dependencies]
 rppal = "0.13.1"
@@ -14,7 +17,11 @@ serde_millis = "0.1.1"
 lazy_static = "1.4.0"
 config = "0.11.0"
 rand_core = { version = "0.6.3", features = ["std"] }
+sixtyfps = "0.1.5"
 
 [dependencies.rustbreak]
 version = "2.0.0"
 features = ["bin_enc"]
+
+[build-dependencies]
+sixtyfps-build = "0.1.5"

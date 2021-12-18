@@ -1,0 +1,59 @@
+MainUi := Window {
+    width: 800px;
+    height: 480px;
+
+    HorizontalLayout {
+        width: 800px;
+        height: 480px;
+
+        nav-bar := Rectangle {
+            height: 100%;
+            width: 100px;
+            background: red;
+        }
+
+        main-view := Rectangle {
+            height: 100%;
+
+            Rectangle {
+                height: 100%;
+                Rectangle {
+                    height: 100px;
+                    width: 400px;
+                    x: (parent.width - width) / 2;
+                    y: 34px;
+                    background: red;
+                    Text {
+                        text: "**********";
+                        font-size: 100px;
+                    }
+                }
+                GridLayout {
+                    height: 300px;
+                    width: 400px;
+                    x: (parent.width - width) / 2;
+                    y: (parent.height - height) / 1.3;
+                    spacing: 5px;
+                    Row {
+                        Rectangle { background: green; }
+                        Rectangle { background: red; }
+                        Rectangle { background: blue; }
+                        Rectangle { background: black; }
+                    }
+                    Row {
+                        Rectangle { background: green; }
+                        Rectangle { background: red; }
+                        Rectangle { background: blue; }
+                        Rectangle { background: black; }
+                    }
+                    Row {
+                        Rectangle { background: green; }
+                        Rectangle { background: red; }
+                        Rectangle { background: blue; }
+                        Rectangle { background: black; }
+                    }
+                }
+            }
+        }
+    }
+}
