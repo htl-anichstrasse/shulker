@@ -2,6 +2,8 @@ MainUi := Window {
     width: 800px;
     height: 480px;
 
+    property<int> active-page: 0;
+
     HorizontalLayout {
         width: 800px;
         height: 480px;
@@ -10,12 +12,46 @@ MainUi := Window {
             height: 100%;
             width: 100px;
             background: red;
+            VerticalLayout {
+                height: 100%;
+                width: 100px;
+                Rectangle {
+                    height: 100px;
+                    width: 100px;
+                    background: yellow;
+
+                    TouchArea {
+                        clicked => { root.active-page = 0; }
+                    }
+                }
+    
+                Rectangle {
+                    height: 100px;
+                    width: 100px;
+                    background: green;
+
+                    TouchArea {
+                        clicked => { root.active-page = 1; }
+                    }
+                }
+
+                Rectangle {
+                    height: 100px;
+                    width: 100px;
+                    background: orange;
+
+                    TouchArea {
+                        clicked => { root.active-page = 2; }
+                    }
+                }
+             }
         }
 
         main-view := Rectangle {
             height: 100%;
 
             Rectangle {
+                y: active-page == 0 ? 0px : height;
                 height: 100%;
                 Rectangle {
                     height: 100px;
@@ -53,6 +89,80 @@ MainUi := Window {
                         Rectangle { background: black; }
                     }
                 }
+            }
+
+            Rectangle {
+                y: active-page == 1 ? 0px : height;
+                height: 100%;
+                width: 100%;
+                background: green;
+                GridLayout {
+                    height: 100%;
+                    width: 80%;
+                    spacing: 5px;
+                    padding: 10px;
+                    Row {
+                        Rectangle { background: yellow; }
+                        Rectangle { background: yellow; }
+                        Rectangle { background: yellow; }
+                        Rectangle { background: yellow; }
+                        Rectangle { background: yellow; }
+                        Rectangle { background: yellow; }
+                        Rectangle { background: yellow; }
+                    }
+                    Row {
+                        Rectangle { background: yellow; }
+                        Rectangle { background: yellow; }
+                        Rectangle { background: yellow; }
+                        Rectangle { background: yellow; }
+                        Rectangle { background: yellow; }
+                        Rectangle { background: yellow; }
+                        Rectangle { background: yellow; }
+                    }
+                    Row {
+                        Rectangle { background: yellow; }
+                        Rectangle { background: yellow; }
+                        Rectangle { background: yellow; }
+                        Rectangle { background: yellow; }
+                        Rectangle { background: yellow; }
+                        Rectangle { background: yellow; }
+                        Rectangle { background: yellow; }
+                    }
+                    Row {
+                        Rectangle { background: yellow; }
+                        Rectangle { background: yellow; }
+                        Rectangle { background: yellow; }
+                        Rectangle { background: yellow; }
+                        Rectangle { background: yellow; }
+                        Rectangle { background: yellow; }
+                        Rectangle { background: yellow; }
+                    }
+                    Row {
+                        Rectangle { background: yellow; }
+                        Rectangle { background: yellow; }
+                        Rectangle { background: yellow; }
+                        Rectangle { background: yellow; }
+                        Rectangle { background: yellow; }
+                        Rectangle { background: yellow; }
+                        Rectangle { background: yellow; }
+                    }
+                    Row {
+                        Rectangle { background: yellow; }
+                        Rectangle { background: yellow; }
+                        Rectangle { background: yellow; }
+                        Rectangle { background: yellow; }
+                        Rectangle { background: yellow; }
+                        Rectangle { background: yellow; }
+                        Rectangle { background: yellow; }
+                    }
+                }
+            }
+
+            Rectangle {
+                y: active-page == 2 ? 0px : height;
+                height: 100%;
+                width: 100%;
+                background: blue;
             }
         }
     }
