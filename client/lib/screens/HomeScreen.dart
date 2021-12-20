@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 
 import 'package:doorlock_app/services/ServerCommunication.dart';
 
-
 class HomeScreen extends StatefulWidget {
   @override
   _HomeScreenState createState() => _HomeScreenState();
@@ -33,7 +32,7 @@ class _HomeScreenState extends State<HomeScreen> {
           setState(() {
             selectedSidenavIndex = index;
           });
-        }),
+        }, selectedSidenavIndex),
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,

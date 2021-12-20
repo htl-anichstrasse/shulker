@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DoorlockServerAPI.Controllers;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Pipes;
@@ -26,6 +27,7 @@ namespace DoorlockServerAPI.Models
         {
             NamedPipeServerStream pipeServer = new NamedPipeServerStream(
                 "shulker_box", PipeDirection.InOut);
+
             Console.WriteLine("Waiting for connection");
             pipeServer.WaitForConnection();
             try
