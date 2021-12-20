@@ -10,10 +10,23 @@ namespace DoorlockServerAPI.Models
 {
     public class IPCManager
     {
-        private static void ServerThread()
+        // Singleton Pattern
+        private static IPCManager instance = null;
+        private IPCManager() { }
+        public static IPCManager getInstance()
+        {
+            if (instance == null)
+            {
+                instance = new IPCManager();
+            }
+            return instance;
+        }
+
+        public void ServerThread()
         {
             NamedPipeServerStream pipeServer = new NamedPipeServerStream(
                 "shulker_box", PipeDirection.InOut);
+            Console.WriteLine("Waiting for connection");
             pipeServer.WaitForConnection();
             try
             {
@@ -22,8 +35,10 @@ namespace DoorlockServerAPI.Models
                 {
                     while (true)
                     {
+                        Console.WriteLine("Reading named pipe");
                         var len = _br.ReadUInt32();
                         var resp = new string(_br.ReadChars((int)len));
+                        Console.WriteLine(resp);
                     }
                 }
             } catch

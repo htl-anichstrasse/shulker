@@ -11,6 +11,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Threading;
+using DoorlockServerAPI.Models;
 
 namespace DoorlockServerAPI
 {
@@ -18,6 +20,10 @@ namespace DoorlockServerAPI
     {
         public Startup(IConfiguration configuration)
         {
+            // Start IPC Threads
+            Thread pipeReader = new Thread(IPCManager.getInstance().ServerThread);
+            pipeReader.Start();
+
             Configuration = configuration;
         }
 
