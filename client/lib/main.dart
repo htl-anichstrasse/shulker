@@ -1,6 +1,5 @@
-import 'dart:convert';
-
 import 'package:doorlock_app/screens/HomeScreen.dart';
+import 'package:doorlock_app/views/PinManager.dart';
 import 'package:flutter/material.dart';
 
 
@@ -12,7 +11,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Shulker',
       theme: ThemeData(
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
@@ -20,7 +19,7 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/': (context) => HomeScreen(),
-      }
+      },
     );
   }
 }
