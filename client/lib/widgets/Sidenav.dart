@@ -39,7 +39,7 @@ class Sidenav extends StatelessWidget {
           selected: selectedIndex ==1,
           onPressed: () { onIndexChanged(1); },
           icon: Icons.insert_link,
-          text: "Verwaltung"
+          text: "Pin verwaltung"
         ),
       ]),
     );

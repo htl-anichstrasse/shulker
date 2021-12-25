@@ -14,6 +14,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
   int selectedSidenavIndex = 0;
 
+  final List<String> titles = ["Shulker", "Pinverwaltung"];
+  String title = "Shulker";
+
   changeLockStatus() {
     setState(() {
       _locked = !_locked;
@@ -27,11 +30,12 @@ class _HomeScreenState extends State<HomeScreen> {
     return new Builder(
       builder: (context) => Scaffold(
         appBar: AppBar(
-          title: Text("Home screen"),
+          title: Text("$title"),
         ),
         drawer: Sidenav((int index) {
           setState(() {
             selectedSidenavIndex = index;
+            title = titles[index];
           });
         }, selectedSidenavIndex),
         body: Builder(
