@@ -7,7 +7,12 @@ class CreatePin extends StatefulWidget {
 }
 
 class _CreatePinState extends State<CreatePin> {
-  bool validForever = false;
+  final formKey = GlobalKey<FormState>();
+  bool unlimitedUses = true;
+  String _name;
+  String _uses;
+  String _pin1;
+  String _pin2;
 
   @override
   Widget build(BuildContext context) {
@@ -17,49 +22,214 @@ class _CreatePinState extends State<CreatePin> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(12.0),
-        child: Column(
+        child: ListView(
           children: [
-            TextField(
-              decoration: InputDecoration(
-                labelText: "Name",
-                hintText: "Wie soll der Pin gennant werden?"
-              ),
-            ),
-            SizedBox(
-              height: 15,
-            ),
-
-            Text("Gültigkeitsdauer:"),
-
-            Row(
-              children: [
-                SizedBox(
-                  width: 300,
-                  height: 30,
-                  child: TextField(
-                    keyboardType: TextInputType.number,
-                    inputFormatters: [
-                      FilteringTextInputFormatter.digitsOnly,
-                    ],
-                    decoration: InputDecoration(
-                      labelText: 'Verbleibende Verwendungen',
-                      hintText: 'Wie oft darf der Pin verwendet werden?',
+            Form(
+              //autovalidateMode: AutovalidateMode.onUserInteraction,
+              key: formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    padding: EdgeInsets.fromLTRB(0, 4, 0, 0),
+                    child: TextFormField(
+                      decoration: InputDecoration(
+                        labelText: "Name",
+                        hintText: "Wie soll der Pin gennant werden?",
+                        border: OutlineInputBorder(),
+                      ),
+                      maxLength: 15,
+                      validator: (value) {
+                        if (value.length < 1) {
+                          return "Der Name muss mind. 1 Buchstaben haben";
+                        }
+                        if (value.length > 15) {
+                          return "Der Name darf max. 15 Buchstaben haben";
+                        }
+                        return null;
+                      },
+                      onChanged: (value) {
+                        _name = value;
+                      },
                     ),
                   ),
-                ),
-                Checkbox(
-                  checkColor: Colors.white,
-                  value: validForever,
-                  onChanged: (bool value) {
-                    setState(() {
-                      validForever = value;
-                    });
-                  },
-                ),
-              ],
+                  SizedBox(
+                    height: 15,
+                  ),
+                  Container(
+                    decoration: borderOutlineDecoration(),
+                    padding: EdgeInsets.all(10),
+                    child: Column(
+                      children: [
+                        Text("Verwendungen:"),
+                        SizedBox(
+                          child: CheckboxListTile(
+                            title: Text("∞ Verwendungen"),
+                            checkColor: Colors.white,
+                            value: unlimitedUses,
+                            onChanged: (bool value) {
+                              setState(() {
+                                unlimitedUses = value;
+                              });
+                            },
+                          ),
+                        ),
+                        TextFormField(
+                          enabled: !unlimitedUses,
+                          keyboardType: TextInputType.number,
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly,
+                          ],
+                          decoration: InputDecoration(
+                            labelText: 'Verbleibende Verwendungen',
+                            hintText: 'Wie oft darf der Pin verwendet werden?',
+                          ),
+                          validator: (value) {
+                            if (unlimitedUses) {
+                              return null;
+                            }
+                            if (value.length <= 0) {
+                              return "Bitte geben Sie einen Wert ein";
+                            }
+                            return null;
+                          },
+                          onChanged: (value) {
+                            setState(() {
+                              _uses = value;
+                            });
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  Container(
+                    decoration: borderOutlineDecoration(),
+                    padding: EdgeInsets.all(10),
+                    child: Column(
+                      children: [
+                        Text("Code:"),
+                        SizedBox(
+                          child: TextFormField(
+                            maxLength: 16,
+                            obscureText: true,
+                            enableSuggestions: false,
+                            autocorrect: false,
+                            keyboardType: TextInputType.number,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.digitsOnly,
+                            ],
+                            validator: (value) {
+                              if (value.length < 6) {
+                                return "Der Pin muss mindestens 6 Zeichen lang sein";
+                              }
+
+                              return null;
+                            },
+                            decoration: InputDecoration(
+                              labelText: "PIN Code",
+                              hintText: "Bitte geben Sie einen Pin ein",
+                            ),
+                            onChanged: (value) {
+                              _pin1 = value;
+                            },
+                          ),
+                        ),
+                        SizedBox(
+                          child: TextFormField(
+                            maxLength: 16,
+                            obscureText: true,
+                            enableSuggestions: false,
+                            autocorrect: false,
+                            keyboardType: TextInputType.number,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.digitsOnly,
+                            ],
+                            validator: (value) {
+                              if (value.length < 6) {
+                                return "Der Pin muss mindestens 6 Zeichen lang sein";
+                              }
+
+                              return null;
+                            },
+                            decoration: InputDecoration(
+                              labelText: "PIN Code wiederholen",
+                              hintText: "Bitte wiederholen Sie ihren Pin",
+                            ),
+                            onChanged: (value) {
+                              _pin2 = value;
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    height: 30,
+                  ),
+                  SizedBox(
+                      child: ElevatedButton(
+                          onPressed: () {
+                            final isValid = formKey.currentState.validate();
+                            if (_pin1 != _pin2) {}
+                          },
+                          child: Text("Erstellen")))
+                ],
+              ),
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+BoxDecoration borderOutlineDecoration() {
+  return BoxDecoration(
+    border: Border.all(
+      width: 1.0,
+      color: Colors.grey,
+    ),
+    borderRadius: BorderRadius.all(Radius.circular(5.0)),
+  );
+}
+
+class PinInput extends StatelessWidget {
+  final String labelText;
+  final String hintText;
+  final Function onInputChanged;
+
+  var controller = TextEditingController();
+
+  PinInput(this.labelText, this.hintText, this.onInputChanged);
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      child: TextFormField(
+        controller: controller,
+        maxLength: 16,
+        obscureText: true,
+        enableSuggestions: false,
+        autocorrect: false,
+        keyboardType: TextInputType.number,
+        inputFormatters: [
+          FilteringTextInputFormatter.digitsOnly,
+        ],
+        validator: (value) {
+          if (value.length < 6) {
+            return "Der Pin muss mindestens 6 Zeichen lang sein";
+          }
+
+          return null;
+        },
+        decoration: InputDecoration(
+          labelText: labelText,
+          hintText: hintText,
+        ),
+        onChanged: onInputChanged,
       ),
     );
   }
