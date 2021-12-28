@@ -1,5 +1,4 @@
 import 'package:doorlock_app/models/Credential.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -43,8 +42,10 @@ class _PinManagerState extends State<PinManager> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
-                          Text("Gültig ab: " + exampleCreds[index].startDateTime.toString()),
-                          Text("Gültig bis: " + exampleCreds[index].endDateTime.toString()),
+                          Text("Gültig ab: " +
+                              exampleCreds[index].startDateTime.toString()),
+                          Text("Gültig bis: " +
+                              exampleCreds[index].endDateTime.toString()),
                         ],
                       ),
                     ]),
