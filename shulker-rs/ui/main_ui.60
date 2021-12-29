@@ -1,8 +1,10 @@
 MainUi := Window {
     width: 800px;
     height: 480px;
+    title: "Shulker";
+    //no-frame: true;
 
-    property<int> active-page: 0;
+    property<int> active-page: 1;
 
     HorizontalLayout {
         width: 800px;
@@ -15,11 +17,11 @@ MainUi := Window {
             VerticalLayout {
                 height: 100%;
                 width: 100px;
+                spacing: 27px;
                 Rectangle {
                     height: 100px;
                     width: 100px;
                     background: yellow;
-
                     TouchArea {
                         clicked => { root.active-page = 0; }
                     }
@@ -42,6 +44,16 @@ MainUi := Window {
 
                     TouchArea {
                         clicked => { root.active-page = 2; }
+                    }
+                }
+
+                Rectangle {
+                    height: 100px;
+                    width: 100px;
+                    background: blue;
+
+                    TouchArea {
+                        clicked => { root.active-page = 3; }
                     }
                 }
              }
@@ -71,22 +83,118 @@ MainUi := Window {
                     y: (parent.height - height) / 1.3;
                     spacing: 5px;
                     Row {
-                        Rectangle { background: green; }
-                        Rectangle { background: red; }
-                        Rectangle { background: blue; }
-                        Rectangle { background: black; }
+                        Rectangle {
+                            background: grey;
+                            Text {
+                                text: "1";
+                                font-size: 90px;
+                                x: 22px;
+                                y: -15px;
+                            }
+                        }
+                        Rectangle {
+                            background: grey;
+                            Text {
+                                text: "2";
+                                font-size: 90px;
+                                x: 22px;
+                                y: -15px;
+                            }
+                        }
+                        Rectangle {
+                            background: grey;
+                            Text {
+                                text: "3";
+                                font-size: 90px;
+                                x: 22px;
+                                y: -15px;
+                            }
+                        }
+                        Rectangle {
+                            background: grey;
+                            Text {
+                                text: "0";
+                                font-size: 90px;
+                                x: 22px;
+                                y: -15px;
+                            }
+                        }
                     }
                     Row {
-                        Rectangle { background: green; }
-                        Rectangle { background: red; }
-                        Rectangle { background: blue; }
-                        Rectangle { background: black; }
+                        Rectangle {
+                            background: grey;
+                            Text {
+                                text: "4";
+                                font-size: 90px;
+                                x: 22px;
+                                y: -15px;
+                            }
+                        }
+                        Rectangle {
+                            background: grey;
+                            Text {
+                                text: "5";
+                                font-size: 90px;
+                                x: 22px;
+                                y: -15px;
+                            }
+                        }
+                        Rectangle {
+                            background: grey;
+                            Text {
+                                text: "6";
+                                font-size: 90px;
+                                x: 22px;
+                                y: -15px;
+                            }
+                        }
+                        Rectangle {
+                            background: grey;
+                            Text {
+                                text: "C";
+                                font-size: 90px;
+                                x: 15px;
+                                y: -15px;
+                            }
+                        }
                     }
                     Row {
-                        Rectangle { background: green; }
-                        Rectangle { background: red; }
-                        Rectangle { background: blue; }
-                        Rectangle { background: black; }
+                        Rectangle {
+                            background: grey;
+                            Text {
+                                text: "7";
+                                font-size: 90px;
+                                x: 22px;
+                                y: -15px;
+                            }
+                        }
+                        Rectangle {
+                            background: grey;
+                            Text {
+                                text: "8";
+                                font-size: 90px;
+                                x: 22px;
+                                y: -15px;
+                            }
+                        }
+                        Rectangle {
+                            background: grey;
+                            Text {
+                                text: "9";
+                                font-size: 90px;
+                                x: 22px;
+                                y: -15px;
+                            }
+                        }
+                        Rectangle {
+                            background: grey;
+                            Text {
+                                text: "E";
+                                font-size: 90px;
+                                x: 15px;
+                                y: -15px;
+                            }
+                        }
                     }
                 }
             }
@@ -102,60 +210,403 @@ MainUi := Window {
                     spacing: 5px;
                     padding: 10px;
                     Row {
-                        Rectangle { background: yellow; }
-                        Rectangle { background: yellow; }
-                        Rectangle { background: yellow; }
-                        Rectangle { background: yellow; }
-                        Rectangle { background: yellow; }
-                        Rectangle { background: yellow; }
-                        Rectangle { background: yellow; }
+                        Rectangle {
+                            background: yellow;
+                            Text {
+                                text: "0";
+                                font-size: 70px;
+                                y: -13px;
+                                x: 16px;
+                            }
+                        }
+                        Rectangle {
+                            background: yellow;
+                            Text {
+                                text: "1";
+                                font-size: 70px;
+                                y: -13px;
+                                x: 16px;
+                            }
+                        }
+                        Rectangle {
+                            background: yellow;
+                            Text {
+                                text: "2";
+                                font-size: 70px;
+                                y: -13px;
+                                x: 16px;
+                            }
+                        }
+                        Rectangle {
+                            background: yellow;
+                            Text {
+                                text: "3";
+                                font-size: 70px;
+                                y: -13px;
+                                x: 16px;
+                            }
+                        }
+                        Rectangle {
+                            background: yellow;
+                            Text {
+                                text: "4";
+                                font-size: 70px;
+                                y: -13px;
+                                x: 16px;
+                            }
+                        }
+                        Rectangle {
+                            background: yellow;
+                            Text {
+                                text: "5";
+                                font-size: 70px;
+                                y: -13px;
+                                x: 16px;
+                            }
+                        }
+                        Rectangle {
+                            background: yellow;
+                            Text {
+                                text: "6";
+                                font-size: 70px;
+                                y: -13px;
+                                x: 16px;
+                            }
+                        }
                     }
                     Row {
-                        Rectangle { background: yellow; }
-                        Rectangle { background: yellow; }
-                        Rectangle { background: yellow; }
-                        Rectangle { background: yellow; }
-                        Rectangle { background: yellow; }
-                        Rectangle { background: yellow; }
-                        Rectangle { background: yellow; }
+                        Rectangle {
+                            background: yellow;
+                            Text {
+                                text: "7";
+                                font-size: 70px;
+                                y: -13px;
+                                x: 16px;
+                            }
+                        }
+                        Rectangle {
+                            background: yellow;
+                            Text {
+                                text: "8";
+                                font-size: 70px;
+                                y: -13px;
+                                x: 16px;
+                            }
+                        }
+                        Rectangle {
+                            background: yellow;
+                            Text {
+                                text: "9";
+                                font-size: 70px;
+                                y: -13px;
+                                x: 16px;
+                            }
+                        }
+                        Rectangle {
+                            background: yellow;
+                            Text {
+                                text: "A";
+                                font-size: 70px;
+                                y: -13px;
+                                x: 16px;
+                            }
+                        }
+                        Rectangle {
+                            background: yellow;
+                            Text {
+                                text: "B";
+                                font-size: 70px;
+                                y: -13px;
+                                x: 16px;
+                            }
+                        }
+                        Rectangle {
+                            background: yellow;
+                            Text {
+                                text: "C";
+                                font-size: 70px;
+                                y: -13px;
+                                x: 16px;
+                            }
+                        }
+                        Rectangle {
+                            background: yellow;
+                            Text {
+                                text: "D";
+                                font-size: 70px;
+                                y: -13px;
+                                x: 16px;
+                            }
+                        }
                     }
                     Row {
-                        Rectangle { background: yellow; }
-                        Rectangle { background: yellow; }
-                        Rectangle { background: yellow; }
-                        Rectangle { background: yellow; }
-                        Rectangle { background: yellow; }
-                        Rectangle { background: yellow; }
-                        Rectangle { background: yellow; }
+                        Rectangle {
+                            background: yellow;
+                            Text {
+                                text: "E";
+                                font-size: 70px;
+                                y: -13px;
+                                x: 16px;
+                            }
+                        }
+                        Rectangle {
+                            background: yellow;
+                            Text {
+                                text: "F";
+                                font-size: 70px;
+                                y: -13px;
+                                x: 16px;
+                            }
+                        }
+                        Rectangle {
+                            background: yellow;
+                            Text {
+                                text: "G";
+                                font-size: 70px;
+                                y: -13px;
+                                x: 16px;
+                            }
+                        }
+                        Rectangle {
+                            background: yellow;
+                            Text {
+                                text: "H";
+                                font-size: 70px;
+                                y: -13px;
+                                x: 16px;
+                            }
+                        }
+                        Rectangle {
+                            background: yellow;
+                            Text {
+                                text: "I";
+                                font-size: 70px;
+                                y: -13px;
+                                x: 16px;
+                            }
+                        }
+                        Rectangle {
+                            background: yellow;
+                            Text {
+                                text: "J";
+                                font-size: 70px;
+                                y: -13px;
+                                x: 16px;
+                            }
+                        }
+                        Rectangle {
+                            background: yellow;
+                            Text {
+                                text: "K";
+                                font-size: 70px;
+                                y: -13px;
+                                x: 16px;
+                            }
+                        }
                     }
                     Row {
-                        Rectangle { background: yellow; }
-                        Rectangle { background: yellow; }
-                        Rectangle { background: yellow; }
-                        Rectangle { background: yellow; }
-                        Rectangle { background: yellow; }
-                        Rectangle { background: yellow; }
-                        Rectangle { background: yellow; }
+                        Rectangle {
+                            background: yellow;
+                            Text {
+                                text: "L";
+                                font-size: 70px;
+                                y: -13px;
+                                x: 16px;
+                            }
+                        }
+                        Rectangle {
+                            background: yellow;
+                            Text {
+                                text: "M";
+                                font-size: 70px;
+                                y: -13px;
+                                x: 16px;
+                            }
+                        }
+                        Rectangle {
+                            background: yellow;
+                            Text {
+                                text: "N";
+                                font-size: 70px;
+                                y: -13px;
+                                x: 16px;
+                            }
+                        }
+                        Rectangle {
+                            background: yellow;
+                            Text {
+                                text: "O";
+                                font-size: 70px;
+                                y: -13px;
+                                x: 16px;
+                            }
+                        }
+                        Rectangle {
+                            background: yellow;
+                            Text {
+                                text: "P";
+                                font-size: 70px;
+                                y: -13px;
+                                x: 16px;
+                            }
+                        }
+                        Rectangle {
+                            background: yellow;
+                            Text {
+                                text: "Q";
+                                font-size: 70px;
+                                y: -13px;
+                                x: 16px;
+                            }
+                        }
+                        Rectangle {
+                            background: yellow;
+                            Text {
+                                text: "R";
+                                font-size: 70px;
+                                y: -13px;
+                                x: 16px;
+                            }
+                        }
                     }
                     Row {
-                        Rectangle { background: yellow; }
-                        Rectangle { background: yellow; }
-                        Rectangle { background: yellow; }
-                        Rectangle { background: yellow; }
-                        Rectangle { background: yellow; }
-                        Rectangle { background: yellow; }
-                        Rectangle { background: yellow; }
+                        Rectangle {
+                            background: yellow;
+                            Text {
+                                text: "S";
+                                font-size: 70px;
+                                y: -13px;
+                                x: 16px;
+                            }
+                        }
+                        Rectangle {
+                            background: yellow;
+                            Text {
+                                text: "T";
+                                font-size: 70px;
+                                y: -13px;
+                                x: 16px;
+                            }
+                        }
+                        Rectangle {
+                            background: yellow;
+                            Text {
+                                text: "U";
+                                font-size: 70px;
+                                y: -13px;
+                                x: 16px;
+                            }
+                        }
+                        Rectangle {
+                            background: yellow;
+                            Text {
+                                text: "V";
+                                font-size: 70px;
+                                y: -13px;
+                                x: 16px;
+                            }
+                        }
+                        Rectangle {
+                            background: yellow;
+                            Text {
+                                text: "W";
+                                font-size: 70px;
+                                y: -13px;
+                                x: 3px;
+                            }
+                        }
+                        Rectangle {
+                            background: yellow;
+                            Text {
+                                text: "X";
+                                font-size: 70px;
+                                y: -13px;
+                                x: 16px;
+                            }
+                        }
+                        Rectangle {
+                            background: yellow;
+                            Text {
+                                text: "Y";
+                                font-size: 70px;
+                                y: -13px;
+                                x: 16px;
+                            }
+                        }
                     }
                     Row {
-                        Rectangle { background: yellow; }
-                        Rectangle { background: yellow; }
-                        Rectangle { background: yellow; }
-                        Rectangle { background: yellow; }
-                        Rectangle { background: yellow; }
-                        Rectangle { background: yellow; }
-                        Rectangle { background: yellow; }
+                        Rectangle {
+                            background: yellow;
+                            Text {
+                                text: "Z";
+                                font-size: 70px;
+                                y: -13px;
+                                x: 16px;
+                            }
+                        }
+                        Rectangle {
+                            background: yellow;
+                            Text {
+                                text: "1";
+                                font-size: 70px;
+                                y: -13px;
+                                x: 16px;
+                            }
+                        }
+                        Rectangle {
+                            background: yellow;
+                            Text {
+                                text: "1";
+                                font-size: 70px;
+                                y: -13px;
+                                x: 16px;
+                            }
+                        }
+                        Rectangle {
+                            background: yellow;
+                            Text {
+                                text: "1";
+                                font-size: 70px;
+                                y: -13px;
+                                x: 16px;
+                            }
+                        }
+                        Rectangle {
+                            background: yellow;
+                            Text {
+                                text: "1";
+                                font-size: 70px;
+                                y: -13px;
+                                x: 16px;
+                            }
+                        }
+                        Rectangle {
+                            background: yellow;
+                            Text {
+                                text: "1";
+                                font-size: 70px;
+                                y: -13px;
+                                x: 16px;
+                            }
+                        }
+                        Rectangle {
+                            background: yellow;
+                            Text {
+                                text: "1";
+                                font-size: 70px;
+                                y: -13px;
+                                x: 16px;
+                            }
+                        }
                     }
                 }
+                Rectangle { 
+                    width: 15%;
+                    height: 20%;
+                    x: parent.width - parent.width * 0.18;
+                    y: parent.height * 0.5 - self.height * 0.5;
+                    background: yellow;
+                 }
             }
 
             Rectangle {
@@ -163,6 +614,21 @@ MainUi := Window {
                 height: 100%;
                 width: 100%;
                 background: blue;
+
+                Image {
+                    source: @image-url("images/qr-code.png");
+                    width: 350px;
+                    height: 350px;
+                    x: (parent.width - self.width) * 0.5;
+                    y: (parent.height - self.height) * 0.5;
+                }
+            }
+
+            Rectangle {
+                y: active-page == 3 ? 0px : height;
+                height: 100%;
+                width: 100%;
+                background: orange;
             }
         }
     }
