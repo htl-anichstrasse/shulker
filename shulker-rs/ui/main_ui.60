@@ -1,10 +1,15 @@
-MainUi := Window {
+export MainUi := Window {
     width: 800px;
     height: 480px;
     title: "Shulker";
     //no-frame: true;
 
+    callback pin_try(string);
+    callback password_key_pressed(string);
+
     property<int> active-page: 1;
+    property<string> pin_buffer: "";
+    property<int> pin_buffer_length: 0;
 
     HorizontalLayout {
         width: 800px;
@@ -72,7 +77,14 @@ MainUi := Window {
                     y: 34px;
                     background: red;
                     Text {
-                        text: "**********";
+                        text: root.pin_buffer_length == 0 ? "" : 
+                              root.pin_buffer_length == 1 ? "*" :
+                              root.pin_buffer_length == 2 ? "**" :
+                              root.pin_buffer_length == 3 ? "***" :
+                              root.pin_buffer_length == 4 ? "****" :
+                              root.pin_buffer_length == 5 ? "*****" :
+                              root.pin_buffer_length == 6 ? "******" :
+                              root.pin_buffer_length == 7 ? "*******" : root.pin_buffer_length;
                         font-size: 100px;
                     }
                 }
@@ -91,6 +103,12 @@ MainUi := Window {
                                 x: 22px;
                                 y: -15px;
                             }
+                            TouchArea {
+                                clicked => {
+                                    root.pin-buffer = root.pin-buffer + "1";
+                                    root.pin-buffer-length += 1;
+                                }
+                            }
                         }
                         Rectangle {
                             background: grey;
@@ -99,6 +117,12 @@ MainUi := Window {
                                 font-size: 90px;
                                 x: 22px;
                                 y: -15px;
+                            }
+                            TouchArea {
+                                clicked => {
+                                    root.pin-buffer = root.pin-buffer + "2";
+                                    root.pin-buffer-length += 1;
+                                }
                             }
                         }
                         Rectangle {
@@ -109,6 +133,12 @@ MainUi := Window {
                                 x: 22px;
                                 y: -15px;
                             }
+                            TouchArea {
+                                clicked => {
+                                    root.pin-buffer = root.pin-buffer + "3";
+                                    root.pin-buffer-length += 1;
+                                }
+                            }
                         }
                         Rectangle {
                             background: grey;
@@ -117,6 +147,12 @@ MainUi := Window {
                                 font-size: 90px;
                                 x: 22px;
                                 y: -15px;
+                            }
+                            TouchArea {
+                                clicked => {
+                                    root.pin-buffer = root.pin-buffer + "0";
+                                    root.pin-buffer-length += 1;
+                                }
                             }
                         }
                     }
@@ -129,6 +165,12 @@ MainUi := Window {
                                 x: 22px;
                                 y: -15px;
                             }
+                            TouchArea {
+                                clicked => {
+                                    root.pin-buffer = root.pin-buffer + "4";
+                                    root.pin-buffer-length += 1;
+                                }
+                            }
                         }
                         Rectangle {
                             background: grey;
@@ -137,6 +179,12 @@ MainUi := Window {
                                 font-size: 90px;
                                 x: 22px;
                                 y: -15px;
+                            }
+                            TouchArea {
+                                clicked => {
+                                    root.pin-buffer = root.pin-buffer + "5";
+                                    root.pin-buffer-length += 1;
+                                }
                             }
                         }
                         Rectangle {
@@ -147,6 +195,12 @@ MainUi := Window {
                                 x: 22px;
                                 y: -15px;
                             }
+                            TouchArea {
+                                clicked => {
+                                    root.pin-buffer = root.pin-buffer + "6";
+                                    root.pin-buffer-length += 1;
+                                }
+                            }
                         }
                         Rectangle {
                             background: grey;
@@ -155,6 +209,12 @@ MainUi := Window {
                                 font-size: 90px;
                                 x: 15px;
                                 y: -15px;
+                            }
+                            TouchArea {
+                                clicked => {
+                                    root.pin-buffer = "";
+                                    root.pin-buffer-length = 0;
+                                }
                             }
                         }
                     }
@@ -167,6 +227,12 @@ MainUi := Window {
                                 x: 22px;
                                 y: -15px;
                             }
+                            TouchArea {
+                                clicked => {
+                                    root.pin-buffer = root.pin-buffer + "7";
+                                    root.pin-buffer-length += 1;
+                                }
+                            }
                         }
                         Rectangle {
                             background: grey;
@@ -175,6 +241,12 @@ MainUi := Window {
                                 font-size: 90px;
                                 x: 22px;
                                 y: -15px;
+                            }
+                            TouchArea {
+                                clicked => {
+                                    root.pin-buffer = root.pin-buffer + "8";
+                                    root.pin-buffer-length += 1;
+                                }
                             }
                         }
                         Rectangle {
@@ -185,6 +257,12 @@ MainUi := Window {
                                 x: 22px;
                                 y: -15px;
                             }
+                            TouchArea {
+                                clicked => {
+                                    root.pin-buffer = root.pin-buffer + "9";
+                                    root.pin-buffer-length += 1;
+                                }
+                            }
                         }
                         Rectangle {
                             background: grey;
@@ -193,6 +271,13 @@ MainUi := Window {
                                 font-size: 90px;
                                 x: 15px;
                                 y: -15px;
+                            }
+                            TouchArea {
+                                clicked => {
+                                    pin_try(root.pin-buffer);
+                                    root.pin-buffer = "";
+                                    root.pin-buffer-length = 0;
+                                }
                             }
                         }
                     }
@@ -218,6 +303,11 @@ MainUi := Window {
                                 y: -13px;
                                 x: 16px;
                             }
+                            TouchArea {
+                                clicked => {
+                                    password_key_pressed("0");
+                                }
+                            }
                         }
                         Rectangle {
                             background: yellow;
@@ -226,6 +316,11 @@ MainUi := Window {
                                 font-size: 70px;
                                 y: -13px;
                                 x: 16px;
+                            }
+                            TouchArea {
+                                clicked => {
+                                    password_key_pressed("1");
+                                }
                             }
                         }
                         Rectangle {
@@ -236,6 +331,11 @@ MainUi := Window {
                                 y: -13px;
                                 x: 16px;
                             }
+                            TouchArea {
+                                clicked => {
+                                    password_key_pressed("2");
+                                }
+                            }
                         }
                         Rectangle {
                             background: yellow;
@@ -244,6 +344,11 @@ MainUi := Window {
                                 font-size: 70px;
                                 y: -13px;
                                 x: 16px;
+                            }
+                            TouchArea {
+                                clicked => {
+                                    password_key_pressed("3");
+                                }
                             }
                         }
                         Rectangle {
@@ -254,6 +359,11 @@ MainUi := Window {
                                 y: -13px;
                                 x: 16px;
                             }
+                            TouchArea {
+                                clicked => {
+                                    password_key_pressed("4");
+                                }
+                            }
                         }
                         Rectangle {
                             background: yellow;
@@ -263,6 +373,11 @@ MainUi := Window {
                                 y: -13px;
                                 x: 16px;
                             }
+                            TouchArea {
+                                clicked => {
+                                    password_key_pressed("5");
+                                }
+                            }
                         }
                         Rectangle {
                             background: yellow;
@@ -271,6 +386,11 @@ MainUi := Window {
                                 font-size: 70px;
                                 y: -13px;
                                 x: 16px;
+                            }
+                            TouchArea {
+                                clicked => {
+                                    password_key_pressed("6");
+                                }
                             }
                         }
                     }
@@ -283,6 +403,11 @@ MainUi := Window {
                                 y: -13px;
                                 x: 16px;
                             }
+                            TouchArea {
+                                clicked => {
+                                    password_key_pressed("7");
+                                }
+                            }
                         }
                         Rectangle {
                             background: yellow;
@@ -291,6 +416,11 @@ MainUi := Window {
                                 font-size: 70px;
                                 y: -13px;
                                 x: 16px;
+                            }
+                            TouchArea {
+                                clicked => {
+                                    password_key_pressed("8");
+                                }
                             }
                         }
                         Rectangle {
@@ -301,6 +431,11 @@ MainUi := Window {
                                 y: -13px;
                                 x: 16px;
                             }
+                            TouchArea {
+                                clicked => {
+                                    password_key_pressed("9");
+                                }
+                            }
                         }
                         Rectangle {
                             background: yellow;
@@ -309,6 +444,11 @@ MainUi := Window {
                                 font-size: 70px;
                                 y: -13px;
                                 x: 16px;
+                            }
+                            TouchArea {
+                                clicked => {
+                                    password_key_pressed("A");
+                                }
                             }
                         }
                         Rectangle {
@@ -319,6 +459,11 @@ MainUi := Window {
                                 y: -13px;
                                 x: 16px;
                             }
+                            TouchArea {
+                                clicked => {
+                                    password_key_pressed("B");
+                                }
+                            }
                         }
                         Rectangle {
                             background: yellow;
@@ -328,6 +473,11 @@ MainUi := Window {
                                 y: -13px;
                                 x: 16px;
                             }
+                            TouchArea {
+                                clicked => {
+                                    password_key_pressed("C");
+                                }
+                            }
                         }
                         Rectangle {
                             background: yellow;
@@ -336,6 +486,11 @@ MainUi := Window {
                                 font-size: 70px;
                                 y: -13px;
                                 x: 16px;
+                            }
+                            TouchArea {
+                                clicked => {
+                                    password_key_pressed("D");
+                                }
                             }
                         }
                     }
@@ -348,6 +503,11 @@ MainUi := Window {
                                 y: -13px;
                                 x: 16px;
                             }
+                            TouchArea {
+                                clicked => {
+                                    password_key_pressed("E");
+                                }
+                            }
                         }
                         Rectangle {
                             background: yellow;
@@ -356,6 +516,11 @@ MainUi := Window {
                                 font-size: 70px;
                                 y: -13px;
                                 x: 16px;
+                            }
+                            TouchArea {
+                                clicked => {
+                                    password_key_pressed("F");
+                                }
                             }
                         }
                         Rectangle {
@@ -366,6 +531,11 @@ MainUi := Window {
                                 y: -13px;
                                 x: 16px;
                             }
+                            TouchArea {
+                                clicked => {
+                                    password_key_pressed("G");
+                                }
+                            }
                         }
                         Rectangle {
                             background: yellow;
@@ -374,6 +544,11 @@ MainUi := Window {
                                 font-size: 70px;
                                 y: -13px;
                                 x: 16px;
+                            }
+                            TouchArea {
+                                clicked => {
+                                    password_key_pressed("H");
+                                }
                             }
                         }
                         Rectangle {
@@ -384,6 +559,11 @@ MainUi := Window {
                                 y: -13px;
                                 x: 16px;
                             }
+                            TouchArea {
+                                clicked => {
+                                    password_key_pressed("I");
+                                }
+                            }
                         }
                         Rectangle {
                             background: yellow;
@@ -393,6 +573,11 @@ MainUi := Window {
                                 y: -13px;
                                 x: 16px;
                             }
+                            TouchArea {
+                                clicked => {
+                                    password_key_pressed("J");
+                                }
+                            }
                         }
                         Rectangle {
                             background: yellow;
@@ -401,6 +586,11 @@ MainUi := Window {
                                 font-size: 70px;
                                 y: -13px;
                                 x: 16px;
+                            }
+                            TouchArea {
+                                clicked => {
+                                    password_key_pressed("K");
+                                }
                             }
                         }
                     }
@@ -413,6 +603,11 @@ MainUi := Window {
                                 y: -13px;
                                 x: 16px;
                             }
+                            TouchArea {
+                                clicked => {
+                                    password_key_pressed("L");
+                                }
+                            }
                         }
                         Rectangle {
                             background: yellow;
@@ -421,6 +616,11 @@ MainUi := Window {
                                 font-size: 70px;
                                 y: -13px;
                                 x: 16px;
+                            }
+                            TouchArea {
+                                clicked => {
+                                    password_key_pressed("M");
+                                }
                             }
                         }
                         Rectangle {
@@ -431,6 +631,11 @@ MainUi := Window {
                                 y: -13px;
                                 x: 16px;
                             }
+                            TouchArea {
+                                clicked => {
+                                    password_key_pressed("N");
+                                }
+                            }
                         }
                         Rectangle {
                             background: yellow;
@@ -439,6 +644,11 @@ MainUi := Window {
                                 font-size: 70px;
                                 y: -13px;
                                 x: 16px;
+                            }
+                            TouchArea {
+                                clicked => {
+                                    password_key_pressed("O");
+                                }
                             }
                         }
                         Rectangle {
@@ -449,6 +659,11 @@ MainUi := Window {
                                 y: -13px;
                                 x: 16px;
                             }
+                            TouchArea {
+                                clicked => {
+                                    password_key_pressed("P");
+                                }
+                            }
                         }
                         Rectangle {
                             background: yellow;
@@ -458,6 +673,11 @@ MainUi := Window {
                                 y: -13px;
                                 x: 16px;
                             }
+                            TouchArea {
+                                clicked => {
+                                    password_key_pressed("Q");
+                                }
+                            }
                         }
                         Rectangle {
                             background: yellow;
@@ -466,6 +686,11 @@ MainUi := Window {
                                 font-size: 70px;
                                 y: -13px;
                                 x: 16px;
+                            }
+                            TouchArea {
+                                clicked => {
+                                    password_key_pressed("R");
+                                }
                             }
                         }
                     }
@@ -478,6 +703,11 @@ MainUi := Window {
                                 y: -13px;
                                 x: 16px;
                             }
+                            TouchArea {
+                                clicked => {
+                                    password_key_pressed("S");
+                                }
+                            }
                         }
                         Rectangle {
                             background: yellow;
@@ -486,6 +716,11 @@ MainUi := Window {
                                 font-size: 70px;
                                 y: -13px;
                                 x: 16px;
+                            }
+                            TouchArea {
+                                clicked => {
+                                    password_key_pressed("T");
+                                }
                             }
                         }
                         Rectangle {
@@ -496,6 +731,11 @@ MainUi := Window {
                                 y: -13px;
                                 x: 16px;
                             }
+                            TouchArea {
+                                clicked => {
+                                    password_key_pressed("U");
+                                }
+                            }
                         }
                         Rectangle {
                             background: yellow;
@@ -504,6 +744,11 @@ MainUi := Window {
                                 font-size: 70px;
                                 y: -13px;
                                 x: 16px;
+                            }
+                            TouchArea {
+                                clicked => {
+                                    password_key_pressed("V");
+                                }
                             }
                         }
                         Rectangle {
@@ -514,6 +759,11 @@ MainUi := Window {
                                 y: -13px;
                                 x: 3px;
                             }
+                            TouchArea {
+                                clicked => {
+                                    password_key_pressed("W");
+                                }
+                            }
                         }
                         Rectangle {
                             background: yellow;
@@ -523,6 +773,11 @@ MainUi := Window {
                                 y: -13px;
                                 x: 16px;
                             }
+                            TouchArea {
+                                clicked => {
+                                    password_key_pressed("X");
+                                }
+                            }
                         }
                         Rectangle {
                             background: yellow;
@@ -531,6 +786,11 @@ MainUi := Window {
                                 font-size: 70px;
                                 y: -13px;
                                 x: 16px;
+                            }
+                            TouchArea {
+                                clicked => {
+                                    password_key_pressed("Y");
+                                }
                             }
                         }
                     }
@@ -542,6 +802,11 @@ MainUi := Window {
                                 font-size: 70px;
                                 y: -13px;
                                 x: 16px;
+                            }
+                            TouchArea {
+                                clicked => {
+                                    password_key_pressed("Z");
+                                }
                             }
                         }
                         Rectangle {
@@ -606,6 +871,13 @@ MainUi := Window {
                     x: parent.width - parent.width * 0.18;
                     y: parent.height * 0.5 - self.height * 0.5;
                     background: yellow;
+
+                    Text {
+                        text: "1";
+                        font-size: 100px;
+                        y: -24px;
+                        x: 23px;
+                    }
                  }
             }
 
