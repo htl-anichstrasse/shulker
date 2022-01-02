@@ -1,5 +1,7 @@
+import 'package:doorlock_app/models/Credential.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:uuid/uuid.dart';
 
 class CreatePin extends StatefulWidget {
   @override
@@ -13,6 +15,7 @@ class _CreatePinState extends State<CreatePin> {
   String _uses;
   String _pin1;
   String _pin2;
+  var uuid = Uuid();
 
   @override
   Widget build(BuildContext context) {
@@ -86,6 +89,7 @@ class _CreatePinState extends State<CreatePin> {
                           ),
                           validator: (value) {
                             if (unlimitedUses) {
+                              _uses = "-1";
                               return null;
                             }
                             if (value.length <= 0) {
@@ -125,6 +129,15 @@ class _CreatePinState extends State<CreatePin> {
                               if (value.length < 6) {
                                 return "Der Pin muss mindestens 6 Zeichen lang sein";
                               }
+                              if (value.length > 10) {
+                                return "Der Pin darf maximal 10 Zeichen betragen";
+                              }
+                              print(_pin2);
+                              if (_pin2 != null && _pin2 != "") {
+                                if (_pin1 != _pin2) {
+                                  return "Die Pins stimmen nicht überein";
+                                }
+                              }
 
                               return null;
                             },
@@ -151,6 +164,14 @@ class _CreatePinState extends State<CreatePin> {
                               if (value.length < 6) {
                                 return "Der Pin muss mindestens 6 Zeichen lang sein";
                               }
+                              if (value.length > 10) {
+                                return "Der Pin darf maximal 10 Zeichen betragen";
+                              }
+                              if (_pin1 != null) {
+                                if (_pin1 != _pin2) {
+                                  return "Die Pins stimmen nicht überein";
+                                }
+                              }
 
                               return null;
                             },
@@ -173,7 +194,16 @@ class _CreatePinState extends State<CreatePin> {
                       child: ElevatedButton(
                           onPressed: () {
                             final isValid = formKey.currentState.validate();
-                            if (_pin1 != _pin2) {}
+                            if (isValid) {
+                              Credential.creds.add(new Credential(
+                                  uuid.v4(),
+                                  DateTime.now(),
+                                  DateTime.utc(9999),
+                                  int.tryParse(_uses),
+                                  _pin1,
+                                  _name));
+                              Navigator.pop(context);
+                            }
                           },
                           child: Text("Erstellen")))
                 ],
