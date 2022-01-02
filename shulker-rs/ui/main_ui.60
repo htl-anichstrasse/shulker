@@ -5,11 +5,16 @@ export MainUi := Window {
     //no-frame: true;
 
     callback pin_try(string);
-    callback password_key_pressed(string);
+    callback password_try(string);
+    callback lock();
 
     property<int> active-page: 1;
     property<string> pin_buffer: "";
     property<int> pin_buffer_length: 0;
+    property<string> password_buffer: "";
+    property<int> password_buffer_length: 0;
+    property<int> autolock_seconds: 0;
+    property<bool> locked: true;
 
     HorizontalLayout {
         width: 800px;
@@ -305,7 +310,8 @@ export MainUi := Window {
                             }
                             TouchArea {
                                 clicked => {
-                                    password_key_pressed("0");
+                                    root.password_buffer += "0";
+                                    root.password_buffer_length += 1;
                                 }
                             }
                         }
@@ -319,7 +325,8 @@ export MainUi := Window {
                             }
                             TouchArea {
                                 clicked => {
-                                    password_key_pressed("1");
+                                    root.password_buffer += "1";
+                                    root.password_buffer_length += 1;
                                 }
                             }
                         }
@@ -333,7 +340,8 @@ export MainUi := Window {
                             }
                             TouchArea {
                                 clicked => {
-                                    password_key_pressed("2");
+                                    root.password_buffer += "2";
+                                    root.password_buffer_length += 1;
                                 }
                             }
                         }
@@ -347,7 +355,8 @@ export MainUi := Window {
                             }
                             TouchArea {
                                 clicked => {
-                                    password_key_pressed("3");
+                                    root.password_buffer += "3";
+                                    root.password_buffer_length += 1;
                                 }
                             }
                         }
@@ -361,7 +370,8 @@ export MainUi := Window {
                             }
                             TouchArea {
                                 clicked => {
-                                    password_key_pressed("4");
+                                    root.password_buffer += "4";
+                                    root.password_buffer_length += 1;
                                 }
                             }
                         }
@@ -375,7 +385,8 @@ export MainUi := Window {
                             }
                             TouchArea {
                                 clicked => {
-                                    password_key_pressed("5");
+                                    root.password_buffer += "5";
+                                    root.password_buffer_length += 1;
                                 }
                             }
                         }
@@ -389,7 +400,8 @@ export MainUi := Window {
                             }
                             TouchArea {
                                 clicked => {
-                                    password_key_pressed("6");
+                                    root.password_buffer += "6";
+                                    root.password_buffer_length += 1;
                                 }
                             }
                         }
@@ -405,7 +417,8 @@ export MainUi := Window {
                             }
                             TouchArea {
                                 clicked => {
-                                    password_key_pressed("7");
+                                    root.password_buffer += "7";
+                                    root.password_buffer_length += 1;
                                 }
                             }
                         }
@@ -419,7 +432,8 @@ export MainUi := Window {
                             }
                             TouchArea {
                                 clicked => {
-                                    password_key_pressed("8");
+                                    root.password_buffer += "8";
+                                    root.password_buffer_length += 1;
                                 }
                             }
                         }
@@ -433,7 +447,8 @@ export MainUi := Window {
                             }
                             TouchArea {
                                 clicked => {
-                                    password_key_pressed("9");
+                                    root.password_buffer += "9";
+                                    root.password_buffer_length += 1;
                                 }
                             }
                         }
@@ -447,7 +462,8 @@ export MainUi := Window {
                             }
                             TouchArea {
                                 clicked => {
-                                    password_key_pressed("A");
+                                    root.password_buffer += "A";
+                                    root.password_buffer_length += 1;
                                 }
                             }
                         }
@@ -461,7 +477,8 @@ export MainUi := Window {
                             }
                             TouchArea {
                                 clicked => {
-                                    password_key_pressed("B");
+                                    root.password_buffer += "B";
+                                    root.password_buffer_length += 1;
                                 }
                             }
                         }
@@ -475,7 +492,8 @@ export MainUi := Window {
                             }
                             TouchArea {
                                 clicked => {
-                                    password_key_pressed("C");
+                                    root.password_buffer += "C";
+                                    root.password_buffer_length += 1;
                                 }
                             }
                         }
@@ -489,7 +507,8 @@ export MainUi := Window {
                             }
                             TouchArea {
                                 clicked => {
-                                    password_key_pressed("D");
+                                    root.password_buffer += "D";
+                                    root.password_buffer_length += 1;
                                 }
                             }
                         }
@@ -505,7 +524,8 @@ export MainUi := Window {
                             }
                             TouchArea {
                                 clicked => {
-                                    password_key_pressed("E");
+                                    root.password_buffer += "E";
+                                    root.password_buffer_length += 1;
                                 }
                             }
                         }
@@ -519,7 +539,8 @@ export MainUi := Window {
                             }
                             TouchArea {
                                 clicked => {
-                                    password_key_pressed("F");
+                                    root.password_buffer += "F";
+                                    root.password_buffer_length += 1;
                                 }
                             }
                         }
@@ -533,7 +554,8 @@ export MainUi := Window {
                             }
                             TouchArea {
                                 clicked => {
-                                    password_key_pressed("G");
+                                    root.password_buffer += "G";
+                                    root.password_buffer_length += 1;
                                 }
                             }
                         }
@@ -547,7 +569,8 @@ export MainUi := Window {
                             }
                             TouchArea {
                                 clicked => {
-                                    password_key_pressed("H");
+                                    root.password_buffer += "H";
+                                    root.password_buffer_length += 1;
                                 }
                             }
                         }
@@ -561,7 +584,8 @@ export MainUi := Window {
                             }
                             TouchArea {
                                 clicked => {
-                                    password_key_pressed("I");
+                                    root.password_buffer += "I";
+                                    root.password_buffer_length += 1;
                                 }
                             }
                         }
@@ -575,7 +599,8 @@ export MainUi := Window {
                             }
                             TouchArea {
                                 clicked => {
-                                    password_key_pressed("J");
+                                    root.password_buffer += "J";
+                                    root.password_buffer_length += 1;
                                 }
                             }
                         }
@@ -589,7 +614,8 @@ export MainUi := Window {
                             }
                             TouchArea {
                                 clicked => {
-                                    password_key_pressed("K");
+                                    root.password_buffer += "K";
+                                    root.password_buffer_length += 1;
                                 }
                             }
                         }
@@ -605,7 +631,8 @@ export MainUi := Window {
                             }
                             TouchArea {
                                 clicked => {
-                                    password_key_pressed("L");
+                                    root.password_buffer += "L";
+                                    root.password_buffer_length += 1;
                                 }
                             }
                         }
@@ -619,7 +646,8 @@ export MainUi := Window {
                             }
                             TouchArea {
                                 clicked => {
-                                    password_key_pressed("M");
+                                    root.password_buffer += "M";
+                                    root.password_buffer_length += 1;
                                 }
                             }
                         }
@@ -633,7 +661,8 @@ export MainUi := Window {
                             }
                             TouchArea {
                                 clicked => {
-                                    password_key_pressed("N");
+                                    root.password_buffer += "N";
+                                    root.password_buffer_length += 1;
                                 }
                             }
                         }
@@ -647,7 +676,8 @@ export MainUi := Window {
                             }
                             TouchArea {
                                 clicked => {
-                                    password_key_pressed("O");
+                                    root.password_buffer += "O";
+                                    root.password_buffer_length += 1;
                                 }
                             }
                         }
@@ -661,7 +691,8 @@ export MainUi := Window {
                             }
                             TouchArea {
                                 clicked => {
-                                    password_key_pressed("P");
+                                    root.password_buffer += "P";
+                                    root.password_buffer_length += 1;
                                 }
                             }
                         }
@@ -675,7 +706,8 @@ export MainUi := Window {
                             }
                             TouchArea {
                                 clicked => {
-                                    password_key_pressed("Q");
+                                    root.password_buffer += "Q";
+                                    root.password_buffer_length += 1;
                                 }
                             }
                         }
@@ -689,7 +721,8 @@ export MainUi := Window {
                             }
                             TouchArea {
                                 clicked => {
-                                    password_key_pressed("R");
+                                    root.password_buffer += "R";
+                                    root.password_buffer_length += 1;
                                 }
                             }
                         }
@@ -705,7 +738,8 @@ export MainUi := Window {
                             }
                             TouchArea {
                                 clicked => {
-                                    password_key_pressed("S");
+                                    root.password_buffer += "S";
+                                    root.password_buffer_length += 1;
                                 }
                             }
                         }
@@ -719,7 +753,8 @@ export MainUi := Window {
                             }
                             TouchArea {
                                 clicked => {
-                                    password_key_pressed("T");
+                                    root.password_buffer += "T";
+                                    root.password_buffer_length += 1;
                                 }
                             }
                         }
@@ -733,7 +768,8 @@ export MainUi := Window {
                             }
                             TouchArea {
                                 clicked => {
-                                    password_key_pressed("U");
+                                    root.password_buffer += "U";
+                                    root.password_buffer_length += 1;
                                 }
                             }
                         }
@@ -747,7 +783,8 @@ export MainUi := Window {
                             }
                             TouchArea {
                                 clicked => {
-                                    password_key_pressed("V");
+                                    root.password_buffer += "V";
+                                    root.password_buffer_length += 1;
                                 }
                             }
                         }
@@ -761,7 +798,8 @@ export MainUi := Window {
                             }
                             TouchArea {
                                 clicked => {
-                                    password_key_pressed("W");
+                                    root.password_buffer += "W";
+                                    root.password_buffer_length += 1;
                                 }
                             }
                         }
@@ -775,7 +813,8 @@ export MainUi := Window {
                             }
                             TouchArea {
                                 clicked => {
-                                    password_key_pressed("X");
+                                    root.password_buffer += "X";
+                                    root.password_buffer_length += 1;
                                 }
                             }
                         }
@@ -789,7 +828,8 @@ export MainUi := Window {
                             }
                             TouchArea {
                                 clicked => {
-                                    password_key_pressed("Y");
+                                    root.password_buffer += "Y";
+                                    root.password_buffer_length += 1;
                                 }
                             }
                         }
@@ -805,14 +845,15 @@ export MainUi := Window {
                             }
                             TouchArea {
                                 clicked => {
-                                    password_key_pressed("Z");
+                                    root.password_buffer += "Z";
+                                    root.password_buffer_length += 1;
                                 }
                             }
                         }
                         Rectangle {
                             background: yellow;
                             Text {
-                                text: "1";
+                                text: "";
                                 font-size: 70px;
                                 y: -13px;
                                 x: 16px;
@@ -848,19 +889,34 @@ export MainUi := Window {
                         Rectangle {
                             background: yellow;
                             Text {
-                                text: "1";
+                                text: "CE";
                                 font-size: 70px;
                                 y: -13px;
                                 x: 16px;
+                            }
+
+                            TouchArea {
+                                clicked => {
+                                    root.password_buffer = "";
+                                    root.password_buffer_length = 0;
+                                }
                             }
                         }
                         Rectangle {
                             background: yellow;
                             Text {
-                                text: "1";
+                                text: "E";
                                 font-size: 70px;
                                 y: -13px;
                                 x: 16px;
+                            }
+
+                            TouchArea {
+                                clicked => {
+                                    password_try(root.password_buffer);
+                                    root.password_buffer = "";
+                                    root.password_buffer_length = 0;
+                                }
                             }
                         }
                     }
@@ -873,7 +929,7 @@ export MainUi := Window {
                     background: yellow;
 
                     Text {
-                        text: "1";
+                        text: root.password_buffer_length;
                         font-size: 100px;
                         y: -24px;
                         x: 23px;
@@ -903,5 +959,53 @@ export MainUi := Window {
                 background: orange;
             }
         }
+    }
+    Rectangle {
+        x: 0;
+        y: 0;
+        width: 800px;
+        height: 480px;
+        background: green;
+        TouchArea {
+            clicked => {
+                root.lock();
+            }
+        }
+        visible: !root.locked;
+        Rectangle {
+            x: parent.width * 0.5 - self.width * 0.5;
+            y: parent.height * 0.5 - self.height * 0.5;
+            width: 600px;
+            height: 400px;
+            VerticalLayout {
+                alignment: center;
+                HorizontalLayout {
+                    alignment: center;
+                    Text {
+                        text: "CURRENTLY UNLOCKED";
+                        font-size: 50px;
+                    }
+                }
+
+                HorizontalLayout {
+                    alignment: center;
+                    Text {
+                        text: "TAB SCREEN TO LOCK";
+                        font-size: 30px;
+                    }
+                }
+
+                HorizontalLayout {
+                    alignment: center;
+                    Text {
+                        text: "AUTOLOCKS IN " + root.autolock-seconds + " SECONDS";
+                        font-size: 25px;
+                    }
+                }
+                
+                
+            }
+        }
+        
     }
 }
