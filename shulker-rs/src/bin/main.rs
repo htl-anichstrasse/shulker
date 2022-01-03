@@ -1,97 +1,169 @@
-// ONLY FOR TESTING PURPOSES
+use std::{sync::{Arc, Mutex}, thread, time::Duration, path::PathBuf};
 
-use std::{env, path::PathBuf, sync::{mpsc::channel, Arc, Mutex}, ops::Add};
-use shulker_rs::{credential_types::{Credential, Secret}, shulker_db::{ShulkerDB, self}};
-use uuid::Uuid;
+use crossbeam_channel::{Sender, Receiver};
+use shulker_rs::{shulker_db::ShulkerDB, credential_types::Secret};
+use sixtyfps::Weak;
 
 sixtyfps::include_modules!();
 fn main() {
-    let mut locked: Arc<Mutex<bool>> = Arc::new(Mutex::new(true));
-    let mut locked_clone = locked.clone();
-    let (tx, rx) = channel::<String>();
+    let (s0, r0) = crossbeam_channel::bounded::<String>(0);
 
     let ui = MainUi::new();
-    let ui_weak = ui.as_weak();
-
-    let handler = std::thread::spawn(move || {
-        let mut shulker_db = shulker_db::ShulkerDB::new(PathBuf::from("credentials"));
-        shulker_db.add(Credential { uuid: Uuid::new_v4(), time_frame: None, uses_left: None, secret: Secret::Password("ABC399".to_string()) }).unwrap();
-
+    let ui_handle = ui.as_weak();
+    let shulker_core_lock = Arc::new(Mutex::new(ShulkerCore::new(ui_handle.clone(), s0.clone())));
+    
+    // Display Communication Thread
+    let ui_handle_clone = ui_handle.clone();
+    let shulker_core_lock2 = shulker_core_lock.clone();
+    let thread_handler_1 = thread::spawn(move || {
         loop {
-            let received_string = rx.recv().unwrap();
-            println!("{:#?}", received_string);
-
-            let cmd: Vec<&str> = received_string.split(" ").collect();
-            match cmd.len() {
-                1 => {
-                    match cmd[0] {
-                        "LOCK" => {
-                            let mut lock = locked_clone.lock().unwrap();
-                            *lock = true;
-                            let handle_copy = ui_weak.clone();
-                            sixtyfps::invoke_from_event_loop(move || handle_copy.unwrap().set_locked(true));
-                        }
-                        _ => {},
-                    }
-                },
-                2 => {},
-                3 => {
-                    match cmd[0] {
-                        "PIN" => {
-                            match cmd[1] {
-                                "TRY" => {
-                                    if shulker_db.use_credential(Secret::PinCode(cmd[2].to_string())).unwrap() {
-                                        let mut lock = locked_clone.lock().unwrap();
-                                        *lock = false;
-                                        let handle_copy = ui_weak.clone();
-                                        sixtyfps::invoke_from_event_loop(move || handle_copy.unwrap().set_locked(false));
-                                    };
-                                }
-                                _ => {}
-                            }
-                        },
-                        "PASSWORD" => {
-                            match cmd[1] {
-                                "TRY" => {
-                                    if shulker_db.use_credential(Secret::Password(cmd[2].to_string())).unwrap() {
-                                        let mut lock = locked_clone.lock().unwrap();
-                                        *lock = false;
-                                        let handle_copy = ui_weak.clone();
-                                        sixtyfps::invoke_from_event_loop(move || handle_copy.unwrap().set_locked(false));
-                                    }
-                                },
-                                _ => {}
-                            }
-                        },
-                        _ => {}
-                    }
-                }
-                _ => {}
+            let msg = r0.recv().unwrap();
+            let response;
+            {
+                let mut shulker_core = shulker_core_lock2.lock().unwrap();
+                response = (*shulker_core).handle_message(msg);
             }
+            if response.is_none() { continue }
+            let response = response.unwrap();
         }
     });
-    
-    let ui_weak = ui.as_weak();
-    let tx_clone = tx.clone();
+
+    let ui_handle_clone = ui_handle.clone();
+    let s0_clone = s0.clone();
     ui.on_pin_try(move |code| {
-        let ui = ui_weak.unwrap();
-        tx_clone.send(format!("PIN TRY {}", code)).unwrap();
+        let ui = ui_handle_clone.unwrap();
+        s0_clone.send(format!("PIN TRY {}", code)).unwrap();
     });
 
-    let ui_weak = ui.as_weak();
-    let tx_clone = tx.clone();
+    let ui_handle_clone = ui_handle.clone();
+    let s0_clone = s0.clone();
     ui.on_password_try(move |code| {
-        let ui = ui_weak.unwrap();
-        tx_clone.send(format!("PASSWORD TRY {}", code)).unwrap();
+        let ui = ui_handle_clone.unwrap();
+        s0_clone.send(format!("PASSWORD TRY {}", code)).unwrap();
     });
 
-    let ui_weak = ui.as_weak();
-    let tx_clone = tx.clone();
+    let ui_handle_clone = ui_handle.clone();
+    let s0_clone = s0.clone();
     ui.on_lock(move || {
-        let ui = ui_weak.unwrap();
-        tx_clone.send("LOCK".to_string()).unwrap();
+        let ui = ui_handle_clone.unwrap();
+        s0_clone.send("LOCK".to_string()).unwrap();
     });
+
     ui.run();
-    
-    handler.join().unwrap();
+    thread_handler_1.join().unwrap();
+}
+
+
+pub struct ShulkerCore<'a> {
+    is_locked: bool,
+    shulker_db: ShulkerDB<'a>,
+    ui_handle: Weak<MainUi>,
+    s0: Sender<String>,
+    a_s: Sender<String>,
+    a_r: Receiver<String>,
+    autolock_seconds: i32,
+}
+
+impl ShulkerCore<'_> {
+    pub fn new(ui_handle: Weak<MainUi>, s0: Sender<String>) -> Self {
+        let (a_s, a_r) = crossbeam_channel::unbounded();
+
+        ShulkerCore {
+            is_locked: true,
+            shulker_db: ShulkerDB::new(PathBuf::from("credentials")),
+            ui_handle,
+            s0,
+            a_s,
+            a_r,
+            autolock_seconds: shulker_rs::CONFIGURATION.read().unwrap().get_int("autolock_seconds").unwrap() as i32,
+        }
+    }
+
+    pub fn handle_message(&mut self, msg: String) -> Option<String>{
+        let msg: Vec<&str> = msg.split(" ").collect();
+        if msg.len() < 1 { return None };
+        
+        match msg.len() {
+            1 => {
+                match msg[0] {
+                    "LOCK" => {
+                        self.lock();
+                        return Some("LOCKED".to_string());
+                    },
+                    "UNLOCK" => {
+                        self.unlock();
+                        return Some("UNLOCKED".to_string());
+                    },
+                    _ => {},
+                }
+            },
+            2 => {},
+            3 => {
+                match msg[0] {
+                    "PIN" => {
+                        if msg[1] == "TRY" {
+                            if self.try_secret(Secret::PinCode(msg[2].to_string())) {
+                                self.unlock();
+                                return Some("UNLOCKED".to_string());
+                            }
+                        }
+                    },
+                    "PASSWORD" => {
+                        if msg[1] == "TRY" {
+                            if self.try_secret(Secret::Password(msg[2].to_string())) {
+                                self.unlock();
+                                return Some("UNLOCKED".to_string());
+                            }
+                        }
+                    },
+                    _ => {},
+                }
+            },
+            _ => {}
+        }
+        None
+    }
+
+    fn lock(&mut self) {
+        self.is_locked = true;
+        let ui_handle = self.ui_handle.clone();
+        sixtyfps::invoke_from_event_loop(move || {
+            ui_handle.unwrap().set_locked(true);
+        });
+        self.a_s.send("LOCKED".to_string()).unwrap();
+    }
+
+    fn unlock(&mut self) {
+        self.is_locked = false;
+        let ui_handle = self.ui_handle.clone();
+        sixtyfps::invoke_from_event_loop(move || {
+            ui_handle.unwrap().set_locked(false);
+        });
+        while !self.a_r.is_empty() {
+            self.a_r.recv().unwrap();
+        }
+        let ui_handle = self.ui_handle.clone();
+        let s0 = self.s0.clone();
+        let secs = self.autolock_seconds;
+        let a_r = self.a_r.clone();
+        thread::spawn(move || {
+            autolock(secs, s0, ui_handle, a_r);
+        });
+    }
+
+    fn try_secret(&mut self, secret: Secret) -> bool {
+        self.shulker_db.use_credential(secret).unwrap()
+    }
+}
+
+
+
+pub fn autolock(seconds: i32, s0: Sender<String>, ui_handle: Weak<MainUi>, a_r: Receiver<String>) {
+    for x in 0..seconds {
+        if !a_r.is_empty() { return }
+        let ui_handle_clone = ui_handle.clone();
+        sixtyfps::invoke_from_event_loop(move || ui_handle_clone.unwrap().set_autolock_seconds(seconds - x));
+        thread::sleep(Duration::from_secs(1));
+    }
+    s0.send("LOCK".to_string()).unwrap();
 }

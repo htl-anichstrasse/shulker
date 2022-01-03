@@ -2499,6 +2499,7 @@ version = "0.1.0"
 dependencies = [
  "argon2",
  "config",
+ "crossbeam-channel",
  "ipipe",
  "lazy_static",
  "rand_core 0.6.3",
