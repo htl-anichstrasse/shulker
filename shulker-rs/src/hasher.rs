@@ -16,7 +16,6 @@ impl<'a> Hasher<'a> {
             .p_cost(p_cost).unwrap().clone()
             .params().unwrap();
 
-        println!("{:#?}", p_cost);
         Hasher {
             argon2: Argon2::new(argon2::Algorithm::Argon2id,
                 argon2::Version::V0x13,

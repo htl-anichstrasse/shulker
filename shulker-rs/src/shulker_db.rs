@@ -87,7 +87,6 @@ impl<'a> ShulkerDB<'a> {
             Secret::Password(password) => {
                 for c in &mut credentials.data {
                     if let Secret::Password(secret) = c.secret.clone() {
-                        println!("{:#?}", password);
                         if self.hasher.verify(password.as_bytes(), &secret) && c.check_if_useable() {
                             c.reduce_uses();
                             self.rustbreak.put_data(credentials, true)?;
