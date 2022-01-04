@@ -1,3 +1,4 @@
+import 'package:doorlock_app/screens/ConnectScreen.dart';
 import 'package:doorlock_app/screens/HomeScreen.dart';
 import 'package:doorlock_app/views/PinManager.dart';
 import 'package:flutter/material.dart';
@@ -19,6 +20,7 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/': (context) => HomeScreen(),
+        "/pairDevice": (context) => ConnectScreen(),
       },
     );
   }

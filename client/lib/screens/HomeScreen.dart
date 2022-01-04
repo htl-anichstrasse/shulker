@@ -1,5 +1,6 @@
 import 'package:doorlock_app/views/CreatePin.dart';
 import 'package:doorlock_app/views/PinManager.dart';
+import 'package:doorlock_app/views/Settings.dart';
 import 'package:doorlock_app/widgets/Sidenav.dart';
 import 'package:flutter/material.dart';
 
@@ -15,7 +16,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   int selectedSidenavIndex = 0;
 
-  final List<String> titles = ["Shulker", "Pinverwaltung"];
+  final List<String> titles = ["Shulker", "Pinverwaltung", "Einstellungen"];
   String title = "Shulker";
 
   changeLockStatus() {
@@ -92,6 +93,9 @@ class _HomeScreenState extends State<HomeScreen> {
               if (selectedSidenavIndex == 1) {
                 Scaffold.of(context).build(context);
                 return PinManager();
+              }
+              if (selectedSidenavIndex == 2) {
+                return SettingsView();
               }
 
               return Text("Invalid Sidenav selected index");

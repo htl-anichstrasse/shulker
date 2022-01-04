@@ -12,36 +12,59 @@ class Sidenav extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Drawer(
-      child: ListView(children: [
-        Padding(
-          padding: const EdgeInsets.all(16),
-          child: Text(
-            "Shulker",
-            style: TextStyle(
-              fontSize: 21,
-              color: Theme.of(context).primaryColor,
-            ),
+      child: Column(
+        children: [
+          Expanded(
+            child: ListView(children: [
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Text(
+                  "Shulker",
+                  style: TextStyle(
+                    fontSize: 21,
+                    color: Theme.of(context).primaryColor,
+                  ),
+                ),
+              ),
+              Divider(
+                color: Colors.grey.shade400,
+              ),
+              _NavigationItem(
+                selected: selectedIndex == 0,
+                onPressed: () { onIndexChanged(0); },
+                icon: Icons.lock,
+                text: "Schloss",
+              ),
+              _NavigationItem(
+                selected: selectedIndex ==1,
+                onPressed: () { onIndexChanged(1); },
+                icon: Icons.insert_link,
+                text: "Pin verwaltung"
+              ),
+            ]),
           ),
-        ),
-        Divider(
-          color: Colors.grey.shade400,
-        ),
-        _NavigationItem(
-          selected: selectedIndex == 0,
-          onPressed: () { onIndexChanged(0); },
-          icon: Icons.lock,
-          text: "Schloss",
-        ),
-        Divider(
-          color: Colors.grey.shade400,
-        ),
-        _NavigationItem(
-          selected: selectedIndex ==1,
-          onPressed: () { onIndexChanged(1); },
-          icon: Icons.insert_link,
-          text: "Pin verwaltung"
-        ),
-      ]),
+          Container(
+            child: Align(
+              alignment: FractionalOffset.bottomCenter,
+              child: Container(
+                child: Column(
+                  children: [
+                    Divider(
+                      color: Colors.grey.shade400,
+                    ),
+                    _NavigationItem(
+                      selected: selectedIndex == 2,
+                      onPressed: () { onIndexChanged(2); },
+                      icon: Icons.settings,
+                      text: "Einstellungen",
+                    ),
+                  ],
+                ),
+              ),
+            )
+          )
+        ],
+      ),
     );
   }
 }
