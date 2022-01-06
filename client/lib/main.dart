@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/': (context) => HomeScreen(),
-        "/pairDevice": (context) => ConnectScreen(),
+        "/pairDevice": (context) => ConnectWizard(),
       },
     );
   }

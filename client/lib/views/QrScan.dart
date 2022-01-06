@@ -9,6 +9,8 @@ class QRScanPage extends StatefulWidget {
   _QRScanPageState createState() => _QRScanPageState();
 }
 
+bool closed = false;
+
 class _QRScanPageState extends State<QRScanPage> {
   final qrKey = GlobalKey(debugLabel: 'QR');
   Barcode barcode;
@@ -53,9 +55,13 @@ class _QRScanPageState extends State<QRScanPage> {
 
     controller.scannedDataStream.listen((barcode) {
       if (barcode.code.isNotEmpty) {
+        if (!closed){
+          closed = true;
           controller.stopCamera();
           widget.onScanned(barcode.code);
           Navigator.pop(context);
+        }
+
       }
     });
   }

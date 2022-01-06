@@ -8,5 +8,6 @@ void displaySnackBar(context, color, text) {
         children: [
           Text(text),
         ],
-      )));
+      ),
+  ));
 }

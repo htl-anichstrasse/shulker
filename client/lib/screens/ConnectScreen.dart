@@ -1,14 +1,15 @@
 import 'package:doorlock_app/util/RegexHelper.dart';
 import 'package:doorlock_app/util/SnackBarHelper.dart';
+import 'package:doorlock_app/util/StorageHelper.dart';
 import 'package:doorlock_app/views/QrScan.dart';
 import 'package:flutter/material.dart';
 
-class ConnectScreen extends StatefulWidget {
+class ConnectWizard extends StatefulWidget {
   @override
-  _ConnectScreenState createState() => _ConnectScreenState();
+  _ConnectWizardState createState() => _ConnectWizardState();
 }
 
-class _ConnectScreenState extends State<ConnectScreen> {
+class _ConnectWizardState extends State<ConnectWizard> {
   final networkFormKey = GlobalKey<FormState>();
   int screenId = 0;
   String _ip;
@@ -128,9 +129,19 @@ class _ConnectScreenState extends State<ConnectScreen> {
                             if (!networkFormKey.currentState.validate()) {
                               return;
                             }
+                            saveIp(_ip);
+                            savePort(_port);
+                            var x = getPort();
                             displaySnackBar(context, Colors.green, "Erfolgreich verbunden");
+
+                            Navigator.pushNamedAndRemoveUntil(context, "/", (route) => false);
                           },
-                          child: Text("Verbinden"))
+                          child: Text("Verbinden")),
+                      ElevatedButton(
+                          onPressed: () {
+                            deleteData();
+                          },
+                          child: Text("Lokale Daten löschen"))
                     ],
                   ),
                 )
