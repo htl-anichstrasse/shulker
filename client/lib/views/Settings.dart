@@ -14,18 +14,40 @@ class _SettingsViewState extends State<SettingsView> {
   Widget build(BuildContext context) {
     return Padding(
         padding: EdgeInsets.all(12.0),
-        child: ListView(
+        child: Column(
           children: [
-            ListTile(
-              leading: Icon(Icons.phonelink_ring),
-              title: Text("Türschloss neu verbinden"),
-              trailing: SizedBox(
-                  child: Icon(Icons.arrow_forward_ios_outlined,
-                  size: 15,)),
-              onTap: () {
-                Navigator.pushNamed(context, "/pairDevice");
-              },
+            Expanded(
+              child: ListView(
+                children: [
+                  ListTile(
+                    leading: Icon(Icons.phonelink_ring),
+                    title: Text("Türschloss neu verbinden"),
+                    trailing: SizedBox(
+                        child: Icon(
+                      Icons.arrow_forward_ios_outlined,
+                      size: 15,
+                    )),
+                    onTap: () {
+                      Navigator.pushNamed(context, "/pairDevice");
+                    },
+                  ),
+                ],
+              ),
             ),
+            Container(
+              child: ListTile(
+                leading: Icon(Icons.info),
+                title: Text(
+                  "Über die App",
+                ),
+                onTap: () {
+                  showAboutDialog(
+                    context: context,
+                    applicationVersion: "0.1",
+                  );
+                },
+              ),
+            )
           ],
         ));
   }
