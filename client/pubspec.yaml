@@ -1,5 +1,5 @@
 name: doorlock_app
-description: Client to control ones smart door lock
+description: App to control ones smart door lock
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `pub publish`. This is preferred for private packages.
@@ -22,6 +22,8 @@ environment:
 
 dependencies:
   http: ^0.13.4
+
+  qr_code_scanner: ^0.4.0
 
   flutter:
     sdk: flutter

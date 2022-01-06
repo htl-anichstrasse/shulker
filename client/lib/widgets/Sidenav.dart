@@ -1,3 +1,4 @@
+import 'package:doorlock_app/util/Themes.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -85,7 +86,7 @@ class _NavigationItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: selected ? Colors.lightBlue.shade200 : Colors.transparent,
+      color: selected ? PrimaryMaterialColor.shade300 : Colors.transparent,
       child: ListTile(
         leading: Icon(
           icon,

@@ -1,4 +1,5 @@
 import 'package:doorlock_app/models/Credential.dart';
+import 'package:doorlock_app/util/SnackBarHelper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:uuid/uuid.dart';
@@ -195,6 +196,8 @@ class _CreatePinState extends State<CreatePin> {
                           onPressed: () {
                             final isValid = formKey.currentState.validate();
                             if (isValid) {
+                              Navigator.pop(context);
+
                               Credential.creds.add(new Credential(
                                   uuid.v4(),
                                   DateTime.now(),
@@ -202,7 +205,9 @@ class _CreatePinState extends State<CreatePin> {
                                   int.tryParse(_uses),
                                   _pin1,
                                   _name));
-                              Navigator.pop(context);
+
+                              displaySnackBar(context, Colors.green,
+                                  "PIN erfolgreich hinzugefügt");
                             }
                           },
                           child: Text("Erstellen")))
