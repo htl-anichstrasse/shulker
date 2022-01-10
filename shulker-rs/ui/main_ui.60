@@ -41,6 +41,7 @@ export MainUi := Window {
                     Text {
                         text: "PIN";
                         font-size: 30px;
+                        color: white;
                         x: parent.width / 2 - self.width / 2;
                         y: parent.height / 2 - self.height / 2;
                     }
@@ -61,6 +62,7 @@ export MainUi := Window {
                     Text {
                         text: "PW";
                         font-size: 30px;
+                        color: white;
                         x: parent.width / 2 - self.width / 2;
                         y: parent.height / 2 - self.height / 2;
                     }
@@ -81,6 +83,7 @@ export MainUi := Window {
                     Text {
                         text: "QR";
                         font-size: 30px;
+                        color: white;
                         x: parent.width / 2 - self.width / 2;
                         y: parent.height / 2 - self.height / 2;
                     }
@@ -98,6 +101,7 @@ export MainUi := Window {
                     Text {
                         text: "QR";
                         font-size: 30px;
+                        color: white;
                         x: parent.width / 2 - self.width / 2;
                         y: parent.height / 2 - self.height / 2;
                     }
@@ -125,6 +129,7 @@ export MainUi := Window {
                               root.pin_buffer_length == 5 ? "*****" :
                               root.pin_buffer_length == 6 ? "******" :
                               root.pin_buffer_length == 7 ? "*******" : "*******" ;
+                        color: white;
                         font-size: 100px;
                     }
                 }
@@ -160,6 +165,7 @@ export MainUi := Window {
                             Text {
                                 text: "2";
                                 font-size: 90px;
+                                color: white;
                                 x: 22px;
                                 y: -15px;
                             }
@@ -177,6 +183,7 @@ export MainUi := Window {
                             Text {
                                 text: "3";
                                 font-size: 90px;
+                                color: white;
                                 x: 22px;
                                 y: -15px;
                             }
@@ -194,6 +201,7 @@ export MainUi := Window {
                             Text {
                                 text: "0";
                                 font-size: 90px;
+                                color: white;
                                 x: 22px;
                                 y: -15px;
                             }
@@ -213,6 +221,7 @@ export MainUi := Window {
                             Text {
                                 text: "4";
                                 font-size: 90px;
+                                color: white;
                                 x: 22px;
                                 y: -15px;
                             }
@@ -230,6 +239,7 @@ export MainUi := Window {
                             Text {
                                 text: "5";
                                 font-size: 90px;
+                                color: white;
                                 x: 22px;
                                 y: -15px;
                             }
@@ -247,6 +257,7 @@ export MainUi := Window {
                             Text {
                                 text: "6";
                                 font-size: 90px;
+                                color: white;
                                 x: 22px;
                                 y: -15px;
                             }
@@ -264,6 +275,7 @@ export MainUi := Window {
                             Text {
                                 text: "C";
                                 font-size: 90px;
+                                color: white;
                                 x: 15px;
                                 y: -15px;
                             }
@@ -283,6 +295,7 @@ export MainUi := Window {
                             Text {
                                 text: "7";
                                 font-size: 90px;
+                                color: white;
                                 x: 22px;
                                 y: -15px;
                             }
@@ -300,6 +313,7 @@ export MainUi := Window {
                             Text {
                                 text: "8";
                                 font-size: 90px;
+                                color: white;
                                 x: 22px;
                                 y: -15px;
                             }
@@ -317,6 +331,7 @@ export MainUi := Window {
                             Text {
                                 text: "9";
                                 font-size: 90px;
+                                color: white;
                                 x: 22px;
                                 y: -15px;
                             }
@@ -334,6 +349,7 @@ export MainUi := Window {
                             Text {
                                 text: "E";
                                 font-size: 90px;
+                                color: white;
                                 x: 15px;
                                 y: -15px;
                             }
@@ -367,6 +383,7 @@ export MainUi := Window {
                             Text {
                                 text: "0";
                                 font-size: 70px;
+                                color: white;
                                 y: -13px;
                                 x: 16px;
                             }
@@ -384,6 +401,7 @@ export MainUi := Window {
                             Text {
                                 text: "1";
                                 font-size: 70px;
+                                color: white;
                                 y: -13px;
                                 x: 16px;
                             }
@@ -401,6 +419,7 @@ export MainUi := Window {
                             Text {
                                 text: "2";
                                 font-size: 70px;
+                                color: white;
                                 y: -13px;
                                 x: 16px;
                             }
@@ -418,6 +437,7 @@ export MainUi := Window {
                             Text {
                                 text: "3";
                                 font-size: 70px;
+                                color: white;
                                 y: -13px;
                                 x: 16px;
                             }
@@ -435,6 +455,7 @@ export MainUi := Window {
                             Text {
                                 text: "4";
                                 font-size: 70px;
+                                color: white;
                                 y: -13px;
                                 x: 16px;
                             }
@@ -452,6 +473,7 @@ export MainUi := Window {
                             Text {
                                 text: "5";
                                 font-size: 70px;
+                                color: white;
                                 y: -13px;
                                 x: 16px;
                             }
@@ -469,6 +491,7 @@ export MainUi := Window {
                             Text {
                                 text: "6";
                                 font-size: 70px;
+                                color: white;
                                 y: -13px;
                                 x: 16px;
                             }
@@ -488,6 +511,7 @@ export MainUi := Window {
                             Text {
                                 text: "7";
                                 font-size: 70px;
+                                color: white;
                                 y: -13px;
                                 x: 16px;
                             }
@@ -505,6 +529,7 @@ export MainUi := Window {
                             Text {
                                 text: "8";
                                 font-size: 70px;
+                                color: white;
                                 y: -13px;
                                 x: 16px;
                             }
@@ -522,6 +547,7 @@ export MainUi := Window {
                             Text {
                                 text: "9";
                                 font-size: 70px;
+                                color: white;
                                 y: -13px;
                                 x: 16px;
                             }
@@ -539,6 +565,7 @@ export MainUi := Window {
                             Text {
                                 text: "A";
                                 font-size: 70px;
+                                color: white;
                                 y: -13px;
                                 x: 16px;
                             }
@@ -556,6 +583,7 @@ export MainUi := Window {
                             Text {
                                 text: "B";
                                 font-size: 70px;
+                                color: white;
                                 y: -13px;
                                 x: 16px;
                             }
@@ -573,6 +601,7 @@ export MainUi := Window {
                             Text {
                                 text: "C";
                                 font-size: 70px;
+                                color: white;
                                 y: -13px;
                                 x: 16px;
                             }
@@ -590,6 +619,7 @@ export MainUi := Window {
                             Text {
                                 text: "D";
                                 font-size: 70px;
+                                color: white;
                                 y: -13px;
                                 x: 16px;
                             }
@@ -609,6 +639,7 @@ export MainUi := Window {
                             Text {
                                 text: "E";
                                 font-size: 70px;
+                                color: white;
                                 y: -13px;
                                 x: 16px;
                             }
@@ -626,6 +657,7 @@ export MainUi := Window {
                             Text {
                                 text: "F";
                                 font-size: 70px;
+                                color: white;
                                 y: -13px;
                                 x: 16px;
                             }
@@ -643,6 +675,7 @@ export MainUi := Window {
                             Text {
                                 text: "G";
                                 font-size: 70px;
+                                color: white;
                                 y: -13px;
                                 x: 16px;
                             }
@@ -660,6 +693,7 @@ export MainUi := Window {
                             Text {
                                 text: "H";
                                 font-size: 70px;
+                                color: white;
                                 y: -13px;
                                 x: 16px;
                             }
@@ -677,6 +711,7 @@ export MainUi := Window {
                             Text {
                                 text: "I";
                                 font-size: 70px;
+                                color: white;
                                 y: -13px;
                                 x: 16px;
                             }
@@ -694,6 +729,7 @@ export MainUi := Window {
                             Text {
                                 text: "J";
                                 font-size: 70px;
+                                color: white;
                                 y: -13px;
                                 x: 16px;
                             }
@@ -711,6 +747,7 @@ export MainUi := Window {
                             Text {
                                 text: "K";
                                 font-size: 70px;
+                                color: white;
                                 y: -13px;
                                 x: 16px;
                             }
@@ -730,6 +767,7 @@ export MainUi := Window {
                             Text {
                                 text: "L";
                                 font-size: 70px;
+                                color: white;
                                 y: -13px;
                                 x: 16px;
                             }
@@ -747,6 +785,7 @@ export MainUi := Window {
                             Text {
                                 text: "M";
                                 font-size: 70px;
+                                color: white;
                                 y: -13px;
                                 x: 16px;
                             }
@@ -764,6 +803,7 @@ export MainUi := Window {
                             Text {
                                 text: "N";
                                 font-size: 70px;
+                                color: white;
                                 y: -13px;
                                 x: 16px;
                             }
@@ -781,6 +821,7 @@ export MainUi := Window {
                             Text {
                                 text: "O";
                                 font-size: 70px;
+                                color: white;
                                 y: -13px;
                                 x: 16px;
                             }
@@ -798,6 +839,7 @@ export MainUi := Window {
                             Text {
                                 text: "P";
                                 font-size: 70px;
+                                color: white;
                                 y: -13px;
                                 x: 16px;
                             }
@@ -815,6 +857,7 @@ export MainUi := Window {
                             Text {
                                 text: "Q";
                                 font-size: 70px;
+                                color: white;
                                 y: -13px;
                                 x: 16px;
                             }
@@ -832,6 +875,7 @@ export MainUi := Window {
                             Text {
                                 text: "R";
                                 font-size: 70px;
+                                color: white;
                                 y: -13px;
                                 x: 16px;
                             }
@@ -851,6 +895,7 @@ export MainUi := Window {
                             Text {
                                 text: "S";
                                 font-size: 70px;
+                                color: white;
                                 y: -13px;
                                 x: 16px;
                             }
@@ -868,6 +913,7 @@ export MainUi := Window {
                             Text {
                                 text: "T";
                                 font-size: 70px;
+                                color: white;
                                 y: -13px;
                                 x: 16px;
                             }
@@ -885,6 +931,7 @@ export MainUi := Window {
                             Text {
                                 text: "U";
                                 font-size: 70px;
+                                color: white;
                                 y: -13px;
                                 x: 16px;
                             }
@@ -902,6 +949,7 @@ export MainUi := Window {
                             Text {
                                 text: "V";
                                 font-size: 70px;
+                                color: white;
                                 y: -13px;
                                 x: 16px;
                             }
@@ -919,6 +967,7 @@ export MainUi := Window {
                             Text {
                                 text: "W";
                                 font-size: 70px;
+                                color: white;
                                 y: -13px;
                                 x: 3px;
                             }
@@ -936,6 +985,7 @@ export MainUi := Window {
                             Text {
                                 text: "X";
                                 font-size: 70px;
+                                color: white;
                                 y: -13px;
                                 x: 16px;
                             }
@@ -953,6 +1003,7 @@ export MainUi := Window {
                             Text {
                                 text: "Y";
                                 font-size: 70px;
+                                color: white;
                                 y: -13px;
                                 x: 16px;
                             }
@@ -972,6 +1023,7 @@ export MainUi := Window {
                             Text {
                                 text: "Z";
                                 font-size: 70px;
+                                color: white;
                                 y: -13px;
                                 x: 16px;
                             }
@@ -1009,6 +1061,7 @@ export MainUi := Window {
                             Text {
                                 text: "CE";
                                 font-size: 70px;
+                                color: white;
                                 y: -13px;
                                 x: 16px;
                             }
@@ -1027,6 +1080,7 @@ export MainUi := Window {
                             Text {
                                 text: "E";
                                 font-size: 70px;
+                                color: white;
                                 y: -13px;
                                 x: 16px;
                             }
@@ -1051,6 +1105,7 @@ export MainUi := Window {
                     Text {
                         text: root.password_buffer_length;
                         font-size: 100px;
+                        color: white;
                         y: -24px;
                         x: 23px;
                     }
