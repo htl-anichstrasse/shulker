@@ -23,7 +23,7 @@ export MainUi := Window {
         nav-bar := Rectangle {
             height: 100%;
             width: 100px;
-            background: red;
+            background: black;
             VerticalLayout {
                 height: 100%;
                 width: 100px;
@@ -31,29 +31,61 @@ export MainUi := Window {
                 Rectangle {
                     height: 100px;
                     width: 100px;
-                    background: yellow;
-                    TouchArea {
+                    background: black;
+                    border-color: pin.has-hover ? white : root.active-page == 0 ? white : transparent;
+                    border-width: 3px;
+                    border-radius: 50px;
+                    pin := TouchArea {
                         clicked => { root.active-page = 0; }
+                    }
+                    Text {
+                        text: "PIN";
+                        font-size: 30px;
+                        color: white;
+                        x: parent.width / 2 - self.width / 2;
+                        y: parent.height / 2 - self.height / 2;
                     }
                 }
     
                 Rectangle {
                     height: 100px;
                     width: 100px;
-                    background: green;
+                    background: black;
+                    border-color: pw.has-hover ? white : root.active-page == 1 ? white : transparent;
+                    border-width: 3px;
+                    border-radius: 50px;
 
-                    TouchArea {
+                    pw := TouchArea {
                         clicked => { root.active-page = 1; }
+                    }
+
+                    Text {
+                        text: "PW";
+                        font-size: 30px;
+                        color: white;
+                        x: parent.width / 2 - self.width / 2;
+                        y: parent.height / 2 - self.height / 2;
                     }
                 }
 
                 Rectangle {
                     height: 100px;
                     width: 100px;
-                    background: orange;
+                    background: black;
+                    border-color: qr.has-hover ? white : root.active-page == 2 ? white : transparent;
+                    border-width: 3px;
+                    border-radius: 50px;
 
-                    TouchArea {
+                    qr := TouchArea {
                         clicked => { root.active-page = 2; }
+                    }
+                    
+                    Text {
+                        text: "QR";
+                        font-size: 30px;
+                        color: white;
+                        x: parent.width / 2 - self.width / 2;
+                        y: parent.height / 2 - self.height / 2;
                     }
                 }
 
@@ -65,13 +97,21 @@ export MainUi := Window {
                     TouchArea {
                         clicked => { root.active-page = 3; }
                     }
+
+                    Text {
+                        text: "QR";
+                        font-size: 30px;
+                        color: white;
+                        x: parent.width / 2 - self.width / 2;
+                        y: parent.height / 2 - self.height / 2;
+                    }
                 }
              }
         }
 
         main-view := Rectangle {
             height: 100%;
-
+            background: black;
             Rectangle {
                 y: active-page == 0 ? 0px : height;
                 height: 100%;
@@ -80,7 +120,6 @@ export MainUi := Window {
                     width: 400px;
                     x: (parent.width - width) / 2;
                     y: 34px;
-                    background: red;
                     Text {
                         text: root.pin_buffer_length == 0 ? "" : 
                               root.pin_buffer_length == 1 ? "*" :
@@ -89,7 +128,8 @@ export MainUi := Window {
                               root.pin_buffer_length == 4 ? "****" :
                               root.pin_buffer_length == 5 ? "*****" :
                               root.pin_buffer_length == 6 ? "******" :
-                              root.pin_buffer_length == 7 ? "*******" : root.pin_buffer_length;
+                              root.pin_buffer_length == 7 ? "*******" : "*******" ;
+                        color: white;
                         font-size: 100px;
                     }
                 }
@@ -101,14 +141,17 @@ export MainUi := Window {
                     spacing: 5px;
                     Row {
                         Rectangle {
-                            background: grey;
+                            border-width: 3px;
+                            border-color: white;
+                            background: pin1.has-hover ? grey : transparent;
                             Text {
                                 text: "1";
                                 font-size: 90px;
+                                color: white;
                                 x: 22px;
                                 y: -15px;
                             }
-                            TouchArea {
+                            pin1 := TouchArea {
                                 clicked => {
                                     root.pin-buffer = root.pin-buffer + "1";
                                     root.pin-buffer-length += 1;
@@ -116,14 +159,17 @@ export MainUi := Window {
                             }
                         }
                         Rectangle {
-                            background: grey;
+                            border-width: 3px;
+                            border-color: white;
+                            background: pin2.has-hover ? grey : transparent;
                             Text {
                                 text: "2";
                                 font-size: 90px;
+                                color: white;
                                 x: 22px;
                                 y: -15px;
                             }
-                            TouchArea {
+                            pin2 := TouchArea {
                                 clicked => {
                                     root.pin-buffer = root.pin-buffer + "2";
                                     root.pin-buffer-length += 1;
@@ -131,14 +177,17 @@ export MainUi := Window {
                             }
                         }
                         Rectangle {
-                            background: grey;
+                            border-width: 3px;
+                            border-color: white;
+                            background: pin3.has-hover ? grey : transparent;
                             Text {
                                 text: "3";
                                 font-size: 90px;
+                                color: white;
                                 x: 22px;
                                 y: -15px;
                             }
-                            TouchArea {
+                            pin3 := TouchArea {
                                 clicked => {
                                     root.pin-buffer = root.pin-buffer + "3";
                                     root.pin-buffer-length += 1;
@@ -146,14 +195,17 @@ export MainUi := Window {
                             }
                         }
                         Rectangle {
-                            background: grey;
+                            border-width: 3px;
+                            border-color: white;
+                            background: pin0.has-hover ? grey : transparent;
                             Text {
                                 text: "0";
                                 font-size: 90px;
+                                color: white;
                                 x: 22px;
                                 y: -15px;
                             }
-                            TouchArea {
+                            pin0 := TouchArea {
                                 clicked => {
                                     root.pin-buffer = root.pin-buffer + "0";
                                     root.pin-buffer-length += 1;
@@ -163,14 +215,17 @@ export MainUi := Window {
                     }
                     Row {
                         Rectangle {
-                            background: grey;
+                            border-width: 3px;
+                            border-color: white;
+                            background: pin4.has-hover ? grey : transparent;
                             Text {
                                 text: "4";
                                 font-size: 90px;
+                                color: white;
                                 x: 22px;
                                 y: -15px;
                             }
-                            TouchArea {
+                            pin4 := TouchArea {
                                 clicked => {
                                     root.pin-buffer = root.pin-buffer + "4";
                                     root.pin-buffer-length += 1;
@@ -178,14 +233,17 @@ export MainUi := Window {
                             }
                         }
                         Rectangle {
-                            background: grey;
+                            border-width: 3px;
+                            border-color: white;
+                            background: pin5.has-hover ? grey : transparent;
                             Text {
                                 text: "5";
                                 font-size: 90px;
+                                color: white;
                                 x: 22px;
                                 y: -15px;
                             }
-                            TouchArea {
+                            pin5 := TouchArea {
                                 clicked => {
                                     root.pin-buffer = root.pin-buffer + "5";
                                     root.pin-buffer-length += 1;
@@ -193,14 +251,17 @@ export MainUi := Window {
                             }
                         }
                         Rectangle {
-                            background: grey;
+                            border-width: 3px;
+                            border-color: white;
+                            background: pin6.has-hover ? grey : transparent;
                             Text {
                                 text: "6";
                                 font-size: 90px;
+                                color: white;
                                 x: 22px;
                                 y: -15px;
                             }
-                            TouchArea {
+                            pin6 := TouchArea {
                                 clicked => {
                                     root.pin-buffer = root.pin-buffer + "6";
                                     root.pin-buffer-length += 1;
@@ -208,14 +269,17 @@ export MainUi := Window {
                             }
                         }
                         Rectangle {
-                            background: grey;
+                            border-width: 3px;
+                            border-color: white;
+                            background: pinC.has-hover ? grey : transparent;
                             Text {
                                 text: "C";
                                 font-size: 90px;
+                                color: white;
                                 x: 15px;
                                 y: -15px;
                             }
-                            TouchArea {
+                            pinC := TouchArea {
                                 clicked => {
                                     root.pin-buffer = "";
                                     root.pin-buffer-length = 0;
@@ -225,14 +289,17 @@ export MainUi := Window {
                     }
                     Row {
                         Rectangle {
-                            background: grey;
+                            border-width: 3px;
+                            border-color: white;
+                            background: pin7.has-hover ? grey : transparent;
                             Text {
                                 text: "7";
                                 font-size: 90px;
+                                color: white;
                                 x: 22px;
                                 y: -15px;
                             }
-                            TouchArea {
+                            pin7 := TouchArea {
                                 clicked => {
                                     root.pin-buffer = root.pin-buffer + "7";
                                     root.pin-buffer-length += 1;
@@ -240,14 +307,17 @@ export MainUi := Window {
                             }
                         }
                         Rectangle {
-                            background: grey;
+                            border-width: 3px;
+                            border-color: white;
+                            background: pin8.has-hover ? grey : transparent;
                             Text {
                                 text: "8";
                                 font-size: 90px;
+                                color: white;
                                 x: 22px;
                                 y: -15px;
                             }
-                            TouchArea {
+                            pin8 := TouchArea {
                                 clicked => {
                                     root.pin-buffer = root.pin-buffer + "8";
                                     root.pin-buffer-length += 1;
@@ -255,14 +325,17 @@ export MainUi := Window {
                             }
                         }
                         Rectangle {
-                            background: grey;
+                            border-width: 3px;
+                            border-color: white;
+                            background: pin9.has-hover ? grey : transparent;
                             Text {
                                 text: "9";
                                 font-size: 90px;
+                                color: white;
                                 x: 22px;
                                 y: -15px;
                             }
-                            TouchArea {
+                            pin9 := TouchArea {
                                 clicked => {
                                     root.pin-buffer = root.pin-buffer + "9";
                                     root.pin-buffer-length += 1;
@@ -270,14 +343,17 @@ export MainUi := Window {
                             }
                         }
                         Rectangle {
-                            background: grey;
+                            border-width: 3px;
+                            border-color: white;
+                            background: pinE.has-hover ? grey : transparent;
                             Text {
                                 text: "E";
                                 font-size: 90px;
+                                color: white;
                                 x: 15px;
                                 y: -15px;
                             }
-                            TouchArea {
+                            pinE := TouchArea {
                                 clicked => {
                                     pin_try(root.pin-buffer);
                                     root.pin-buffer = "";
@@ -293,7 +369,7 @@ export MainUi := Window {
                 y: active-page == 1 ? 0px : height;
                 height: 100%;
                 width: 100%;
-                background: green;
+                background: black;
                 GridLayout {
                     height: 100%;
                     width: 80%;
@@ -301,14 +377,17 @@ export MainUi := Window {
                     padding: 10px;
                     Row {
                         Rectangle {
-                            background: yellow;
+                            background: pw0.has-hover ? grey : transparent;
+                            border-color: white;
+                            border-width: 3px;
                             Text {
                                 text: "0";
                                 font-size: 70px;
+                                color: white;
                                 y: -13px;
                                 x: 16px;
                             }
-                            TouchArea {
+                            pw0 := TouchArea {
                                 clicked => {
                                     root.password_buffer += "0";
                                     root.password_buffer_length += 1;
@@ -316,14 +395,17 @@ export MainUi := Window {
                             }
                         }
                         Rectangle {
-                            background: yellow;
+                            background: pw1.has-hover ? grey : transparent;
+                            border-color: white;
+                            border-width: 3px;
                             Text {
                                 text: "1";
                                 font-size: 70px;
+                                color: white;
                                 y: -13px;
                                 x: 16px;
                             }
-                            TouchArea {
+                            pw1 := TouchArea {
                                 clicked => {
                                     root.password_buffer += "1";
                                     root.password_buffer_length += 1;
@@ -331,14 +413,17 @@ export MainUi := Window {
                             }
                         }
                         Rectangle {
-                            background: yellow;
+                            background: pw2.has-hover ? grey : transparent;
+                            border-color: white;
+                            border-width: 3px;
                             Text {
                                 text: "2";
                                 font-size: 70px;
+                                color: white;
                                 y: -13px;
                                 x: 16px;
                             }
-                            TouchArea {
+                            pw2 := TouchArea {
                                 clicked => {
                                     root.password_buffer += "2";
                                     root.password_buffer_length += 1;
@@ -346,14 +431,17 @@ export MainUi := Window {
                             }
                         }
                         Rectangle {
-                            background: yellow;
+                            background: pw3.has-hover ? grey : transparent;
+                            border-color: white;
+                            border-width: 3px;
                             Text {
                                 text: "3";
                                 font-size: 70px;
+                                color: white;
                                 y: -13px;
                                 x: 16px;
                             }
-                            TouchArea {
+                            pw3 := TouchArea {
                                 clicked => {
                                     root.password_buffer += "3";
                                     root.password_buffer_length += 1;
@@ -361,14 +449,17 @@ export MainUi := Window {
                             }
                         }
                         Rectangle {
-                            background: yellow;
+                            background: pw4.has-hover ? grey : transparent;
+                            border-color: white;
+                            border-width: 3px;
                             Text {
                                 text: "4";
                                 font-size: 70px;
+                                color: white;
                                 y: -13px;
                                 x: 16px;
                             }
-                            TouchArea {
+                            pw4 := TouchArea {
                                 clicked => {
                                     root.password_buffer += "4";
                                     root.password_buffer_length += 1;
@@ -376,14 +467,17 @@ export MainUi := Window {
                             }
                         }
                         Rectangle {
-                            background: yellow;
+                            background: pw5.has-hover ? grey : transparent;
+                            border-color: white;
+                            border-width: 3px;
                             Text {
                                 text: "5";
                                 font-size: 70px;
+                                color: white;
                                 y: -13px;
                                 x: 16px;
                             }
-                            TouchArea {
+                            pw5 := TouchArea {
                                 clicked => {
                                     root.password_buffer += "5";
                                     root.password_buffer_length += 1;
@@ -391,14 +485,17 @@ export MainUi := Window {
                             }
                         }
                         Rectangle {
-                            background: yellow;
+                            background: pw6.has-hover ? grey : transparent;
+                            border-color: white;
+                            border-width: 3px;
                             Text {
                                 text: "6";
                                 font-size: 70px;
+                                color: white;
                                 y: -13px;
                                 x: 16px;
                             }
-                            TouchArea {
+                            pw6 := TouchArea {
                                 clicked => {
                                     root.password_buffer += "6";
                                     root.password_buffer_length += 1;
@@ -408,14 +505,17 @@ export MainUi := Window {
                     }
                     Row {
                         Rectangle {
-                            background: yellow;
+                            background: pw7.has-hover ? grey : transparent;
+                            border-color: white;
+                            border-width: 3px;
                             Text {
                                 text: "7";
                                 font-size: 70px;
+                                color: white;
                                 y: -13px;
                                 x: 16px;
                             }
-                            TouchArea {
+                            pw7 := TouchArea {
                                 clicked => {
                                     root.password_buffer += "7";
                                     root.password_buffer_length += 1;
@@ -423,14 +523,17 @@ export MainUi := Window {
                             }
                         }
                         Rectangle {
-                            background: yellow;
+                            background: pw8.has-hover ? grey : transparent;
+                            border-color: white;
+                            border-width: 3px;
                             Text {
                                 text: "8";
                                 font-size: 70px;
+                                color: white;
                                 y: -13px;
                                 x: 16px;
                             }
-                            TouchArea {
+                            pw8 := TouchArea {
                                 clicked => {
                                     root.password_buffer += "8";
                                     root.password_buffer_length += 1;
@@ -438,14 +541,17 @@ export MainUi := Window {
                             }
                         }
                         Rectangle {
-                            background: yellow;
+                            background: pw9.has-hover ? grey : transparent;
+                            border-color: white;
+                            border-width: 3px;
                             Text {
                                 text: "9";
                                 font-size: 70px;
+                                color: white;
                                 y: -13px;
                                 x: 16px;
                             }
-                            TouchArea {
+                            pw9 := TouchArea {
                                 clicked => {
                                     root.password_buffer += "9";
                                     root.password_buffer_length += 1;
@@ -453,14 +559,17 @@ export MainUi := Window {
                             }
                         }
                         Rectangle {
-                            background: yellow;
+                            background: pwA.has-hover ? grey : transparent;
+                            border-color: white;
+                            border-width: 3px;
                             Text {
                                 text: "A";
                                 font-size: 70px;
+                                color: white;
                                 y: -13px;
                                 x: 16px;
                             }
-                            TouchArea {
+                            pwA := TouchArea {
                                 clicked => {
                                     root.password_buffer += "A";
                                     root.password_buffer_length += 1;
@@ -468,14 +577,17 @@ export MainUi := Window {
                             }
                         }
                         Rectangle {
-                            background: yellow;
+                            background: pwB.has-hover ? grey : transparent;
+                            border-color: white;
+                            border-width: 3px;
                             Text {
                                 text: "B";
                                 font-size: 70px;
+                                color: white;
                                 y: -13px;
                                 x: 16px;
                             }
-                            TouchArea {
+                            pwB := TouchArea {
                                 clicked => {
                                     root.password_buffer += "B";
                                     root.password_buffer_length += 1;
@@ -483,14 +595,17 @@ export MainUi := Window {
                             }
                         }
                         Rectangle {
-                            background: yellow;
+                            background: pwC.has-hover ? grey : transparent;
+                            border-color: white;
+                            border-width: 3px;
                             Text {
                                 text: "C";
                                 font-size: 70px;
+                                color: white;
                                 y: -13px;
                                 x: 16px;
                             }
-                            TouchArea {
+                            pwC := TouchArea {
                                 clicked => {
                                     root.password_buffer += "C";
                                     root.password_buffer_length += 1;
@@ -498,14 +613,17 @@ export MainUi := Window {
                             }
                         }
                         Rectangle {
-                            background: yellow;
+                            background: pwD.has-hover ? grey : transparent;
+                            border-color: white;
+                            border-width: 3px;
                             Text {
                                 text: "D";
                                 font-size: 70px;
+                                color: white;
                                 y: -13px;
                                 x: 16px;
                             }
-                            TouchArea {
+                            pwD := TouchArea {
                                 clicked => {
                                     root.password_buffer += "D";
                                     root.password_buffer_length += 1;
@@ -515,14 +633,17 @@ export MainUi := Window {
                     }
                     Row {
                         Rectangle {
-                            background: yellow;
+                            background: pwE.has-hover ? grey : transparent;
+                            border-color: white;
+                            border-width: 3px;
                             Text {
                                 text: "E";
                                 font-size: 70px;
+                                color: white;
                                 y: -13px;
                                 x: 16px;
                             }
-                            TouchArea {
+                            pwE := TouchArea {
                                 clicked => {
                                     root.password_buffer += "E";
                                     root.password_buffer_length += 1;
@@ -530,14 +651,17 @@ export MainUi := Window {
                             }
                         }
                         Rectangle {
-                            background: yellow;
+                            background: pwF.has-hover ? grey : transparent;
+                            border-color: white;
+                            border-width: 3px;
                             Text {
                                 text: "F";
                                 font-size: 70px;
+                                color: white;
                                 y: -13px;
                                 x: 16px;
                             }
-                            TouchArea {
+                            pwF := TouchArea {
                                 clicked => {
                                     root.password_buffer += "F";
                                     root.password_buffer_length += 1;
@@ -545,14 +669,17 @@ export MainUi := Window {
                             }
                         }
                         Rectangle {
-                            background: yellow;
+                            background: pwG.has-hover ? grey : transparent;
+                            border-color: white;
+                            border-width: 3px;
                             Text {
                                 text: "G";
                                 font-size: 70px;
+                                color: white;
                                 y: -13px;
                                 x: 16px;
                             }
-                            TouchArea {
+                            pwG := TouchArea {
                                 clicked => {
                                     root.password_buffer += "G";
                                     root.password_buffer_length += 1;
@@ -560,14 +687,17 @@ export MainUi := Window {
                             }
                         }
                         Rectangle {
-                            background: yellow;
+                            background: pwH.has-hover ? grey : transparent;
+                            border-color: white;
+                            border-width: 3px;
                             Text {
                                 text: "H";
                                 font-size: 70px;
+                                color: white;
                                 y: -13px;
                                 x: 16px;
                             }
-                            TouchArea {
+                            pwH := TouchArea {
                                 clicked => {
                                     root.password_buffer += "H";
                                     root.password_buffer_length += 1;
@@ -575,14 +705,17 @@ export MainUi := Window {
                             }
                         }
                         Rectangle {
-                            background: yellow;
+                            background: pwI.has-hover ? grey : transparent;
+                            border-color: white;
+                            border-width: 3px;
                             Text {
                                 text: "I";
                                 font-size: 70px;
+                                color: white;
                                 y: -13px;
                                 x: 16px;
                             }
-                            TouchArea {
+                            pwI := TouchArea {
                                 clicked => {
                                     root.password_buffer += "I";
                                     root.password_buffer_length += 1;
@@ -590,14 +723,17 @@ export MainUi := Window {
                             }
                         }
                         Rectangle {
-                            background: yellow;
+                            background: pwJ.has-hover ? grey : transparent;
+                            border-color: white;
+                            border-width: 3px;
                             Text {
                                 text: "J";
                                 font-size: 70px;
+                                color: white;
                                 y: -13px;
                                 x: 16px;
                             }
-                            TouchArea {
+                            pwJ := TouchArea {
                                 clicked => {
                                     root.password_buffer += "J";
                                     root.password_buffer_length += 1;
@@ -605,14 +741,17 @@ export MainUi := Window {
                             }
                         }
                         Rectangle {
-                            background: yellow;
+                            background: pwK.has-hover ? grey : transparent;
+                            border-color: white;
+                            border-width: 3px;
                             Text {
                                 text: "K";
                                 font-size: 70px;
+                                color: white;
                                 y: -13px;
                                 x: 16px;
                             }
-                            TouchArea {
+                            pwK := TouchArea {
                                 clicked => {
                                     root.password_buffer += "K";
                                     root.password_buffer_length += 1;
@@ -622,14 +761,17 @@ export MainUi := Window {
                     }
                     Row {
                         Rectangle {
-                            background: yellow;
+                            background: pwL.has-hover ? grey : transparent;
+                            border-color: white;
+                            border-width: 3px;
                             Text {
                                 text: "L";
                                 font-size: 70px;
+                                color: white;
                                 y: -13px;
                                 x: 16px;
                             }
-                            TouchArea {
+                            pwL := TouchArea {
                                 clicked => {
                                     root.password_buffer += "L";
                                     root.password_buffer_length += 1;
@@ -637,14 +779,17 @@ export MainUi := Window {
                             }
                         }
                         Rectangle {
-                            background: yellow;
+                            background: pwM.has-hover ? grey : transparent;
+                            border-color: white;
+                            border-width: 3px;
                             Text {
                                 text: "M";
                                 font-size: 70px;
+                                color: white;
                                 y: -13px;
                                 x: 16px;
                             }
-                            TouchArea {
+                            pwM := TouchArea {
                                 clicked => {
                                     root.password_buffer += "M";
                                     root.password_buffer_length += 1;
@@ -652,14 +797,17 @@ export MainUi := Window {
                             }
                         }
                         Rectangle {
-                            background: yellow;
+                            background: pwN.has-hover ? grey : transparent;
+                            border-color: white;
+                            border-width: 3px;
                             Text {
                                 text: "N";
                                 font-size: 70px;
+                                color: white;
                                 y: -13px;
                                 x: 16px;
                             }
-                            TouchArea {
+                            pwN := TouchArea {
                                 clicked => {
                                     root.password_buffer += "N";
                                     root.password_buffer_length += 1;
@@ -667,14 +815,17 @@ export MainUi := Window {
                             }
                         }
                         Rectangle {
-                            background: yellow;
+                            background: pwO.has-hover ? grey : transparent;
+                            border-color: white;
+                            border-width: 3px;
                             Text {
                                 text: "O";
                                 font-size: 70px;
+                                color: white;
                                 y: -13px;
                                 x: 16px;
                             }
-                            TouchArea {
+                            pwO := TouchArea {
                                 clicked => {
                                     root.password_buffer += "O";
                                     root.password_buffer_length += 1;
@@ -682,14 +833,17 @@ export MainUi := Window {
                             }
                         }
                         Rectangle {
-                            background: yellow;
+                            background: pwP.has-hover ? grey : transparent;
+                            border-color: white;
+                            border-width: 3px;
                             Text {
                                 text: "P";
                                 font-size: 70px;
+                                color: white;
                                 y: -13px;
                                 x: 16px;
                             }
-                            TouchArea {
+                            pwP := TouchArea {
                                 clicked => {
                                     root.password_buffer += "P";
                                     root.password_buffer_length += 1;
@@ -697,14 +851,17 @@ export MainUi := Window {
                             }
                         }
                         Rectangle {
-                            background: yellow;
+                            background: pwQ.has-hover ? grey : transparent;
+                            border-color: white;
+                            border-width: 3px;
                             Text {
                                 text: "Q";
                                 font-size: 70px;
+                                color: white;
                                 y: -13px;
                                 x: 16px;
                             }
-                            TouchArea {
+                            pwQ := TouchArea {
                                 clicked => {
                                     root.password_buffer += "Q";
                                     root.password_buffer_length += 1;
@@ -712,14 +869,17 @@ export MainUi := Window {
                             }
                         }
                         Rectangle {
-                            background: yellow;
+                            background: pwR.has-hover ? grey : transparent;
+                            border-color: white;
+                            border-width: 3px;
                             Text {
                                 text: "R";
                                 font-size: 70px;
+                                color: white;
                                 y: -13px;
                                 x: 16px;
                             }
-                            TouchArea {
+                            pwR := TouchArea {
                                 clicked => {
                                     root.password_buffer += "R";
                                     root.password_buffer_length += 1;
@@ -729,14 +889,17 @@ export MainUi := Window {
                     }
                     Row {
                         Rectangle {
-                            background: yellow;
+                            background: pwS.has-hover ? grey : transparent;
+                            border-color: white;
+                            border-width: 3px;
                             Text {
                                 text: "S";
                                 font-size: 70px;
+                                color: white;
                                 y: -13px;
                                 x: 16px;
                             }
-                            TouchArea {
+                            pwS := TouchArea {
                                 clicked => {
                                     root.password_buffer += "S";
                                     root.password_buffer_length += 1;
@@ -744,14 +907,17 @@ export MainUi := Window {
                             }
                         }
                         Rectangle {
-                            background: yellow;
+                            background: pwT.has-hover ? grey : transparent;
+                            border-color: white;
+                            border-width: 3px;
                             Text {
                                 text: "T";
                                 font-size: 70px;
+                                color: white;
                                 y: -13px;
                                 x: 16px;
                             }
-                            TouchArea {
+                            pwT := TouchArea {
                                 clicked => {
                                     root.password_buffer += "T";
                                     root.password_buffer_length += 1;
@@ -759,14 +925,17 @@ export MainUi := Window {
                             }
                         }
                         Rectangle {
-                            background: yellow;
+                            background: pwU.has-hover ? grey : transparent;
+                            border-color: white;
+                            border-width: 3px;
                             Text {
                                 text: "U";
                                 font-size: 70px;
+                                color: white;
                                 y: -13px;
                                 x: 16px;
                             }
-                            TouchArea {
+                            pwU := TouchArea {
                                 clicked => {
                                     root.password_buffer += "U";
                                     root.password_buffer_length += 1;
@@ -774,14 +943,17 @@ export MainUi := Window {
                             }
                         }
                         Rectangle {
-                            background: yellow;
+                            background: pwV.has-hover ? grey : transparent;
+                            border-color: white;
+                            border-width: 3px;
                             Text {
                                 text: "V";
                                 font-size: 70px;
+                                color: white;
                                 y: -13px;
                                 x: 16px;
                             }
-                            TouchArea {
+                            pwV := TouchArea {
                                 clicked => {
                                     root.password_buffer += "V";
                                     root.password_buffer_length += 1;
@@ -789,14 +961,17 @@ export MainUi := Window {
                             }
                         }
                         Rectangle {
-                            background: yellow;
+                            background: pwW.has-hover ? grey : transparent;
+                            border-color: white;
+                            border-width: 3px;
                             Text {
                                 text: "W";
                                 font-size: 70px;
+                                color: white;
                                 y: -13px;
                                 x: 3px;
                             }
-                            TouchArea {
+                            pwW := TouchArea {
                                 clicked => {
                                     root.password_buffer += "W";
                                     root.password_buffer_length += 1;
@@ -804,14 +979,17 @@ export MainUi := Window {
                             }
                         }
                         Rectangle {
-                            background: yellow;
+                            background: pwX.has-hover ? grey : transparent;
+                            border-color: white;
+                            border-width: 3px;
                             Text {
                                 text: "X";
                                 font-size: 70px;
+                                color: white;
                                 y: -13px;
                                 x: 16px;
                             }
-                            TouchArea {
+                            pwX := TouchArea {
                                 clicked => {
                                     root.password_buffer += "X";
                                     root.password_buffer_length += 1;
@@ -819,14 +997,17 @@ export MainUi := Window {
                             }
                         }
                         Rectangle {
-                            background: yellow;
+                            background: pwY.has-hover ? grey : transparent;
+                            border-color: white;
+                            border-width: 3px;
                             Text {
                                 text: "Y";
                                 font-size: 70px;
+                                color: white;
                                 y: -13px;
                                 x: 16px;
                             }
-                            TouchArea {
+                            pwY := TouchArea {
                                 clicked => {
                                     root.password_buffer += "Y";
                                     root.password_buffer_length += 1;
@@ -836,14 +1017,17 @@ export MainUi := Window {
                     }
                     Row {
                         Rectangle {
-                            background: yellow;
+                            background: pwZ.has-hover ? grey : transparent;
+                            border-color: white;
+                            border-width: 3px;
                             Text {
                                 text: "Z";
                                 font-size: 70px;
+                                color: white;
                                 y: -13px;
                                 x: 16px;
                             }
-                            TouchArea {
+                            pwZ := TouchArea {
                                 clicked => {
                                     root.password_buffer += "Z";
                                     root.password_buffer_length += 1;
@@ -851,51 +1035,38 @@ export MainUi := Window {
                             }
                         }
                         Rectangle {
-                            background: yellow;
-                            Text {
-                                text: "";
-                                font-size: 70px;
-                                y: -13px;
-                                x: 16px;
-                            }
+                            background: transparent;
+                            border-color: white;
+                            border-width: 3px;
                         }
                         Rectangle {
-                            background: yellow;
-                            Text {
-                                text: "1";
-                                font-size: 70px;
-                                y: -13px;
-                                x: 16px;
-                            }
+                            background: transparent;
+                            border-color: white;
+                            border-width: 3px;
                         }
                         Rectangle {
-                            background: yellow;
-                            Text {
-                                text: "1";
-                                font-size: 70px;
-                                y: -13px;
-                                x: 16px;
-                            }
+                            background: transparent;
+                            border-color: white;
+                            border-width: 3px;
                         }
                         Rectangle {
-                            background: yellow;
-                            Text {
-                                text: "1";
-                                font-size: 70px;
-                                y: -13px;
-                                x: 16px;
-                            }
+                            background: transparent;
+                            border-color: white;
+                            border-width: 3px;
                         }
                         Rectangle {
-                            background: yellow;
+                            background: pwCE.has-hover ? grey : transparent;
+                            border-color: white;
+                            border-width: 3px;
                             Text {
                                 text: "CE";
                                 font-size: 70px;
+                                color: white;
                                 y: -13px;
                                 x: 16px;
                             }
 
-                            TouchArea {
+                            pwCE := TouchArea {
                                 clicked => {
                                     root.password_buffer = "";
                                     root.password_buffer_length = 0;
@@ -903,15 +1074,18 @@ export MainUi := Window {
                             }
                         }
                         Rectangle {
-                            background: yellow;
+                            background: pwENTER.has-hover ? grey : transparent;
+                            border-color: white;
+                            border-width: 3px;
                             Text {
                                 text: "E";
                                 font-size: 70px;
+                                color: white;
                                 y: -13px;
                                 x: 16px;
                             }
 
-                            TouchArea {
+                            pwENTER := TouchArea {
                                 clicked => {
                                     password_try(root.password_buffer);
                                     root.password_buffer = "";
@@ -924,13 +1098,14 @@ export MainUi := Window {
                 Rectangle { 
                     width: 15%;
                     height: 20%;
-                    x: parent.width - parent.width * 0.18;
+                    x: parent.width - parent.width * 0.2;
                     y: parent.height * 0.5 - self.height * 0.5;
-                    background: yellow;
+                    background: transparent;
 
                     Text {
                         text: root.password_buffer_length;
                         font-size: 100px;
+                        color: white;
                         y: -24px;
                         x: 23px;
                     }
@@ -941,7 +1116,7 @@ export MainUi := Window {
                 y: active-page == 2 ? 0px : height;
                 height: 100%;
                 width: 100%;
-                background: blue;
+                background: black;
 
                 Image {
                     source: @image-url("images/qr-code.png");

@@ -1,8 +1,11 @@
-use std::{sync::{Arc, Mutex}, thread, time::Duration, path::PathBuf};
+use std::{sync::{Arc, Mutex}, thread, time::Duration, path::PathBuf, io::Read, str::FromStr};
 
+use byteorder::{BigEndian, ReadBytesExt};
 use crossbeam_channel::{Sender, Receiver};
+use ipipe::Pipe;
 use shulker_rs::{shulker_db::ShulkerDB, credential_types::Secret};
 use sixtyfps::Weak;
+use std::io::Write;
 
 sixtyfps::include_modules!();
 fn main() {
@@ -25,6 +28,31 @@ fn main() {
             }
             if response.is_none() { continue }
             let response = response.unwrap();
+        }
+    });
+
+    let mut _pipe = Pipe::open(&PathBuf::from_str("shulker_pipe").unwrap(), ipipe::OnCleanup::Delete).unwrap();
+    let mut pipe = _pipe.clone();
+    // Named Pipe Communication Thread
+    let ui_handle_clone = ui_handle.clone();
+    let shulker_core_lock2 = shulker_core_lock.clone();
+    let thread_handler_2 = thread::spawn(move || {
+        loop {
+            let msg = decode_msg(&mut pipe);
+            println!("{:#?}", msg);
+        }
+    });
+
+    let mut pipe = _pipe.clone();
+    // Test Thread
+    thread::spawn(move || {
+        
+        loop {
+            thread::sleep(Duration::from_secs(1));
+            let msg = "TEST MESSAGE";
+            let len = msg.bytes().len() as u32 - 3 as u32;
+            pipe.write(&len.to_be_bytes()).unwrap();
+            write!(&mut pipe, "{}", msg).unwrap();
         }
     });
 
@@ -51,6 +79,7 @@ fn main() {
 
     ui.run();
     thread_handler_1.join().unwrap();
+    thread_handler_2.join().unwrap();
 }
 
 
@@ -166,4 +195,11 @@ pub fn autolock(seconds: i32, s0: Sender<String>, ui_handle: Weak<MainUi>, a_r: 
         thread::sleep(Duration::from_secs(1));
     }
     s0.send("LOCK".to_string()).unwrap();
+}
+
+pub fn decode_msg(pipe: &mut Pipe) -> String {
+    let msg_len = pipe.read_u32::<BigEndian>().unwrap();
+    let mut msg_buf = vec![0u8; msg_len as usize];
+    pipe.read_exact(&mut msg_buf).unwrap();
+    String::from_utf8(msg_buf).unwrap()
 }
