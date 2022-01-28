@@ -4,7 +4,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Pipes;
 using System.Linq;
+using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace DoorlockServerAPI.Models
@@ -23,30 +25,62 @@ namespace DoorlockServerAPI.Models
             return instance;
         }
 
-        public void ServerThread()
-        {
-            NamedPipeServerStream pipeServer = new NamedPipeServerStream(
-                "shulker_box", PipeDirection.InOut);
+        private static String path = "/tmp/toASP.sock";
+        Queue<string> sendQueue = new Queue<string>();
 
-            Console.WriteLine("Waiting for connection");
-            pipeServer.WaitForConnection();
-            try
+        public void addToSendQueue(String toAdd)
+        {
+            Console.WriteLine("Adding something to sendqueue");
+            sendQueue.Enqueue(toAdd);
+        }
+
+        public void SenderThread()
+        {
+            using (var socket = new Socket(AddressFamily.Unix, SocketType.Stream, ProtocolType.Unspecified))
             {
-                using (BinaryWriter _bw = new BinaryWriter(pipeServer))
-                using (BinaryReader _br = new BinaryReader(pipeServer))
+                socket.Connect(new UnixDomainSocketEndPoint(path));
+
+                while (true)
                 {
-                    while (true)
+                    Thread.Sleep(100);
+
+                    if (sendQueue.Count != 0)
                     {
-                        Console.WriteLine("Reading named pipe");
-                        var len = _br.ReadUInt32();
-                        var resp = new string(_br.ReadChars((int)len));
-                        Console.WriteLine(resp);
+                        var toSend = sendQueue.Dequeue();
+                        var dataToSend = System.Text.Encoding.UTF8.GetBytes(toSend);
+                        Console.WriteLine("Sending " + toSend);
+                        socket.Send(dataToSend);
                     }
                 }
-            } catch
-            {
-                throw;
             }
+        }
+
+
+
+        public void ListenerThread()
+        {
+            if (System.IO.File.Exists(path))
+                System.IO.File.Delete(path);
+
+            Socket socket = new Socket(AddressFamily.Unix, SocketType.Stream, ProtocolType.Unspecified);
+            socket.Bind(new UnixDomainSocketEndPoint(path));
+
+            socket.Listen(64);
+            Console.WriteLine("Server started, waiting for client to connect...");
+
+            var s = socket.Accept();
+            Console.WriteLine("Client connected");
+            
+            while (true)
+            {
+                var buffer = new byte[1024];
+                var numberOfBytesReceived = s.Receive(buffer, 0, buffer.Length, SocketFlags.None);
+                // https://docs.microsoft.com/en-us/dotnet/framework/network-programming/using-an-asynchronous-client-socket
+                var message = System.Text.Encoding.UTF8.GetString(buffer, 0, numberOfBytesReceived);
+
+                Console.WriteLine($"Received: {message}");
+            }
+            
         }
     }
 }

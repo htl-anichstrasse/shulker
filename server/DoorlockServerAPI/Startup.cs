@@ -18,11 +18,25 @@ namespace DoorlockServerAPI
 {
     public class Startup
     {
+        Thread listenerThread;
+        Thread senderThread;
         public Startup(IConfiguration configuration)
         {
+            // Set cancel token to stop threads later on https://docs.microsoft.com/en-us/dotnet/standard/threading/cancellation-in-managed-threads
+            //CancellationTokenSource cts = new CancellationTokenSource();
+            //CancellationToken ct = cts.Token;
+
             // Start IPC Threads
-            Thread pipeReader = new Thread(IPCManager.getInstance().ServerThread);
-            pipeReader.Start();
+            Console.WriteLine("Starting listener Thread...");
+            listenerThread = new Thread(IPCManager.getInstance().ListenerThread);
+            listenerThread.Start();
+
+            Thread.Sleep(100);
+            
+            Console.WriteLine("Starting sender Thread...");
+            senderThread = new Thread(IPCManager.getInstance().SenderThread);
+            senderThread.Start();
+            IPCManager.getInstance().addToSendQueue("This is a silly test");
 
             Configuration = configuration;
         }
@@ -41,7 +55,7 @@ namespace DoorlockServerAPI
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IHostApplicationLifetime applicationLifetime)
         {
             if (env.IsDevelopment())
             {
@@ -60,6 +74,13 @@ namespace DoorlockServerAPI
             {
                 endpoints.MapControllers();
             });
+
+            applicationLifetime.ApplicationStopping.Register(OnShutdown);
+        }
+
+        public void OnShutdown()
+        {
+            Console.WriteLine("ON SHUTDOWN");
         }
     }
 }
