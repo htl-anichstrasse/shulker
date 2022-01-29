@@ -20,22 +20,26 @@ namespace DoorlockServerAPI
     {
         Thread listenerThread;
         Thread senderThread;
+
+        CancellationTokenSource cts;
+        CancellationToken ct;
         public Startup(IConfiguration configuration)
         {
             // Set cancel token to stop threads later on https://docs.microsoft.com/en-us/dotnet/standard/threading/cancellation-in-managed-threads
-            //CancellationTokenSource cts = new CancellationTokenSource();
-            //CancellationToken ct = cts.Token;
+            cts = new CancellationTokenSource();
+            ct = cts.Token;
+            
 
             // Start IPC Threads
             Console.WriteLine("Starting listener Thread...");
             listenerThread = new Thread(IPCManager.getInstance().ListenerThread);
-            listenerThread.Start();
+            listenerThread.Start(ct);
 
             Thread.Sleep(100);
             
             Console.WriteLine("Starting sender Thread...");
             senderThread = new Thread(IPCManager.getInstance().SenderThread);
-            senderThread.Start();
+            senderThread.Start(ct);
             IPCManager.getInstance().addToSendQueue("This is a silly test");
 
             Configuration = configuration;
@@ -81,6 +85,7 @@ namespace DoorlockServerAPI
         public void OnShutdown()
         {
             Console.WriteLine("ON SHUTDOWN");
+            cts.Cancel();
         }
     }
 }

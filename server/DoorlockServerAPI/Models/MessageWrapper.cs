@@ -8,12 +8,14 @@ namespace DoorlockServerAPI.Models
 {
     public class MessageWrapper
     {
+        private static int timeoutMillis = 500;
+
         public static async Task<string> getAllPinsWithTimeoutASYNC()
         {
             try
             {
                 CancellationTokenSource cancelSource = new CancellationTokenSource();
-                cancelSource.CancelAfter(TimeSpan.FromMilliseconds(500));
+                cancelSource.CancelAfter(TimeSpan.FromMilliseconds(timeoutMillis));
                 CancellationToken cancelToken = cancelSource.Token;
 
                 return await MessageManager.getAllPins(cancelToken);

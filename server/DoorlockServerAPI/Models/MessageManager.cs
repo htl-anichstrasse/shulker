@@ -6,6 +6,12 @@ using System.Threading.Tasks;
 
 namespace DoorlockServerAPI.Models
 {
+    /// <summary>
+    /// The Message Manager Class always recieves the most recent message recieved from the socket
+    /// 
+    /// The functions to get Data from the server always queue something to send from the socket,
+    /// then they loop and wait for a response by looking at the most recent recieved message
+    /// </summary>
     public class MessageManager
     {
         private static String lastRecieved;

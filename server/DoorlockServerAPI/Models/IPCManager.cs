@@ -34,8 +34,10 @@ namespace DoorlockServerAPI.Models
             sendQueue.Enqueue(toAdd);
         }
 
-        public void SenderThread()
+        public void SenderThread(Object data)
         {
+            CancellationToken cancellationToken = (CancellationToken)data;
+
             using (var socket = new Socket(AddressFamily.Unix, SocketType.Stream, ProtocolType.Unspecified))
             {
                 socket.Connect(new UnixDomainSocketEndPoint(path));
@@ -43,6 +45,11 @@ namespace DoorlockServerAPI.Models
                 while (true)
                 {
                     Thread.Sleep(100);
+                    if (cancellationToken.IsCancellationRequested)
+                    {
+                        socket.Close();
+                        return;
+                    }
 
                     if (sendQueue.Count != 0)
                     {
@@ -56,9 +63,10 @@ namespace DoorlockServerAPI.Models
         }
 
 
-
-        public void ListenerThread()
+        public void ListenerThread(Object data)
         {
+            CancellationToken cancellationToken = (CancellationToken)data;
+
             // Func<string, bool> recieved = (Func<string, bool>)data;
             if (System.IO.File.Exists(path))
                 System.IO.File.Delete(path);
@@ -69,10 +77,16 @@ namespace DoorlockServerAPI.Models
             socket.Listen(64);
             Console.WriteLine("Server started, waiting for client to connect...");
 
+            cancellationToken.Register(() =>
+            {
+                socket.Close();
+                Console.WriteLine("Stopping Listener Thread");
+            });
+
             var s = socket.Accept();
             Console.WriteLine("Client connected");
             
-            while (true)
+            while (!cancellationToken.IsCancellationRequested)
             {
                 var buffer = new byte[1024];
                 var numberOfBytesReceived = s.Receive(buffer, 0, buffer.Length, SocketFlags.None);
