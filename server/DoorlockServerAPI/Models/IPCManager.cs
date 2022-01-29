@@ -59,6 +59,7 @@ namespace DoorlockServerAPI.Models
 
         public void ListenerThread()
         {
+            // Func<string, bool> recieved = (Func<string, bool>)data;
             if (System.IO.File.Exists(path))
                 System.IO.File.Delete(path);
 
@@ -75,10 +76,10 @@ namespace DoorlockServerAPI.Models
             {
                 var buffer = new byte[1024];
                 var numberOfBytesReceived = s.Receive(buffer, 0, buffer.Length, SocketFlags.None);
-                // https://docs.microsoft.com/en-us/dotnet/framework/network-programming/using-an-asynchronous-client-socket
                 var message = System.Text.Encoding.UTF8.GetString(buffer, 0, numberOfBytesReceived);
 
-                Console.WriteLine($"Received: {message}");
+                //Console.WriteLine($"Received: {message}");
+                MessageManager.newMessage(message);
             }
             
         }
