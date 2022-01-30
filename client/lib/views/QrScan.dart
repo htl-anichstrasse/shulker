@@ -24,6 +24,12 @@ class _QRScanPageState extends State<QRScanPage> {
   }
 
   @override
+  void initState() {
+    closed = false;
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -54,6 +60,7 @@ class _QRScanPageState extends State<QRScanPage> {
     });
 
     controller.scannedDataStream.listen((barcode) {
+      print(closed);
       if (barcode.code.isNotEmpty) {
         if (!closed){
           closed = true;

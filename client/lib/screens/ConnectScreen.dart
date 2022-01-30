@@ -132,9 +132,8 @@ class _ConnectWizardState extends State<ConnectWizard> {
                             saveIp(_ip);
                             savePort(_port);
                             var x = getPort();
-                            displaySnackBar(context, Colors.green, "Erfolgreich verbunden");
 
-                            Navigator.pushNamedAndRemoveUntil(context, "/", (route) => false);
+                            Navigator.pushNamed(context, "/userAuth");
                           },
                           child: Text("Verbinden")),
                       ElevatedButton(

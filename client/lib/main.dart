@@ -1,3 +1,4 @@
+import 'package:doorlock_app/screens/AuthScreen.dart';
 import 'package:doorlock_app/screens/ConnectScreen.dart';
 import 'package:doorlock_app/screens/HomeScreen.dart';
 import 'package:doorlock_app/util/Themes.dart';
@@ -20,6 +21,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (context) => HomeScreen(),
         "/pairDevice": (context) => ConnectWizard(),
+        "/userAuth": (context) => AuthScreen(),
       },
     );
   }

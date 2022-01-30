@@ -1,5 +1,4 @@
 import 'package:doorlock_app/screens/ConnectScreen.dart';
-import 'package:doorlock_app/util/StorageHelper.dart';
 import 'package:doorlock_app/views/CreatePin.dart';
 import 'package:doorlock_app/views/PinManager.dart';
 import 'package:doorlock_app/views/Settings.dart';
