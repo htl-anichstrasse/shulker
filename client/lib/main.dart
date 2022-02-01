@@ -1,5 +1,6 @@
 import 'package:doorlock_app/screens/AuthScreen.dart';
-import 'package:doorlock_app/screens/ConnectScreen.dart';
+import 'package:doorlock_app/screens/ConnectDeviceScreen.dart';
+import 'package:doorlock_app/screens/ConnectVPN.dart';
 import 'package:doorlock_app/screens/HomeScreen.dart';
 import 'package:doorlock_app/util/Themes.dart';
 import 'package:doorlock_app/views/PinManager.dart';
@@ -22,6 +23,7 @@ class MyApp extends StatelessWidget {
         '/': (context) => HomeScreen(),
         "/pairDevice": (context) => ConnectWizard(),
         "/userAuth": (context) => AuthScreen(),
+        "/connectVPN": (context) => ConnectVPN(),
       },
     );
   }

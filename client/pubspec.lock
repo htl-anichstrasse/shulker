@@ -29,6 +29,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.3.1"
+  check_vpn_connection:
+    dependency: "direct main"
+    description:
+      name: check_vpn_connection
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.2"
   clock:
     dependency: transitive
     description:
@@ -128,6 +135,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.7.0"
+  open_settings:
+    dependency: "direct main"
+    description:
+      name: open_settings
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.2"
   path:
     dependency: transitive
     description:

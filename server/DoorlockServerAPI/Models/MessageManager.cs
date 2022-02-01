@@ -26,7 +26,8 @@ namespace DoorlockServerAPI.Models
         public static Task<String> getAllPins(CancellationToken cancellationToken)
         {
             // send request for pins
-            IPCManager.getInstance().addToSendQueue("get all pins");
+            IPCManager.getInstance().addToSendQueue("ezpzy\n");
+            //IPCManager.getInstance().addToSendQueue("get all pins\n");
 
             // wait for response
             while (true)
@@ -37,6 +38,7 @@ namespace DoorlockServerAPI.Models
                 {
                     throw new TimeoutException();
                 }
+
                 if (lastRecieved.Contains("pins"))
                 {
                     return Task.FromResult(lastRecieved);

@@ -31,6 +31,18 @@ class _SettingsViewState extends State<SettingsView> {
                       Navigator.pushNamed(context, "/pairDevice");
                     },
                   ),
+                  ListTile(
+                    leading: Icon(Icons.vpn_lock),
+                    title: Text("VPN neu verbinden"),
+                    trailing: SizedBox(
+                        child: Icon(
+                      Icons.arrow_forward_ios_outlined,
+                      size: 15,
+                    )),
+                    onTap: () {
+                      Navigator.pushNamed(context, "/connectVPN");
+                    },
+                  ),
                 ],
               ),
             ),

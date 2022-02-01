@@ -1,9 +1,11 @@
-import 'package:doorlock_app/screens/ConnectScreen.dart';
+import 'package:doorlock_app/screens/ConnectDeviceScreen.dart';
+import 'package:doorlock_app/screens/ConnectVPN.dart';
 import 'package:doorlock_app/views/CreatePin.dart';
 import 'package:doorlock_app/views/PinManager.dart';
 import 'package:doorlock_app/views/Settings.dart';
 import 'package:doorlock_app/widgets/Sidenav.dart';
 import 'package:flutter/material.dart';
+import 'package:check_vpn_connection/check_vpn_connection.dart';
 
 import 'package:doorlock_app/services/ServerCommunication.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -16,6 +18,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   bool _locked = false;
   bool _lockPaired;
+  bool _vpnConnected;
 
   int selectedSidenavIndex = 0;
 
@@ -40,9 +43,19 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  checkVPNConnection() async {
+    if (await CheckVpnConnection.isVpnActive()) {
+      _vpnConnected = true;
+    } else {
+      _vpnConnected = false;
+    }
+
+  }
+
   @override
   void initState() {
     super.initState();
+    checkVPNConnection();
     loadIpPort();
   }
 
@@ -50,12 +63,19 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return new Builder(
       builder: (context) {
+        if (_vpnConnected == null) {
+          return SizedBox.shrink();
+        }
+        if (!_vpnConnected) {
+          return ConnectVPN();
+        }
         if (_lockPaired == null){
           return SizedBox.shrink();
         }
         if (_lockPaired) {
           return ConnectWizard();
         }
+
         return Scaffold(
             appBar: AppBar(
               title: Text("$title"),

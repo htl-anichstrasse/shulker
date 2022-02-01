@@ -25,7 +25,7 @@ namespace DoorlockServerAPI.Models
             return instance;
         }
 
-        private static String path = "/tmp/toASP.sock";
+        
         Queue<string> sendQueue = new Queue<string>();
 
         public void addToSendQueue(String toAdd)
@@ -34,45 +34,57 @@ namespace DoorlockServerAPI.Models
             sendQueue.Enqueue(toAdd);
         }
 
+        private Socket startServer()
+        {
+            var socket = new Socket(AddressFamily.Unix, SocketType.Stream, ProtocolType.Unspecified);
+
+            Console.WriteLine("Connecting to Server");
+            socket.Connect(new UnixDomainSocketEndPoint("/tmp/toShulkerCore.sock"));
+            Console.WriteLine("Connected");
+            return socket;
+        }
+
+
         public void SenderThread(Object data)
         {
             CancellationToken cancellationToken = (CancellationToken)data;
 
-            using (var socket = new Socket(AddressFamily.Unix, SocketType.Stream, ProtocolType.Unspecified))
+            Socket socket;
+            socket = startServer();
+
+            while (true)
             {
-                socket.Connect(new UnixDomainSocketEndPoint(path));
-
-                while (true)
+                Thread.Sleep(50);
+                if (cancellationToken.IsCancellationRequested)
                 {
-                    Thread.Sleep(100);
-                    if (cancellationToken.IsCancellationRequested)
-                    {
-                        socket.Close();
-                        return;
-                    }
-
-                    if (sendQueue.Count != 0)
-                    {
-                        var toSend = sendQueue.Dequeue();
-                        var dataToSend = System.Text.Encoding.UTF8.GetBytes(toSend);
-                        Console.WriteLine("Sending " + toSend);
-                        socket.Send(dataToSend);
-                    }
+                    socket.Close();
+                    return;
                 }
+
+                if (sendQueue.Count != 0)
+                {
+                    var toSend = sendQueue.Dequeue();
+                    var dataToSend = System.Text.Encoding.UTF8.GetBytes(toSend);
+                    Console.WriteLine("Sending " + toSend);
+                    socket.Send(dataToSend);
+                    Console.WriteLine("sent!");
+                }
+                
             }
         }
 
 
+        private static String listenerPath = "/tmp/toShulkerServer.sock";
         public void ListenerThread(Object data)
         {
             CancellationToken cancellationToken = (CancellationToken)data;
 
             // Func<string, bool> recieved = (Func<string, bool>)data;
-            if (System.IO.File.Exists(path))
-                System.IO.File.Delete(path);
+            if (System.IO.File.Exists(listenerPath))
+                System.IO.File.Delete(listenerPath);
 
             Socket socket = new Socket(AddressFamily.Unix, SocketType.Stream, ProtocolType.Unspecified);
-            socket.Bind(new UnixDomainSocketEndPoint(path));
+            socket.Bind(new UnixDomainSocketEndPoint(listenerPath));
 
             socket.Listen(64);
             Console.WriteLine("Server started, waiting for client to connect...");

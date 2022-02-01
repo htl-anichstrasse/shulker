@@ -40,7 +40,7 @@ namespace DoorlockServerAPI
             Console.WriteLine("Starting sender Thread...");
             senderThread = new Thread(IPCManager.getInstance().SenderThread);
             senderThread.Start(ct);
-            IPCManager.getInstance().addToSendQueue("This is a silly test");
+            //IPCManager.getInstance().addToSendQueue("This is a silly test\n");
 
             Configuration = configuration;
         }
