@@ -1,10 +1,9 @@
 import 'package:doorlock_app/screens/AuthScreen.dart';
+import 'package:doorlock_app/screens/CheckConnectionScreen.dart';
 import 'package:doorlock_app/screens/ConnectDeviceScreen.dart';
 import 'package:doorlock_app/screens/ConnectVPN.dart';
 import 'package:doorlock_app/screens/HomeScreen.dart';
 import 'package:doorlock_app/util/Themes.dart';
-import 'package:doorlock_app/views/PinManager.dart';
-import 'package:doorlock_app/views/QrScan.dart';
 import 'package:flutter/material.dart';
 
 
@@ -20,10 +19,12 @@ class MyApp extends StatelessWidget {
       theme: myTheme,
       initialRoute: '/',
       routes: {
-        '/': (context) => HomeScreen(),
-        "/pairDevice": (context) => ConnectWizard(),
+        '/': (context) => CheckConnectionScreen(),
+        '/home': (context) => HomeScreen(),
+        "/pairDevice": (context) => ConnectDeviceWizard(),
         "/userAuth": (context) => AuthScreen(),
         "/connectVPN": (context) => ConnectVPN(),
+        "/connectDevice": (context) => ConnectDeviceWizard(),
       },
     );
   }

@@ -1,5 +1,4 @@
 import 'package:doorlock_app/screens/ConnectDeviceScreen.dart';
-import 'package:doorlock_app/screens/ConnectVPN.dart';
 import 'package:doorlock_app/views/CreatePin.dart';
 import 'package:doorlock_app/views/PinManager.dart';
 import 'package:doorlock_app/views/Settings.dart';
@@ -17,8 +16,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   bool _locked = false;
-  bool _lockPaired;
-  bool _vpnConnected;
+
 
   int selectedSidenavIndex = 0;
 
@@ -33,49 +31,16 @@ class _HomeScreenState extends State<HomeScreen> {
     changeDoorStateAsync(!_locked);
   }
 
-  loadIpPort() async {
-
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    bool toReturn = ((prefs.containsKey("ip") && prefs.containsKey("port")));
-
-    setState(() {
-      _lockPaired = !toReturn;
-    });
-  }
-
-  checkVPNConnection() async {
-    if (await CheckVpnConnection.isVpnActive()) {
-      _vpnConnected = true;
-    } else {
-      _vpnConnected = false;
-    }
-
-  }
 
   @override
   void initState() {
     super.initState();
-    checkVPNConnection();
-    loadIpPort();
   }
 
   @override
   Widget build(BuildContext context) {
     return new Builder(
       builder: (context) {
-        if (_vpnConnected == null) {
-          return SizedBox.shrink();
-        }
-        if (!_vpnConnected) {
-          return ConnectVPN();
-        }
-        if (_lockPaired == null){
-          return SizedBox.shrink();
-        }
-        if (_lockPaired) {
-          return ConnectWizard();
-        }
-
         return Scaffold(
             appBar: AppBar(
               title: Text("$title"),

@@ -28,8 +28,7 @@ deleteData() async {
   prefs.remove("port");
 }
 
-Future<bool> keysExist() async {
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  bool toReturn = prefs.containsKey("ip") && prefs.containsKey("port");
-  return toReturn;
+Future<bool> ipPortExist() async {
+  bool keysExist = (await getIp()) != null && (await getPort()) != null;
+  return keysExist;
 }
