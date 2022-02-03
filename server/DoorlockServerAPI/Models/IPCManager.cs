@@ -39,7 +39,7 @@ namespace DoorlockServerAPI.Models
             var socket = new Socket(AddressFamily.Unix, SocketType.Stream, ProtocolType.Unspecified);
 
             Console.WriteLine("Connecting to Server");
-            socket.Connect(new UnixDomainSocketEndPoint("/tmp/toShulkerCore.sock"));
+            socket.Connect(new UnixDomainSocketEndPoint("/tmp/toShulkerServer.sock"));
             Console.WriteLine("Connected");
             return socket;
         }
@@ -74,6 +74,7 @@ namespace DoorlockServerAPI.Models
         }
 
 
+
         private static String listenerPath = "/tmp/toShulkerServer.sock";
         public void ListenerThread(Object data)
         {
@@ -89,21 +90,37 @@ namespace DoorlockServerAPI.Models
             socket.Listen(64);
             Console.WriteLine("Server started, waiting for client to connect...");
 
-            cancellationToken.Register(() =>
-            {
-                socket.Close();
-                Console.WriteLine("Stopping Listener Thread");
-            });
-
             var s = socket.Accept();
             Console.WriteLine("Client connected");
-            
-            while (!cancellationToken.IsCancellationRequested)
-            {
-                var buffer = new byte[1024];
-                var numberOfBytesReceived = s.Receive(buffer, 0, buffer.Length, SocketFlags.None);
-                var message = System.Text.Encoding.UTF8.GetString(buffer, 0, numberOfBytesReceived);
 
+            while (true)
+            {
+
+                string dataRec = null;
+                byte[] bytes = null;
+
+                while (true)
+                {
+                    if (cancellationToken.IsCancellationRequested)
+                    {
+                        socket.Close();
+                        return;
+                    }
+
+                    Thread.Sleep(20);
+
+                    bytes = new byte[1024];
+                    int bytesRec = s.Receive(bytes);
+                    dataRec += Encoding.ASCII.GetString(bytes, 0, bytesRec);
+                    if (dataRec.IndexOf("\n") > -1)
+                    {
+                        break;
+                    }
+                }
+
+                //return buffer.ToArray();
+                byte[] msg = Encoding.ASCII.GetBytes(dataRec);
+                String message = Encoding.UTF8.GetString(msg, 0, msg.Length);
                 //Console.WriteLine($"Received: {message}");
                 MessageManager.newMessage(message);
             }

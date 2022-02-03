@@ -35,12 +35,14 @@ namespace DoorlockServerAPI
             listenerThread = new Thread(IPCManager.getInstance().ListenerThread);
             listenerThread.Start(ct);
 
-            Thread.Sleep(100);
+            Thread.Sleep(300);
             
             Console.WriteLine("Starting sender Thread...");
             senderThread = new Thread(IPCManager.getInstance().SenderThread);
             senderThread.Start(ct);
-            //IPCManager.getInstance().addToSendQueue("This is a silly test\n");
+            IPCManager.getInstance().addToSendQueue("This is a silly test\n");
+            IPCManager.getInstance().addToSendQueue("{\"fruit\": \"Apple\", \"size\": \"Large\", \"color\": \"Red\"}\n");
+            IPCManager.getInstance().addToSendQueue("servus\n");
 
             Configuration = configuration;
         }
