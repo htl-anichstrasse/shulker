@@ -25,7 +25,7 @@ namespace DoorlockServerAPI.Models
             return instance;
         }
 
-        
+
         Queue<string> sendQueue = new Queue<string>();
 
         public void addToSendQueue(String toAdd)
@@ -69,11 +69,9 @@ namespace DoorlockServerAPI.Models
                     socket.Send(dataToSend);
                     Console.WriteLine("sent!");
                 }
-                
+
             }
         }
-
-
 
         private static String listenerPath = "/tmp/toShulkerServer.sock";
         public void ListenerThread(Object data)
@@ -93,12 +91,13 @@ namespace DoorlockServerAPI.Models
             var s = socket.Accept();
             Console.WriteLine("Client connected");
 
+            // loop forever
             while (true)
             {
-
                 string dataRec = null;
                 byte[] bytes = null;
 
+                // loop for every message
                 while (true)
                 {
                     if (cancellationToken.IsCancellationRequested)
@@ -107,24 +106,41 @@ namespace DoorlockServerAPI.Models
                         return;
                     }
 
-                    Thread.Sleep(20);
+                    // sleep with cancellation Token check
+                    cancellationToken.WaitHandle.WaitOne(TimeSpan.FromMilliseconds(30));
 
-                    bytes = new byte[1024];
-                    int bytesRec = s.Receive(bytes);
-                    dataRec += Encoding.ASCII.GetString(bytes, 0, bytesRec);
-                    if (dataRec.IndexOf("\n") > -1)
+                    try
                     {
-                        break;
+                        bytes = new byte[1024];
+                        int bytesRec = s.Receive(bytes);
+                        dataRec += Encoding.ASCII.GetString(bytes, 0, bytesRec);
+                        if (dataRec.IndexOf("\n") > -1)
+                        {
+                            break;
+                        }
+
+                        byte[] msg = Encoding.ASCII.GetBytes(dataRec);
+                        String message = Encoding.UTF8.GetString(msg, 0, msg.Length);
+                        Console.WriteLine($"Received: {message}");
+                        MessageManager.newMessage(message);
                     }
+                    catch (TimeoutException e)
+                    {
+                        Console.WriteLine("Timeout Exception when recieving bytes from socket");
+                        Console.WriteLine(e.StackTrace);
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine("Other Exception when recieiving bytes from socket");
+                        Console.WriteLine(e.StackTrace);
+                    }
+                    break;
+
                 }
 
-                //return buffer.ToArray();
-                byte[] msg = Encoding.ASCII.GetBytes(dataRec);
-                String message = Encoding.UTF8.GetString(msg, 0, msg.Length);
-                //Console.WriteLine($"Received: {message}");
-                MessageManager.newMessage(message);
+
             }
-            
+
         }
     }
 }

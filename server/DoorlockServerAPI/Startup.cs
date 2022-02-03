@@ -42,7 +42,10 @@ namespace DoorlockServerAPI
             senderThread.Start(ct);
             IPCManager.getInstance().addToSendQueue("This is a silly test\n");
             IPCManager.getInstance().addToSendQueue("{\"fruit\": \"Apple\", \"size\": \"Large\", \"color\": \"Red\"}\n");
-            IPCManager.getInstance().addToSendQueue("servus\n");
+            IPCManager.getInstance().addToSendQueue("servus");
+            Thread.Sleep(2000);
+            IPCManager.getInstance().addToSendQueue("last message\n");
+
 
             Configuration = configuration;
         }
