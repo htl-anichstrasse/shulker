@@ -11,12 +11,12 @@ namespace DoorlockServerAPI.Migrations
                 name: "Sessions",
                 columns: table => new
                 {
-                    sessionString = table.Column<string>(type: "text", nullable: false),
-                    expires = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
+                    SessionId = table.Column<string>(type: "text", nullable: false),
+                    Expires = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Sessions", x => x.sessionString);
+                    table.PrimaryKey("PK_Sessions", x => x.SessionId);
                 });
         }
 

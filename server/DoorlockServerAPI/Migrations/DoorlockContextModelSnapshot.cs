@@ -21,13 +21,13 @@ namespace DoorlockServerAPI.Migrations
 
             modelBuilder.Entity("DoorlockServerAPI.Models.Session", b =>
                 {
-                    b.Property<string>("sessionString")
+                    b.Property<string>("SessionId")
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("expires")
+                    b.Property<DateTime>("Expires")
                         .HasColumnType("timestamp without time zone");
 
-                    b.HasKey("sessionString");
+                    b.HasKey("SessionId");
 
                     b.ToTable("Sessions");
                 });

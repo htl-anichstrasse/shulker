@@ -11,17 +11,25 @@ namespace DoorlockServerAPI.Models
     {
         public Session(DateTime expires)
         {
-            this.expires = expires;
-            String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-            
-            for (int i = 0; i < 32; i++)
-            {
-                sessionString += chars[RandomNumberGenerator.GetInt32(chars.Length)];
-            }
+            this.SessionId = generateSessionString(32);
+            this.Expires = expires;
         }
 
+        private String generateSessionString(int length)
+        {
+            String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+            String newSession = "";
+            for (int i = 0; i < 32; i++)
+            {
+                newSession += chars[RandomNumberGenerator.GetInt32(chars.Length)];
+            }
+            return newSession;
+        }
+
+ 
+
         [Key]
-        public String sessionString { get; set; }
-        public DateTime expires { get; set; }
+        public String SessionId { get; set; }
+        public DateTime Expires { get; set; }
     }
 }

@@ -63,15 +63,8 @@ namespace DoorlockServerAPI
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "DoorlockServerAPI", Version = "v1" });
             });
 
-            var server = "127.0.0.1";
-            var port = "3307";
-            var database = "doorlock";
-            var user = "root";
-            var password = "----";
-            String cs = ($"Host={server};Port={port};Database={database};Username={user};Password={password}");
-            Console.WriteLine(cs);
             services.AddDbContext<DoorlockContext>(options =>
-            options.UseNpgsql(cs));
+            options.UseNpgsql("Host=localhost;Port=5432;Database=Doorlock;Username=postgres;Password=--"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

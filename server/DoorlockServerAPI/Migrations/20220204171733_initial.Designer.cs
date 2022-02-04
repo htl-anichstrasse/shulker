@@ -10,7 +10,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace DoorlockServerAPI.Migrations
 {
     [DbContext(typeof(DoorlockContext))]
-    [Migration("20220204110833_initial")]
+    [Migration("20220204171733_initial")]
     partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -23,13 +23,13 @@ namespace DoorlockServerAPI.Migrations
 
             modelBuilder.Entity("DoorlockServerAPI.Models.Session", b =>
                 {
-                    b.Property<string>("sessionString")
+                    b.Property<string>("SessionId")
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("expires")
+                    b.Property<DateTime>("Expires")
                         .HasColumnType("timestamp without time zone");
 
-                    b.HasKey("sessionString");
+                    b.HasKey("SessionId");
 
                     b.ToTable("Sessions");
                 });
