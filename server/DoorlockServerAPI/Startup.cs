@@ -13,6 +13,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Threading;
 using DoorlockServerAPI.Models;
+using DoorlockServerAPI.Models.db;
+using Microsoft.EntityFrameworkCore;
 
 namespace DoorlockServerAPI
 {
@@ -55,12 +57,21 @@ namespace DoorlockServerAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "DoorlockServerAPI", Version = "v1" });
             });
+
+            var server = "127.0.0.1";
+            var port = "3307";
+            var database = "doorlock";
+            var user = "root";
+            var password = "----";
+            String cs = ($"Host={server};Port={port};Database={database};Username={user};Password={password}");
+            Console.WriteLine(cs);
+            services.AddDbContext<DoorlockContext>(options =>
+            options.UseNpgsql(cs));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
