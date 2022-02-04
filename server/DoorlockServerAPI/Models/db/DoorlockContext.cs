@@ -13,11 +13,16 @@ namespace DoorlockServerAPI.Models.db
         public DoorlockContext(DbContextOptions<DoorlockContext> options) : base(options)
         { }
 
-    }*/
-        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        //    => optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=Doorlock;Username=postgres;Password=--");
-
+        public DoorlockContext()
+        {
+        }
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+            => optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=Doorlock;Username=postgres;Password=--");
 
     }
 
+
+
 }
+
+

@@ -12,6 +12,7 @@ namespace DoorlockServerAPI.Models
         public Session(DateTime expires)
         {
             this.SessionId = generateSessionString(32);
+            
             this.Expires = expires;
         }
 
