@@ -1,100 +1,179 @@
-use std::{sync::{Arc, Mutex}, thread, time::Duration, path::PathBuf, io::Read, str::FromStr};
+use std::{
+    io::{BufRead, BufReader},
+    path::PathBuf,
+    sync::{Arc, Mutex},
+    thread,
+    time::Duration,
+};
 
-use byteorder::{BigEndian, ReadBytesExt};
-use crossbeam_channel::{Sender, Receiver};
-use ipipe::Pipe;
-use shulker_rs::{shulker_db::ShulkerDB, credential_types::Secret};
+use crossbeam_channel::{Receiver, Sender};
+use interprocess::local_socket::{LocalSocketListener, LocalSocketStream};
+use json::JsonValue;
+use shulker_rs::{credential_types::Secret, shulker_db::ShulkerDB};
 use sixtyfps::Weak;
 use std::io::Write;
 
 sixtyfps::include_modules!();
 fn main() {
-    let (s0, r0) = crossbeam_channel::bounded::<String>(0);
+    let (s0, r0) = crossbeam_channel::bounded::<JsonValue>(0);
+    let (s1, r1) = crossbeam_channel::unbounded();
 
     let ui = MainUi::new();
     let ui_handle = ui.as_weak();
     let shulker_core_lock = Arc::new(Mutex::new(ShulkerCore::new(ui_handle.clone(), s0.clone())));
-    
+
+    //Server Communication Socket Thread - Receive
+    let shulker_core_lock3 = shulker_core_lock.clone();
+    let s1_clone = s1.clone();
+    let server_thread_handle = thread::spawn(move || {
+        let core_socket_path = shulker_rs::CONFIGURATION
+            .read()
+            .unwrap()
+            .get_str("receive_socket_path")
+            .unwrap();
+        while let Some(e) = match std::fs::remove_file(&core_socket_path) {
+            Ok(_) => Some(()),
+            Err(_) => None,
+        } {
+            thread::sleep(Duration::from_millis(200));
+        }
+
+        let listener = LocalSocketListener::bind(core_socket_path).unwrap();
+        for mut conn in listener.incoming().filter_map(|c| {
+            c.map_err(|error| eprintln!("Incoming connection failed: {}", error))
+                .ok()
+        }) {
+            let mut conn = BufReader::new(conn);
+            let mut buffer = String::new();
+            loop {
+                buffer.clear();
+                match conn.read_line(&mut buffer) {
+                    Ok(size) => {
+                        if size == 0 {
+                            break;
+                        }
+                    }
+                    Err(error) => {
+                        println!("{:#?}", error);
+                        break;
+                    }
+                };
+
+                let msg = match json::parse(&buffer.trim()) {
+                    Ok(msg) => msg,
+                    Err(_) => {
+                        continue;
+                    }
+                };
+                let mut answer = None;
+                {
+                    let mut shulker_core = shulker_core_lock3.lock().unwrap();
+                    answer = shulker_core.handle_message(msg);
+                }
+                s1_clone.send(answer).unwrap();
+            }
+        }
+    });
+
+    // Server Communication Socket Thread - Send
+    let r1_clone = r1.clone();
+    let send_thread_handler = thread::spawn(move || {
+        let server_socket_path = shulker_rs::CONFIGURATION
+            .read()
+            .unwrap()
+            .get_str("send_socket_path")
+            .unwrap();
+
+        loop {
+            let mut conn = match LocalSocketStream::connect(&*server_socket_path) {
+                Ok(conn) => conn,
+                Err(e) => {
+                    println!("ERROR: {:#?}", e);
+                    println!("Failed to receive connection, retrying in 3 seconds.");
+                    std::thread::sleep(Duration::from_secs(3));
+                    continue;
+                }
+            };
+            loop {
+                let answer = match r1_clone.recv().unwrap() {
+                    Some(answer) => answer,
+                    None => continue,
+                };
+
+                match conn.write_all(json::stringify(answer).as_bytes()) {
+                    Ok(_) => (),
+                    Err(e) => {
+                        println!("Connection write error: {:#?}", e);
+                        break;
+                    }
+                };
+            }
+        }
+    });
+
     // Display Communication Thread
     let ui_handle_clone = ui_handle.clone();
     let shulker_core_lock2 = shulker_core_lock.clone();
-    let thread_handler_1 = thread::spawn(move || {
-        loop {
-            let msg = r0.recv().unwrap();
-            let response;
-            {
-                let mut shulker_core = shulker_core_lock2.lock().unwrap();
-                response = (*shulker_core).handle_message(msg);
-            }
-            if response.is_none() { continue }
-            let response = response.unwrap();
+    let thread_handler_1 = thread::spawn(move || loop {
+        let msg = r0.recv().unwrap();
+        let response;
+        {
+            let mut shulker_core = shulker_core_lock2.lock().unwrap();
+            response = (*shulker_core).handle_message(msg);
         }
     });
 
-    let mut _pipe = Pipe::open(&PathBuf::from_str("shulker_pipe").unwrap(), ipipe::OnCleanup::Delete).unwrap();
-    let mut pipe = _pipe.clone();
-    // Named Pipe Communication Thread
-    let ui_handle_clone = ui_handle.clone();
-    let shulker_core_lock2 = shulker_core_lock.clone();
-    let thread_handler_2 = thread::spawn(move || {
-        loop {
-            let msg = decode_msg(&mut pipe);
-            println!("{:#?}", msg);
-        }
-    });
-
-    let mut pipe = _pipe.clone();
-    // Test Thread
-    thread::spawn(move || {
-        
-        loop {
-            thread::sleep(Duration::from_secs(1));
-            let msg = "TEST MESSAGE";
-            let len = msg.bytes().len() as u32 - 3 as u32;
-            pipe.write(&len.to_be_bytes()).unwrap();
-            write!(&mut pipe, "{}", msg).unwrap();
-        }
-    });
-
+    // UI Event Handlers
     let ui_handle_clone = ui_handle.clone();
     let s0_clone = s0.clone();
     ui.on_pin_try(move |code| {
         let ui = ui_handle_clone.unwrap();
-        s0_clone.send(format!("PIN TRY {}", code)).unwrap();
+        let msg = json::object! {
+            request: "USE PIN",
+            secret: code.as_str(),
+        };
+        s0_clone.send(msg).unwrap();
     });
 
     let ui_handle_clone = ui_handle.clone();
     let s0_clone = s0.clone();
     ui.on_password_try(move |code| {
         let ui = ui_handle_clone.unwrap();
-        s0_clone.send(format!("PASSWORD TRY {}", code)).unwrap();
+        let msg = json::object! {
+            request: "USE PASSWORD",
+            secret: code.as_str(),
+        };
+        s0_clone.send(msg).unwrap();
     });
 
     let ui_handle_clone = ui_handle.clone();
     let s0_clone = s0.clone();
     ui.on_lock(move || {
         let ui = ui_handle_clone.unwrap();
-        s0_clone.send("LOCK".to_string()).unwrap();
+        let msg = json::object! {
+            request: "LOCK",
+        };
+        s0_clone.send(msg).unwrap();
     });
 
     ui.run();
     thread_handler_1.join().unwrap();
-    thread_handler_2.join().unwrap();
+    server_thread_handle.join().unwrap();
+    send_thread_handler.join().unwrap();
 }
-
 
 pub struct ShulkerCore<'a> {
     is_locked: bool,
     shulker_db: ShulkerDB<'a>,
     ui_handle: Weak<MainUi>,
-    s0: Sender<String>,
+    s0: Sender<JsonValue>,
     a_s: Sender<String>,
     a_r: Receiver<String>,
     autolock_seconds: i32,
 }
 
 impl ShulkerCore<'_> {
-    pub fn new(ui_handle: Weak<MainUi>, s0: Sender<String>) -> Self {
+    pub fn new(ui_handle: Weak<MainUi>, s0: Sender<JsonValue>) -> Self {
         let (a_s, a_r) = crossbeam_channel::unbounded();
 
         ShulkerCore {
@@ -104,50 +183,63 @@ impl ShulkerCore<'_> {
             s0,
             a_s,
             a_r,
-            autolock_seconds: shulker_rs::CONFIGURATION.read().unwrap().get_int("autolock_seconds").unwrap() as i32,
+            autolock_seconds: shulker_rs::CONFIGURATION
+                .read()
+                .unwrap()
+                .get_int("autolock_seconds")
+                .unwrap() as i32,
         }
     }
 
-    pub fn handle_message(&mut self, msg: String) -> Option<String>{
-        let msg: Vec<&str> = msg.split(" ").collect();
-        if msg.len() < 1 { return None };
-        
-        match msg.len() {
-            1 => {
-                match msg[0] {
-                    "LOCK" => {
-                        self.lock();
-                        return Some("LOCKED".to_string());
-                    },
-                    "UNLOCK" => {
-                        self.unlock();
-                        return Some("UNLOCKED".to_string());
-                    },
-                    _ => {},
+    pub fn handle_message(&mut self, msg: JsonValue) -> Option<JsonValue> {
+        println!("{:#?}", msg);
+        let request = match &msg["request"] {
+            JsonValue::String(request) => request.clone(),
+            JsonValue::Short(request) => request.to_string(),
+            _ => return None,
+        };
+
+        match request.as_str() {
+            "LOCK" => {
+                self.lock();
+            }
+            "UNLOCK" => {
+                self.unlock();
+            }
+            "USE PIN" => {
+                let secret = match &msg["secret"] {
+                    JsonValue::String(request) => request.clone(),
+                    JsonValue::Short(request) => request.to_string(),
+                    _ => return None,
+                };
+                if self.try_secret(Secret::PinCode(secret)) {
+                    self.unlock();
+                    return Some(json::object! {
+                        answer: "UNLOCKED",
+                    });
+                } else {
+                    return Some(json::object! {
+                        answer: "WRONG SECRET",
+                    });
                 }
-            },
-            2 => {},
-            3 => {
-                match msg[0] {
-                    "PIN" => {
-                        if msg[1] == "TRY" {
-                            if self.try_secret(Secret::PinCode(msg[2].to_string())) {
-                                self.unlock();
-                                return Some("UNLOCKED".to_string());
-                            }
-                        }
-                    },
-                    "PASSWORD" => {
-                        if msg[1] == "TRY" {
-                            if self.try_secret(Secret::Password(msg[2].to_string())) {
-                                self.unlock();
-                                return Some("UNLOCKED".to_string());
-                            }
-                        }
-                    },
-                    _ => {},
+            }
+            "USE PASSWORD" => {
+                let secret = match &msg["secret"] {
+                    JsonValue::String(request) => request.clone(),
+                    JsonValue::Short(request) => request.to_string(),
+                    _ => return None,
+                };
+                if self.try_secret(Secret::Password(secret)) {
+                    self.unlock();
+                    return Some(json::object! {
+                        answer: "UNLOCKED",
+                    });
+                } else {
+                    return Some(json::object! {
+                        answer: "WRONG SECRET",
+                    });
                 }
-            },
+            }
             _ => {}
         }
         None
@@ -185,21 +277,24 @@ impl ShulkerCore<'_> {
     }
 }
 
-
-
-pub fn autolock(seconds: i32, s0: Sender<String>, ui_handle: Weak<MainUi>, a_r: Receiver<String>) {
+pub fn autolock(
+    seconds: i32,
+    s0: Sender<JsonValue>,
+    ui_handle: Weak<MainUi>,
+    a_r: Receiver<String>,
+) {
     for x in 0..seconds {
-        if !a_r.is_empty() { return }
+        if !a_r.is_empty() {
+            return;
+        }
         let ui_handle_clone = ui_handle.clone();
-        sixtyfps::invoke_from_event_loop(move || ui_handle_clone.unwrap().set_autolock_seconds(seconds - x));
+        sixtyfps::invoke_from_event_loop(move || {
+            ui_handle_clone.unwrap().set_autolock_seconds(seconds - x)
+        });
         thread::sleep(Duration::from_secs(1));
     }
-    s0.send("LOCK".to_string()).unwrap();
-}
-
-pub fn decode_msg(pipe: &mut Pipe) -> String {
-    let msg_len = pipe.read_u32::<BigEndian>().unwrap();
-    let mut msg_buf = vec![0u8; msg_len as usize];
-    pipe.read_exact(&mut msg_buf).unwrap();
-    String::from_utf8(msg_buf).unwrap()
+    let msg = json::object! {
+        request: "LOCK",
+    };
+    s0.send(msg).unwrap();
 }

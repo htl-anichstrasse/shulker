@@ -1,5 +1,5 @@
-use std::time::{SystemTime};
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
+use std::time::SystemTime;
 use uuid::Uuid;
 
 #[derive(Serialize, Clone, Deserialize, PartialEq, Eq, Debug)]
