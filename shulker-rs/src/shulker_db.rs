@@ -1,10 +1,13 @@
-use std::{path::{PathBuf}};
-use serde::{Serialize, Deserialize};
-use rustbreak::{Database, PathDatabase, RustbreakError, backend::PathBackend};
 use rustbreak::deser::Bincode;
+use rustbreak::{backend::PathBackend, Database, PathDatabase, RustbreakError};
+use serde::{Deserialize, Serialize};
+use std::path::PathBuf;
 use uuid::Uuid;
 
-use crate::{credential_types::{Credential, Secret}, hasher::Hasher};
+use crate::{
+    credential_types::{Credential, Secret},
+    hasher::Hasher,
+};
 
 pub struct ShulkerDB<'a> {
     rustbreak: Database<Credentials, PathBackend, Bincode>,
@@ -14,9 +17,12 @@ pub struct ShulkerDB<'a> {
 impl<'a> ShulkerDB<'a> {
     pub fn new(file_path: PathBuf) -> Self {
         let path_clone = file_path.clone();
-        let rustbreak = PathDatabase::<Credentials, Bincode>::create_at_path(file_path, Credentials { data: Vec::new() })
-            .expect(&format!("Unable to create/open file at {:?}", path_clone));
-        
+        let rustbreak = PathDatabase::<Credentials, Bincode>::create_at_path(
+            file_path,
+            Credentials { data: Vec::new() },
+        )
+        .expect(&format!("Unable to create/open file at {:?}", path_clone));
+
         ShulkerDB {
             rustbreak,
             hasher: Hasher::new(),
@@ -27,10 +33,10 @@ impl<'a> ShulkerDB<'a> {
         match secret {
             Secret::PinCode(secret_string) => {
                 Secret::PinCode(self.hasher.hash(secret_string.as_bytes()))
-            },
+            }
             Secret::Password(secret_string) => {
                 Secret::Password(self.hasher.hash(secret_string.as_bytes()))
-            },
+            }
         }
     }
 
@@ -65,9 +71,7 @@ impl<'a> ShulkerDB<'a> {
                 result.push(data.data[i].clone());
             }
         }
-        Ok(Credentials {
-            data: result,
-        })
+        Ok(Credentials { data: result })
     }
 
     pub fn use_credential(&mut self, user_input: Secret) -> Result<bool, RustbreakError> {
@@ -76,31 +80,31 @@ impl<'a> ShulkerDB<'a> {
             Secret::PinCode(pin_code) => {
                 for c in &mut credentials.data {
                     if let Secret::PinCode(secret) = c.secret.clone() {
-                        if self.hasher.verify(pin_code.as_bytes(), &secret) && c.check_if_useable() {
+                        if self.hasher.verify(pin_code.as_bytes(), &secret) && c.check_if_useable()
+                        {
                             c.reduce_uses();
                             self.rustbreak.put_data(credentials, true)?;
                             return Ok(true);
                         }
                     }
                 }
-            },
+            }
             Secret::Password(password) => {
                 for c in &mut credentials.data {
                     if let Secret::Password(secret) = c.secret.clone() {
-                        if self.hasher.verify(password.as_bytes(), &secret) && c.check_if_useable() {
+                        if self.hasher.verify(password.as_bytes(), &secret) && c.check_if_useable()
+                        {
                             c.reduce_uses();
                             self.rustbreak.put_data(credentials, true)?;
                             return Ok(true);
                         }
                     }
                 }
-            },
+            }
         }
         Ok(false)
     }
 }
-
-
 
 #[derive(Clone, Serialize, Deserialize, Debug)]
 pub struct Credentials {

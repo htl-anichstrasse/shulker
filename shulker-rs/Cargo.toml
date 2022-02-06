@@ -17,9 +17,10 @@ lazy_static = "1.4.0"
 config = "0.11.0"
 rand_core = { version = "0.6.3", features = ["std"] }
 sixtyfps = "0.1.5"
-ipipe = "0.9.0"
 crossbeam-channel = "0.5.1"
 byteorder = "1.4.3"
+interprocess = "1.1.1"
+json = "0.12.4"
 
 [dependencies.rustbreak]
 version = "2.0.0"
