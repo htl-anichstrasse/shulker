@@ -10,20 +10,21 @@ namespace DoorlockServerAPI.Controllers
     [ApiController]
     public class LockController : Controller
     {
-        private bool _locked;
+        private bool _closed;
 
         [HttpGet]
         [Route("isLocked")]
         public bool isLocked()
         {
-            return _locked;
+            return _closed;
         }
 
         [HttpPost]
-        [Route("lockDoor")]
-        public String lockDoor(bool open)
+        [Route("setLockState")]
+        public String setLockState(bool closed)
         {
-            _locked = open;
+            Console.WriteLine(closed);
+            _closed = closed;
             return "ok";
         }
     }

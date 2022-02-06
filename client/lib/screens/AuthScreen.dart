@@ -1,3 +1,4 @@
+import 'package:doorlock_app/services/ServerWrapper.dart';
 import 'package:doorlock_app/util/SnackBarHelper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -64,10 +65,22 @@ class _AuthScreenState extends State<AuthScreen> {
                       return;
                     }
 
-                    displaySnackBar(context, Colors.green, "Erfolgreich verbunden");
+                    ServerWrapper.getInstance().getSession(_pin).then((value) {
 
-                    Navigator.pushNamedAndRemoveUntil(
-                        context, "/", (route) => false);
+                      if (value != null) {
+                        ServerWrapper.getInstance().setToken(value);
+
+                        displaySnackBar(context, Colors.green, "Erfolgreich verbunden");
+                        Navigator.pushNamedAndRemoveUntil(
+                            context, "/", (route) => false);
+                      } else {
+                        displaySnackBar(context, Colors.redAccent, "Falscher Pin");
+                      }
+
+                    });
+
+
+
                   }, child: Text("Bestätigen"))
                 ],
               ),

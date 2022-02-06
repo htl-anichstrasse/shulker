@@ -1,3 +1,5 @@
+import 'package:doorlock_app/services/ServerCommunication.dart';
+import 'package:doorlock_app/services/ServerWrapper.dart';
 import 'package:doorlock_app/util/RegexHelper.dart';
 import 'package:doorlock_app/util/SnackBarHelper.dart';
 import 'package:doorlock_app/util/SharedPrefsHelper.dart';
@@ -153,11 +155,19 @@ class _ConnectDeviceWizardState extends State<ConnectDeviceWizard> {
                               if (!networkFormKey.currentState.validate()) {
                                 return;
                               }
-                              saveIp(_ip);
-                              savePort(_port);
-                              var x = getPort();
+                              ServerWrapper.getInstance()
+                                  .checkConnection(_ip, _port)
+                                  .then((connectionWorking) {
+                                if (connectionWorking) {
+                                  saveIp(_ip);
+                                  savePort(_port);
 
-                              Navigator.pushNamed(context, "/userAuth");
+                                  Navigator.pushNamed(context, "/userAuth");
+                                } else {
+                                  displaySnackBar(context, Colors.redAccent,
+                                      "Verbindung konnte nicht hergestellt werden");
+                                }
+                              });
                             },
                             child: Text("Verbinden")),
                         ElevatedButton(
@@ -177,15 +187,15 @@ class _ConnectDeviceWizardState extends State<ConnectDeviceWizard> {
 
   void onScanned(barcode) {
     // validate the qr code format
-    if (!barcode.contains(";")) {
+    if (!barcode.contains(":")) {
       displaySnackBar(context, Colors.red, "Ungültiger QR-Code");
       return;
     }
 
     setState(() {
       screenId = 1;
-      _ip = barcode.split(";")[0].trim();
-      _port = barcode.split(";")[1].trim();
+      _ip = barcode.split(":")[0].trim();
+      _port = barcode.split(":")[1].trim();
       displaySnackBar(context, Colors.green, "QR-Code erfolgreich gescannt");
     });
   }

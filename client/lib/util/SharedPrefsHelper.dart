@@ -1,5 +1,16 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
+Future<String> getIpPort() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  final ip = prefs.getString("ip") ?? null;
+  final port = prefs.getString("port") ?? null;
+
+  if (ip != null && port != null) {
+    return ip + ":" + port;
+  }
+  return null;
+}
+
 Future<String> getIp() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   final ip = prefs.getString("ip") ?? null;

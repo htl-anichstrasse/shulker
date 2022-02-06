@@ -16,7 +16,7 @@ namespace DoorlockServerAPI.Controllers
     {
         DoorlockContext _context = new DoorlockContext();
 
-        [HttpPost]
+        [HttpGet]
         [Route("getToken/{secret}")]
         public String getToken(String secret)
         {
