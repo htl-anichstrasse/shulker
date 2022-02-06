@@ -8,7 +8,7 @@ namespace DoorlockServerAPI.Models
     public class SessionManager
     {
         // Singleton pattern
-        private SessionManager _instance;
+        private static SessionManager _instance;
         private SessionManager() { }
         public static SessionManager getInstance()
         {
@@ -19,13 +19,13 @@ namespace DoorlockServerAPI.Models
             return _instance;
         }
 
-        private List<Session> sessions;
-        public void addSession(Session s)
+        private List<Session> sessions = new List<Session>();
+        public void registerSession(Session s)
         {
             sessions.Add(s);
         }
 
-        private void purgeOldSessions()
+        public void purgeOldSessions()
         {
             for (int i = sessions.Count; i >= 0; i--)
             {

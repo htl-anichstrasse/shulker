@@ -17,13 +17,13 @@ namespace DoorlockServerAPI.Controllers
         DoorlockContext _context = new DoorlockContext();
 
         [HttpPost]
-        [Route("getSession/{uuid}/{secret}")]
-        public String createSession(String secret)
+        [Route("getToken/{secret}")]
+        public String getToken(String secret)
         {
             // toDo: validate secret
 
             Session newSession = new Session(DateTime.Now + TimeSpan.FromMinutes(20));
-            SessionManager.getInstance().addSession(newSession);
+            SessionManager.getInstance().registerSession(newSession);
             return newSession.SessionId;
         }
     }
