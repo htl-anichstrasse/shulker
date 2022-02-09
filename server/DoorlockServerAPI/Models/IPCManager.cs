@@ -28,20 +28,13 @@ namespace DoorlockServerAPI.Models
 
         Queue<string> sendQueue = new Queue<string>();
 
+        private static String listenerPath = "/tmp/toShulkerServer.sock";
+        private static String senderPath = "/tmp/toShulkerCore.sock";
+
         public void addToSendQueue(String toAdd)
         {
             Console.WriteLine("Adding something to sendqueue");
             sendQueue.Enqueue(toAdd);
-        }
-
-        private Socket startServer()
-        {
-            var socket = new Socket(AddressFamily.Unix, SocketType.Stream, ProtocolType.Unspecified);
-
-            Console.WriteLine("Connecting to Server");
-            socket.Connect(new UnixDomainSocketEndPoint("/tmp/toShulkerServer.sock"));
-            Console.WriteLine("Connected");
-            return socket;
         }
 
 
@@ -49,8 +42,23 @@ namespace DoorlockServerAPI.Models
         {
             CancellationToken cancellationToken = (CancellationToken)data;
 
-            Socket socket;
-            socket = startServer();
+            Socket socket = new Socket(AddressFamily.Unix, SocketType.Stream, ProtocolType.Unspecified);
+
+            Console.WriteLine("Connecting to Server");
+            while (!socket.Connected)
+            {
+                try
+                {
+                    socket.Connect(new UnixDomainSocketEndPoint(senderPath));
+                    Console.WriteLine("Connected");
+                }
+                catch
+                {
+                    Console.WriteLine("Failed to connect to " + listenerPath + " Timeout 3 seconds");
+                    Thread.Sleep(3000);
+                }
+
+            }
 
             while (true)
             {
@@ -67,13 +75,11 @@ namespace DoorlockServerAPI.Models
                     var dataToSend = System.Text.Encoding.UTF8.GetBytes(toSend);
                     Console.WriteLine("Sending " + toSend);
                     socket.Send(dataToSend);
-                    Console.WriteLine("sent!");
                 }
 
             }
         }
 
-        private static String listenerPath = "/tmp/toShulkerServer.sock";
         public void ListenerThread(Object data)
         {
             CancellationToken cancellationToken = (CancellationToken)data;
