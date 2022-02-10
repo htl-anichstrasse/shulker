@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using DoorlockServerAPI.Models;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,7 @@ namespace DoorlockServerAPI.Controllers
     [ApiController]
     public class LockController : Controller
     {
-        private bool _closed;
+        public static bool _closed;
 
         [HttpGet]
         [Route("isLocked")]
@@ -23,8 +24,16 @@ namespace DoorlockServerAPI.Controllers
         [Route("setLockState")]
         public String setLockState(bool closed)
         {
-            Console.WriteLine(closed);
             _closed = closed;
+
+            if (closed)
+            {
+                MessageWrapper.lockDoor();
+            } else
+            {
+                MessageWrapper.unlockDoor();
+            }
+
             return "ok";
         }
     }

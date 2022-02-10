@@ -18,13 +18,17 @@ namespace DoorlockServerAPI.Controllers
 
         [HttpGet]
         [Route("getToken/{secret}")]
-        public String getToken(String secret)
+        public async Task<IActionResult> getToken(String secret)
         {
-            // toDo: validate secret
+            bool secretValid = await MessageWrapper.checkAdminCredentialWithTimeoutASYNC(secret);
+            if (!secretValid)
+            {
+                return BadRequest();
+            }
 
             Session newSession = new Session(DateTime.Now + TimeSpan.FromMinutes(20));
             SessionManager.getInstance().registerSession(newSession);
-            return newSession.SessionId;
+            return Ok(newSession.SessionId);
         }
     }
 }

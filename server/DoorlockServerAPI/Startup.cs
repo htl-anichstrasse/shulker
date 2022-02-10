@@ -38,7 +38,6 @@ namespace DoorlockServerAPI
             listenerThread.Start(ct);
 
             Thread.Sleep(300);
-            
             Console.WriteLine("Starting sender Thread...");
             senderThread = new Thread(IPCManager.getInstance().SenderThread);
             senderThread.Start(ct);
