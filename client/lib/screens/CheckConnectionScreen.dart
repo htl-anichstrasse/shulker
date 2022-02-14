@@ -1,8 +1,10 @@
 import 'dart:async';
 
 import 'package:check_vpn_connection/check_vpn_connection.dart';
+import 'package:doorlock_app/screens/AuthScreen.dart';
 import 'package:doorlock_app/screens/ConnectDeviceScreen.dart';
 import 'package:doorlock_app/screens/HomeScreen.dart';
+import 'package:doorlock_app/services/ServerWrapper.dart';
 import 'package:doorlock_app/util/SnackBarHelper.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -29,18 +31,6 @@ class _CheckConnectionScreenState extends State<CheckConnectionScreen> {
     }
   }
 
-  checkIpPortSaved() async {
-    print("check ip port saved method");
-
-    bool keysExist = await ipPortExist();
-    print(await getIp());
-    print(await getPort());
-    setState(() {
-      _ipPortExists = keysExist;
-      print(_ipPortExists);
-    });
-  }
-
   checkVPNConnection() async {
     print("check vpn connection method");
     if (await CheckVpnConnection.isVpnActive()) {
@@ -54,6 +44,25 @@ class _CheckConnectionScreenState extends State<CheckConnectionScreen> {
         _vpnConnected = false;
       });
     }
+  }
+
+  checkIpPortSaved() async {
+    print("check ip port saved method");
+
+    bool keysExist = await ipPortExist();
+    print(await getIp());
+    print(await getPort());
+    setState(() {
+      _ipPortExists = keysExist;
+      print(_ipPortExists);
+    });
+  }
+
+  isSessionValid(){
+    if (ServerWrapper.token == null) {
+      return false;
+    }
+    return true;
   }
 
   @override
@@ -96,6 +105,10 @@ class _CheckConnectionScreenState extends State<CheckConnectionScreen> {
       }
       if (!_ipPortExists) {
         return ConnectDeviceWizard();
+      }
+
+      if(!isSessionValid()){
+        return AuthScreen();
       }
 
       return HomeScreen();

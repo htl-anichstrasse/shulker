@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:doorlock_app/services/ServerWrapper.dart';
 import 'package:doorlock_app/util/SharedPrefsHelper.dart';
 import 'package:http/http.dart' as http;

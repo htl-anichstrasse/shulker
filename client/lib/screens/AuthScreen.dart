@@ -1,10 +1,10 @@
+import 'package:doorlock_app/services/CustomException.dart';
 import 'package:doorlock_app/services/ServerWrapper.dart';
 import 'package:doorlock_app/util/SnackBarHelper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class AuthScreen extends StatefulWidget {
-
   @override
   _AuthScreenState createState() => _AuthScreenState();
 }
@@ -25,10 +25,12 @@ class _AuthScreenState extends State<AuthScreen> {
             child: Center(
               child: Column(
                 children: [
-                  Text("PIN eingeben um fortzufahren",
-                  style: TextStyle(
-                    fontSize: 16,
-                  ),),
+                  Text(
+                    "PIN eingeben um fortzufahren",
+                    style: TextStyle(
+                      fontSize: 16,
+                    ),
+                  ),
                   SizedBox(
                     width: 100,
                     child: TextFormField(
@@ -41,7 +43,6 @@ class _AuthScreenState extends State<AuthScreen> {
                       ],
                       decoration: InputDecoration(
                         labelText: "PIN Code",
-
                       ),
                       validator: (value) {
                         if (value.length < 6) {
@@ -59,29 +60,35 @@ class _AuthScreenState extends State<AuthScreen> {
                       },
                     ),
                   ),
+                  ElevatedButton(
+                      onPressed: () {
+                        if (!authFormKey.currentState.validate()) {
+                          return;
+                        }
 
-                  ElevatedButton(onPressed: () {
-                    if (!authFormKey.currentState.validate()) {
-                      return;
-                    }
+                        ServerWrapper.getInstance()
+                            .getSession(_pin)
+                            .then((value) {
+                          if (value == "Error on fetching") {
+                            displaySnackBar(context, Colors.red,
+                                "Server kommunikations Fehler.");
+                            return;
+                          }
 
-                    ServerWrapper.getInstance().getSession(_pin).then((value) {
+                          if (value != null) {
+                            ServerWrapper.getInstance().setToken(value);
 
-                      if (value != null) {
-                        ServerWrapper.getInstance().setToken(value);
-
-                        displaySnackBar(context, Colors.green, "Erfolgreich verbunden");
-                        Navigator.pushNamedAndRemoveUntil(
-                            context, "/", (route) => false);
-                      } else {
-                        displaySnackBar(context, Colors.redAccent, "Falscher Pin");
-                      }
-
-                    });
-
-
-
-                  }, child: Text("Bestätigen"))
+                            displaySnackBar(
+                                context, Colors.green, "Erfolgreich verbunden");
+                            Navigator.pushNamedAndRemoveUntil(
+                                context, "/", (route) => false);
+                          } else {
+                            displaySnackBar(
+                                context, Colors.redAccent, "Falscher Pin");
+                          }
+                        });
+                      },
+                      child: Text("Bestätigen"))
                 ],
               ),
             ),

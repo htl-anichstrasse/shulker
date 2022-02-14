@@ -20,6 +20,7 @@ class ServerWrapper {
     }
     return _instance;
   }
+
   void setToken(String t) {
     token = t;
   }
@@ -39,9 +40,14 @@ class ServerWrapper {
     String url = await sm.getBaseUrl() + "/api/Session/getToken/" + pin;
     try {
       String session = await sm.sendRequest(url);
+      print(session.toString());
+      setToken(session);
       return session;
-    } catch (ex) {}
-    throw FetchDataException("Error on fetching");
+    } catch (ex) {
+      print(ex);
+      return "Error on fetching";
+    }
+
   }
 
   Future<String> setLockState(open) async {

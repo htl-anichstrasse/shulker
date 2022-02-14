@@ -20,11 +20,11 @@ namespace DoorlockServerAPI.Controllers
         [Route("getToken/{secret}")]
         public async Task<IActionResult> getToken(String secret)
         {
-            bool secretValid = await MessageWrapper.checkAdminCredentialWithTimeoutASYNC(secret);
-            if (!secretValid)
-            {
-                return BadRequest();
-            }
+            //bool secretValid = await MessageWrapper.checkAdminCredentialWithTimeoutASYNC(secret);
+            //if (!secretValid)
+            //{
+            //    return BadRequest();
+            //}
 
             Session newSession = new Session(DateTime.Now + TimeSpan.FromMinutes(20));
             SessionManager.getInstance().registerSession(newSession);

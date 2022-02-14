@@ -22,6 +22,9 @@ class _ConnectVPNState extends State<ConnectVPN> {
     return WillPopScope(
       onWillPop: () async => false,
       child: Scaffold(
+        appBar: AppBar(
+          title: Text("Shulker"),
+        ),
         body: Container(
           child: Padding(
             padding: const EdgeInsets.all(8.0),
