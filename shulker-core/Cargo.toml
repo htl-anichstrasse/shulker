@@ -1,0 +1,26 @@
+[package]
+name = "shulker-core"
+version = "0.1.0"
+build = "build.rs"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+slint = "0.2"
+serde = { version = "1.0.136", features = ["derive"] }
+serde_json = "1.0.79"
+lazy_static = "1.4.0"
+config = "0.11.0"
+argon2 = "0.3.3"
+rand_core = { version = "0.6.3", features = ["std"] }
+uuid = { version = "0.8.2", features = ["serde", "v4"] }
+interprocess = "1.1.1"
+crossbeam-channel = "0.5.2"
+
+[dependencies.rustbreak]
+version = "2.0.0"
+features = ["bin_enc"]
+
+[build-dependencies]
+slint-build = "0.2"
