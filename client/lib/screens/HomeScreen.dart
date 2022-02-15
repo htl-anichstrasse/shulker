@@ -28,7 +28,8 @@ class _HomeScreenState extends State<HomeScreen> {
       _locked = !_locked;
     });
 
-    changeDoorStateAsync(!_locked);
+    ServerManager.getInstance().changeLockStatus(_locked);
+    //changeDoorStateAsync(!_locked);
   }
 
 

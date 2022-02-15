@@ -1,5 +1,4 @@
 import 'package:doorlock_app/services/ServerCommunication.dart';
-import 'package:doorlock_app/services/ServerWrapper.dart';
 import 'package:doorlock_app/util/RegexHelper.dart';
 import 'package:doorlock_app/util/SnackBarHelper.dart';
 import 'package:doorlock_app/util/SharedPrefsHelper.dart';
@@ -155,18 +154,21 @@ class _ConnectDeviceWizardState extends State<ConnectDeviceWizard> {
                               if (!networkFormKey.currentState.validate()) {
                                 return;
                               }
-                              ServerWrapper.getInstance()
+                              ServerManager.getInstance()
                                   .checkConnection(_ip, _port)
                                   .then((connectionWorking) {
-                                if (connectionWorking) {
-                                  saveIp(_ip);
-                                  savePort(_port);
-
-                                  Navigator.pushNamed(context, "/userAuth");
-                                } else {
+                                if (!connectionWorking) {
                                   displaySnackBar(context, Colors.redAccent,
                                       "Verbindung konnte nicht hergestellt werden");
+                                  return;
                                 }
+
+                                saveIp(_ip);
+                                savePort(_port);
+
+                                Navigator.pushNamed(context, "/userAuth");
+                                displaySnackBar(context, Colors.green,
+                                    "Verbindung hergestellt.");
                               });
                             },
                             child: Text("Verbinden")),

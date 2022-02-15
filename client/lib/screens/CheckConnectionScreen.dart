@@ -4,7 +4,7 @@ import 'package:check_vpn_connection/check_vpn_connection.dart';
 import 'package:doorlock_app/screens/AuthScreen.dart';
 import 'package:doorlock_app/screens/ConnectDeviceScreen.dart';
 import 'package:doorlock_app/screens/HomeScreen.dart';
-import 'package:doorlock_app/services/ServerWrapper.dart';
+import 'package:doorlock_app/services/ServerCommunication.dart';
 import 'package:doorlock_app/util/SnackBarHelper.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -23,13 +23,13 @@ class _CheckConnectionScreenState extends State<CheckConnectionScreen> {
 
   var timer;
 
-  checkVPNConnectionLoop() async {
+  /* checkVPNConnectionLoop() async {
     if (await CheckVpnConnection.isVpnActive()) {
       timer.cancel();
       Navigator.pushNamedAndRemoveUntil(context, "/", (route) => false);
       displaySnackBar(context, Colors.green, "VPN Verbindung erfolgreich");
     }
-  }
+  } */
 
   checkVPNConnection() async {
     print("check vpn connection method");
@@ -58,8 +58,8 @@ class _CheckConnectionScreenState extends State<CheckConnectionScreen> {
     });
   }
 
-  isSessionValid(){
-    if (ServerWrapper.token == null) {
+  doesSessionExist(){
+    if (ServerManager.getInstance().sessionToken == null) {
       return false;
     }
     return true;
@@ -107,7 +107,7 @@ class _CheckConnectionScreenState extends State<CheckConnectionScreen> {
         return ConnectDeviceWizard();
       }
 
-      if(!isSessionValid()){
+      if(!doesSessionExist()){
         return AuthScreen();
       }
 

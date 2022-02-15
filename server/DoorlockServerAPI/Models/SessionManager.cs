@@ -27,22 +27,23 @@ namespace DoorlockServerAPI.Models
 
         public void purgeOldSessions()
         {
-            for (int i = sessions.Count; i >= 0; i--)
+            for (int i = sessions.Count-1; i > 0; i--)
             {
-                if (DateTime.Now > sessions[i].Expires)
+                Console.WriteLine(i);
+                if (DateTime.Compare(DateTime.Now, sessions[i].Expires) > 0) 
                 {
                     sessions.RemoveAt(i);
                 }
             }
         }
 
-        public bool sessionValid(Session s)
+        public bool sessionValid(String s)
         {
             purgeOldSessions();
 
             for(int i = 0; i < sessions.Count; i++)
             {
-                if (sessions[i].SessionId == s.SessionId)
+                if (sessions[i].SessionId == s)
                 {
                     return true;
                 }

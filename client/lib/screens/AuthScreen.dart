@@ -1,5 +1,5 @@
 import 'package:doorlock_app/services/CustomException.dart';
-import 'package:doorlock_app/services/ServerWrapper.dart';
+import 'package:doorlock_app/services/ServerCommunication.dart';
 import 'package:doorlock_app/util/SnackBarHelper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -66,18 +66,16 @@ class _AuthScreenState extends State<AuthScreen> {
                           return;
                         }
 
-                        ServerWrapper.getInstance()
-                            .getSession(_pin)
+                        ServerManager.getInstance()
+                            .requestAndSaveSession(_pin)
                             .then((value) {
-                          if (value == "Error on fetching") {
+                          if (value == "error") {
                             displaySnackBar(context, Colors.red,
-                                "Server kommunikations Fehler.");
+                                "Fehler bei der Kommunikation mit dem Türschloss");
                             return;
                           }
 
                           if (value != null) {
-                            ServerWrapper.getInstance().setToken(value);
-
                             displaySnackBar(
                                 context, Colors.green, "Erfolgreich verbunden");
                             Navigator.pushNamedAndRemoveUntil(

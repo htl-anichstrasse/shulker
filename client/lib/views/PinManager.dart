@@ -1,6 +1,7 @@
 import 'package:doorlock_app/models/Credential.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:doorlock_app/util/SnackBarHelper.dart';
 
 class PinManager extends StatefulWidget {
   @override
@@ -47,6 +48,35 @@ class _PinManagerState extends State<PinManager> {
                           Text("Gültig bis: " +
                               exampleCreds[index].endDateTime.toString()),
                         ],
+                      ),
+                      Container(
+                        alignment: Alignment.bottomLeft,
+                        child: FloatingActionButton(
+                          onPressed: () {
+                            showDialog(
+                                context: context,
+                                builder: (_) => AlertDialog(
+                                      title: Text("Pin Löschen"),
+                                      content: Text(
+                                          "Möchten Sie diesen Pin wirklich löschen?"),
+                                      actions: [
+                                        TextButton(
+                                            onPressed: () {
+                                              print(index);
+                                            },
+                                            child: Text("Ja")),
+                                        TextButton(
+                                            onPressed: () {
+                                              Navigator.pop(context);
+                                            },
+                                            child: Text("Nein"))
+                                      ],
+                                    ),
+                                barrierDismissible: true);
+                          },
+                          child: Icon(Icons.delete),
+                          mini: true,
+                        ),
                       ),
                     ]),
               );

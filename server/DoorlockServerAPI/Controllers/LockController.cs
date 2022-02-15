@@ -22,8 +22,13 @@ namespace DoorlockServerAPI.Controllers
 
         [HttpPost]
         [Route("setLockState")]
-        public String setLockState(bool closed)
+        public IActionResult setLockState(String session, bool closed)
         {
+            if (!SessionManager.getInstance().sessionValid(session))
+            {
+                return Unauthorized();
+            }
+
             _closed = closed;
 
             if (closed)
@@ -34,7 +39,7 @@ namespace DoorlockServerAPI.Controllers
                 MessageWrapper.unlockDoor();
             }
 
-            return "ok";
+            return Ok();
         }
     }
 }

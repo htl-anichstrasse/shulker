@@ -25,7 +25,7 @@ namespace DoorlockServerAPI.Controllers
             //{
             //    return BadRequest();
             //}
-
+            Console.WriteLine("get token uk");
             Session newSession = new Session(DateTime.Now + TimeSpan.FromMinutes(20));
             SessionManager.getInstance().registerSession(newSession);
             return Ok(newSession.SessionId);

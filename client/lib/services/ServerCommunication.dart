@@ -1,75 +1,101 @@
-import 'package:doorlock_app/services/ServerWrapper.dart';
 import 'package:doorlock_app/util/SharedPrefsHelper.dart';
-import 'package:http/http.dart' as http;
 import 'dart:async';
-
-import 'CustomException.dart';
+import 'package:dio/dio.dart';
 
 class ServerManager {
+  Dio dio;
+
+  // singleton
+  static ServerManager _instance;
+
+  ServerManager._() {
+    var options = BaseOptions(
+      connectTimeout: 1000,
+      receiveTimeout: 1000,
+    );
+    dio = Dio(options);
+  }
+
+  static ServerManager getInstance() {
+    if (_instance == null) {
+      _instance = new ServerManager._();
+    }
+    return _instance;
+  }
+
   var timeout = 500;
+  String sessionToken;
 
   Future<String> getBaseUrl() async {
     return "http://" + await getIpPort();
   }
 
-  Future<String> sendRequest(url, {body = null}) async {
+  Future<String> requestAndSaveSession(String secret) async {
+    String url = await getBaseUrl() + "/api/Session/getToken/" + secret;
     print(url);
     try {
-      if (body == null) {
-        return _response(await http
-            .get(Uri.parse(url))
-            .timeout(Duration(milliseconds: timeout)));
-      } else {
-        return _response(await http
-            .post(Uri.parse(url), body: body)
-            .timeout(Duration(milliseconds: timeout)));
+      var response = await dio.get(url);
+      if (response.statusCode == 200) {
+        sessionToken = response.data;
+        return response.data;
       }
-    } on TimeoutException {
-      throw TimeoutException("Timeout on request");
-      return null;
-    } catch (ex) {
-      print(ex);
+    } catch (e) {
+      print(e);
     }
-
-    return null;
+    return "error";
   }
 
+  Future<bool> checkConnection(String ip, String port) async {
+    String url = "http://" + ip + ":" + port + "/api/status";
 
-  Future<String> sendPostRequest(url, {body = null}) async {
-    print(url);
     try {
-        return _response(await http
-            .post(Uri.parse(url), body: body)
-            .timeout(Duration(milliseconds: timeout)));
-    } on TimeoutException {
-      throw TimeoutException("Timeout on request");
-      return null;
+      var response = await dio.get(url);
+      if (response.statusCode == 200) {
+        return true;
+      }
+    } catch (e) {
+      print(e);
+    }
+    return false;
+  }
+
+  Future<String> changeLockStatus(bool closed) async {
+    if (sessionToken == null) {
+      return "Keine session Aktiv";
+    }
+    String url = await getBaseUrl() +
+        "/api/Lock/setLockState?session=" +
+        sessionToken +
+        "&closed=" +
+        closed.toString();
+    try {
+      var response = await dio.post(url);
+      if (response.statusCode == 200) {
+        return "OK";
+      }
+    } catch (e) {
+      print(e);
+    }
+    return "Fehler";
+  }
+
+  Future<bool> isDoorLocked() async {}
+
+/*Future<bool> checkConnection(ip, port) async {
+    String url = "http://" + ip + ":" + port + "/api/status";
+    var client = new http.Client();
+    try {
+      final response = await client.get(Uri.parse(url));
+      if (response.statusCode == 200) {
+        return true;
+      }
     } catch (ex) {
       print(ex);
+      return false;
+    } finally {
+      client.close();
     }
+    return false;
+  } */
 
-    return null;
-  }
-
-
-
-  dynamic _response(http.Response response) {
-    switch (response.statusCode) {
-      case 200:
-        return response.body.toString();
-      case 400:
-        throw BadRequestException(response.body.toString());
-      case 401:
-      case 403:
-        throw UnauthorisedException(response.body.toString());
-      case 500:
-      default:
-        throw FetchDataException(
-            'Error occured while Communication with Server with StatusCode: ${response.statusCode}');
-    }
-  }
-}
-
-Future<http.Response> changeDoorStateAsync(bool locked) async {
-  ServerWrapper.getInstance().setLockState(!locked);
 }
