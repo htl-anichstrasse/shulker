@@ -15,8 +15,13 @@ namespace DoorlockServerAPI.Controllers
 
         [HttpGet]
         [Route("isLocked")]
-        public bool isLocked()
+        public ActionResult<bool> isLocked(String session)
         {
+            if (!SessionManager.getInstance().sessionValid(session))
+            {
+                return Unauthorized();
+            }
+
             return _closed;
         }
 

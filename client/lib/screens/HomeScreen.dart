@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:doorlock_app/screens/ConnectDeviceScreen.dart';
 import 'package:doorlock_app/views/CreatePin.dart';
 import 'package:doorlock_app/views/PinManager.dart';
@@ -17,6 +19,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   bool _locked = false;
 
+  bool buttonEnabled = true;
 
   int selectedSidenavIndex = 0;
 
@@ -24,17 +27,39 @@ class _HomeScreenState extends State<HomeScreen> {
   String title = "Shulker";
 
   changeLockStatus() {
+    // if button is disabled -> do nothing
+    if (!buttonEnabled) {
+      return;
+    }
+    // disable button, updateLockStatus will re-enable
     setState(() {
-      _locked = !_locked;
+      buttonEnabled = false;
     });
 
-    ServerManager.getInstance().changeLockStatus(_locked);
+    // updates the lock status on the server, then run updateLockStatus
+    print("sending new lock status to server");
+    ServerManager.getInstance()
+        .changeLockStatus(_locked)
+        .then((value) => value == "ok" ? updateLockStatus() : null);
     //changeDoorStateAsync(!_locked);
   }
 
+  updateLockStatus() async {
+    print("updating local lock status");
+    bool serverLockStatus =
+        await ServerManager.getInstance().requestLockStatus();
+    setState(() {
+      buttonEnabled = true;
+      _locked = serverLockStatus;
+    });
+  }
 
   @override
   void initState() {
+    //if (timer == null) {
+    //  timer = Timer.periodic(Duration(milliseconds: 2000), (Timer t) => updateLockStatus());
+    //}
+
     super.initState();
   }
 
@@ -82,20 +107,30 @@ class _HomeScreenState extends State<HomeScreen> {
                               child:
                                   Text(_locked ? "Tür öffnen" : "Tür sperren"),
                               style: ElevatedButton.styleFrom(
-                                  shape: CircleBorder())),
+                                  shape: CircleBorder(),
+                                  primary: buttonEnabled
+                                      ? Colors.blueAccent
+                                      : Colors.grey)),
                         ),
                         SizedBox(
                           height: 10,
                         ),
-                        Text(
-                          _locked
-                              ? "Die Tür ist gesperrt"
-                              : "Die Tür ist geöffnet",
-                          style: TextStyle(
-                            color: _locked ? Colors.green : Colors.deepOrange,
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold,
-                          ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              _locked
+                                  ? "Die Tür ist gesperrt"
+                                  : "Die Tür ist geöffnet",
+                              style: TextStyle(
+                                color: _locked ? Colors.green : Colors.deepOrange,
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            SizedBox(width: 10,),
+                            Builder(builder: (context) => !buttonEnabled ? Container(height: 20.0, width: 20.0, child: CircularProgressIndicator()) : SizedBox.shrink()),
+                          ],
                         )
                       ],
                     ),

@@ -60,6 +60,7 @@ class ServerManager {
   }
 
   Future<String> changeLockStatus(bool closed) async {
+    await Future.delayed(Duration(seconds: 1));
     if (sessionToken == null) {
       return "Keine session Aktiv";
     }
@@ -71,7 +72,7 @@ class ServerManager {
     try {
       var response = await dio.post(url);
       if (response.statusCode == 200) {
-        return "OK";
+        return "ok";
       }
     } catch (e) {
       print(e);
@@ -79,7 +80,25 @@ class ServerManager {
     return "Fehler";
   }
 
-  Future<bool> isDoorLocked() async {}
+  Future<bool> requestLockStatus() async {
+    String url = await getBaseUrl() + "/api/Lock/isLocked?session=" + sessionToken;
+
+    try {
+      var response = await dio.get(url);
+      if (response.statusCode == 200) {
+        if (response.data == "true") {
+          return true;
+        }
+        if (response.data == "false") {
+          return false;
+        }
+      }
+    } catch(e) {
+      print(e);
+    }
+    return false;
+  }
+
 
 /*Future<bool> checkConnection(ip, port) async {
     String url = "http://" + ip + ":" + port + "/api/status";
