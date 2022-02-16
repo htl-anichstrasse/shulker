@@ -1,10 +1,24 @@
 import { Button } from "std-widgets.slint";
 
-global Secret := {
+export global UiSecret := {
     property <string> secret: "";
     property <int> secret_length: 0;
+    property <bool> locked: true;
+    property <int> autolock_countdown: 0;
+
     callback add_char(string);
     callback clear();
+    callback lock();
+    callback unlock();
+
+    lock() => {
+        self.locked = true;
+        self.autolock_countdown = 0;
+    }
+
+    unlock() => {
+        self.locked = false;
+    }
 
     add-char(char) => {
         self.secret += char;
@@ -52,7 +66,7 @@ PinKey := Rectangle {
     callback clicked;
 
     clicked => {
-        Secret.add-char(self.text);
+        UiSecret.add-char(self.text);
     }
 
     Text {
@@ -131,7 +145,7 @@ PinPage := Rectangle {
                 PinKey { 
                     text: "C";
                     clicked => {
-                        Secret.clear();
+                        UiSecret.clear();
                     }
                 }
 
@@ -143,6 +157,7 @@ PinPage := Rectangle {
                     text: "E";
                     clicked => {
                         root.enter();
+                        UiSecret.clear();
                     }
                 }
             }
@@ -156,15 +171,15 @@ PinPage := Rectangle {
         height: 40px;
         clip: true;
 
-        property <string> text: Secret.secret-length == 0 ? "":
-                                Secret.secret-length == 1 ? "*":
-                                Secret.secret-length == 2 ? "**":
-                                Secret.secret-length == 3 ? "***":
-                                Secret.secret-length == 4 ? "****":
-                                Secret.secret-length == 5 ? "*****":
-                                Secret.secret-length == 6 ? "******":
-                                Secret.secret-length == 7 ? "*******":
-                                Secret.secret-length == 8 ? "********": "********";
+        property <string> text: UiSecret.secret-length == 0 ? "":
+                                UiSecret.secret-length == 1 ? "*":
+                                UiSecret.secret-length == 2 ? "**":
+                                UiSecret.secret-length == 3 ? "***":
+                                UiSecret.secret-length == 4 ? "****":
+                                UiSecret.secret-length == 5 ? "*****":
+                                UiSecret.secret-length == 6 ? "******":
+                                UiSecret.secret-length == 7 ? "*******":
+                                UiSecret.secret-length == 8 ? "********": "********";
 
         Text {
             x: (parent.width - self.width) / 2;
@@ -189,7 +204,7 @@ PwKey := Rectangle {
     callback clicked;
 
     clicked => {
-        Secret.add-char(self.text);
+        UiSecret.add-char(self.text);
     }
 
     Text {
@@ -222,15 +237,15 @@ PasswordPage := Rectangle {
         height: 147px;
 
         Text {
-            text: Secret.secret-length == 0 ? "":
-                  Secret.secret-length == 1 ? "*":
-                  Secret.secret-length == 2 ? "**":
-                  Secret.secret-length == 3 ? "***":
-                  Secret.secret-length == 4 ? "****":
-                  Secret.secret-length == 5 ? "*****":
-                  Secret.secret-length == 6 ? "******":
-                  Secret.secret-length == 7 ? "*******":
-                  Secret.secret-length == 8 ? "********": "********";
+            text: UiSecret.secret-length == 0 ? "":
+                  UiSecret.secret-length == 1 ? "*":
+                  UiSecret.secret-length == 2 ? "**":
+                  UiSecret.secret-length == 3 ? "***":
+                  UiSecret.secret-length == 4 ? "****":
+                  UiSecret.secret-length == 5 ? "*****":
+                  UiSecret.secret-length == 6 ? "******":
+                  UiSecret.secret-length == 7 ? "*******":
+                  UiSecret.secret-length == 8 ? "********": "********";
             color: white;
             font-size: 100px;
             x: (parent.width - self.width) / 2;
@@ -252,6 +267,7 @@ PasswordPage := Rectangle {
                     font-size: 60px;
                     clicked => {
                         root.enter();
+                        UiSecret.clear();
                     }
                 }
             }
@@ -260,7 +276,7 @@ PasswordPage := Rectangle {
                     text: "Clear";
                     font-size: 60px;
                     clicked => {
-                        Secret.clear();
+                        UiSecret.clear();
                     }
                 }
             }
@@ -441,6 +457,18 @@ export MainWindow := Window {
     callback use_password(string);
     callback use_pin(string);
     callback lock();
+    callback unlockFromRust();
+    callback lockFromRust();
+    callback startCountdown();
+
+    lockFromRust => {
+        UiSecret.lock();
+    }
+
+    unlockFromRust => {
+        UiSecret.unlock();
+    }
+    
 
     sidebar := Rectangle {
         x: 0;
@@ -457,7 +485,7 @@ export MainWindow := Window {
 
                 TouchArea {
                     clicked => {
-                        Secret.clear();
+                        UiSecret.clear();
                         root.active-page = 0;
                     }
                 }
@@ -468,7 +496,7 @@ export MainWindow := Window {
 
                 TouchArea {
                     clicked => {
-                        Secret.clear();
+                        UiSecret.clear();
                         root.active-page = 1;
                     }
                 }
@@ -479,7 +507,7 @@ export MainWindow := Window {
 
                 TouchArea {
                     clicked => {
-                        Secret.clear();
+                        UiSecret.clear();
                         root.active-page = 2;
                     }
                 }
@@ -498,7 +526,7 @@ export MainWindow := Window {
             y: root.active-page == 0 ? 0 : root.active-page < 0 ? + height + 1px : - parent.height - 1px;
             animate y { duration: 125ms; easing: ease; }
             enter => {
-                root.use_pin(Secret.secret);
+                root.use_pin(UiSecret.secret);
             }
         }
 
@@ -506,13 +534,44 @@ export MainWindow := Window {
             y: root.active-page == 1 ? 0 : root.active-page < 2 ? + height + 1px : - parent.height - 1px;
             animate y { duration: 125ms; easing: ease; }
             enter => {
-                root.use_password(Secret.secret);
+                root.use_password(UiSecret.secret);
             }
         }
 
         m_page := Rectangle {
             y: root.active-page == 2 ? 0 : root.active-page < 2 ? + height + 1px : - parent.height - 1px;
             animate y { duration: 125ms; easing: ease; }
+        }
+    }
+
+    lockedOverlay := Rectangle {
+        background: green;
+        visible: !UiSecret.locked;
+        x: 0;
+        y: 0;
+        width: 100%;
+        height: 100%;
+
+        Text {
+            x: (parent.width - self.width) / 2;
+            y: (parent.height - self.height) / 2 - 20px;
+            font-size: 50px;
+            text: "UNLOCKED";
+            color: white;
+        }
+
+        Text {
+            x: (parent.width - self.width) / 2;
+            y: (parent.height - self.height) / 2 + 25px;
+            font-size: 34px;
+            text: "SELFLOCKS IN " + UiSecret.autolock-countdown + " SECONDS";
+            color: white;
+        }
+
+        TouchArea {
+            clicked => {
+                root.lock();
+            }
         }
     }
 }

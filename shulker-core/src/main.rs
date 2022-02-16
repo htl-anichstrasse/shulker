@@ -2,10 +2,11 @@ slint::include_modules!();
 use crate::core::ShulkerCore;
 use std::{
     sync::{Arc, Mutex, RwLock},
-    thread::spawn,
+    thread::spawn, time::Duration,
 };
 
 use config::{Config, File};
+use credential_types::{Credential, Secret};
 use lazy_static::lazy_static;
 use messaging::Command;
 
@@ -45,7 +46,7 @@ lazy_static! {
 
 fn main() {
     let ui = MainWindow::new();
-    let core = Arc::new(Mutex::new(ShulkerCore::new()));
+    let core = Arc::new(Mutex::new(ShulkerCore::new(ui.as_weak())));
 
     let (messaging_channel_sender, messagin_channel_receiver) =
         crossbeam_channel::bounded::<Command>(0);
@@ -65,38 +66,50 @@ fn main() {
     let core_clone = core.clone();
     ui.on_use_pin(move |secret| {
         let mut answer = None;
-        let cmd = Command::UiUsePin(secret.to_string());
+        let cmd = Command::UsePin(secret.to_string());
         {
             let mut lock = core_clone
                 .lock()
                 .expect("Unable to lock core (on_use_pin)!");
             answer = lock.handle_command(cmd);
         }
-        // TODO
+        let answer = match answer {
+            Some(cmd) => cmd,
+            None => return,
+        };
     });
 
     let ui_handle = ui.as_weak();
     let core_clone = core.clone();
     ui.on_use_password(move |secret| {
         let mut answer = None;
-        let cmd = Command::UiUsePassword(secret.to_string());
+        let cmd = Command::UsePassword(secret.to_string());
         {
             let mut lock = core_clone
                 .lock()
                 .expect("Unable to lock core (on_use_pin)!");
             answer = lock.handle_command(cmd);
         }
-        // TODO
+        let answer = match answer {
+            Some(cmd) => cmd,
+            None => return,
+        };
     });
 
     let ui_handle = ui.as_weak();
     let core_clone = core.clone();
     ui.on_lock(move || {
-        let mut lock = core_clone
-            .lock()
-            .expect("Unable to lock core (on_use_pin)!");
-        lock.lock();
+        {
+            let mut lock = core_clone
+                .lock()
+                .expect("Unable to lock core (on_use_pin)!");
+            lock.lock();
+        }
+        let handle_copy = ui_handle.clone();
+        ui_handle.upgrade_in_event_loop(move |handle_copy| handle_copy.invoke_lockFromRust());
     });
+
+
 
     ui.run();
 }

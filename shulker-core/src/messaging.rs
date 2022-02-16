@@ -13,13 +13,17 @@ use crate::{core::ShulkerCore, CONFIGURATION};
 
 #[derive(Serialize, Deserialize, Debug)]
 pub enum Command {
+    //To Core
     Lock(),
     Unlock(),
     UsePin(String),
     UsePassword(String),
     UseMaster(String),
-    UiUsePin(String),
-    UiUsePassword(String),
+
+    //From Core
+    Locked(),
+    Unlocked(),
+    Wrong(),
 }
 
 pub fn listen(core: Arc<Mutex<ShulkerCore>>, sender: Sender<Command>) {
