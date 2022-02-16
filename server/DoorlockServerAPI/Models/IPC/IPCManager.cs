@@ -29,8 +29,8 @@ namespace DoorlockServerAPI.Models
         Queue<string> sendQueue = new Queue<string>();
 
         private static String listenerPath = "/tmp/toShulkerServer.sock";
-        private static String senderPath = "/tmp/toShulkerServer.sock";
-        // private static String senderPath = "/tmp/toShulkerCore.sock";
+        //private static String senderPath = "/tmp/toShulkerServer.sock";
+        private static String senderPath = "/tmp/toShulkerCore.sock";
 
         public void addToSendQueue(String toAdd)
         {
