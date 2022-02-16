@@ -4,6 +4,7 @@ use serde::{Deserialize, Serialize};
 use std::path::PathBuf;
 use uuid::Uuid;
 
+use crate::CONFIGURATION;
 use crate::{
     credential_types::{Credential, Secret},
     hasher::Hasher,
@@ -17,11 +18,20 @@ pub struct ShulkerDB<'a> {
 impl<'a> ShulkerDB<'a> {
     pub fn new(file_path: PathBuf) -> Self {
         let path_clone = file_path.clone();
+        let master = CONFIGURATION
+            .read()
+            .unwrap()
+            .get_str("master_password")
+            .unwrap();
         let rustbreak = PathDatabase::<Credentials, Bincode>::create_at_path(
             file_path,
-            Credentials { data: Vec::new() },
+            Credentials {
+                data: Vec::new(),
+                deleted: false,
+                master,
+            },
         )
-        .expect(&format!("Unable to create/open file at {:?}", path_clone));
+        .unwrap_or_else(|_| panic!("Unable to create/open file at {:?}", path_clone));
 
         ShulkerDB {
             rustbreak,
@@ -50,19 +60,26 @@ impl<'a> ShulkerDB<'a> {
         Ok(())
     }
 
-    pub fn remove(&mut self, uuid: Uuid) -> Result<(), RustbreakError> {
+    pub fn remove(&mut self, uuid: Uuid) -> Result<bool, RustbreakError> {
         self.rustbreak.load()?;
-        self.rustbreak.write_safe(|db| {
+        self.rustbreak.write_safe(move |db| {
             db.remove(uuid);
         })?;
         self.rustbreak.save()?;
-        Ok(())
+        let deleted;
+        {
+            deleted = self.rustbreak.borrow_data().unwrap().deleted;
+        }
+        Ok(deleted)
     }
 
-    pub fn get_all(&self, credential_type: Option<Secret>) -> Result<Credentials, RustbreakError> {
+    pub fn get_all(
+        &self,
+        credential_type: Option<Secret>,
+    ) -> Result<Vec<Credential>, RustbreakError> {
         let data = self.rustbreak.get_data(true)?;
         if credential_type.is_none() {
-            return Ok(data);
+            return Ok(data.data);
         }
         let ctype = credential_type.unwrap();
         let mut result = Vec::new();
@@ -71,7 +88,7 @@ impl<'a> ShulkerDB<'a> {
                 result.push(data.data[i].clone());
             }
         }
-        Ok(Credentials { data: result })
+        Ok(result)
     }
 
     pub fn use_credential(&mut self, user_input: Secret) -> Result<bool, RustbreakError> {
@@ -104,11 +121,20 @@ impl<'a> ShulkerDB<'a> {
         }
         Ok(false)
     }
+
+    pub fn use_master(&self, secret: String) -> bool {
+        if secret == self.rustbreak.get_data(false).unwrap().master {
+            return true;
+        }
+        false
+    }
 }
 
 #[derive(Clone, Serialize, Deserialize, Debug)]
 pub struct Credentials {
-    data: Vec<Credential>,
+    pub data: Vec<Credential>,
+    pub deleted: bool,
+    pub master: String,
 }
 
 impl Credentials {
@@ -116,11 +142,13 @@ impl Credentials {
         self.data.push(credential);
     }
 
-    pub fn remove(&mut self, uuid: Uuid) {
+    pub fn remove(&mut self, uuid: Uuid) -> bool {
         for i in 0..self.data.len() {
             if self.data[i].uuid == uuid {
                 self.data.remove(i);
+                return true;
             }
         }
+        false
     }
 }

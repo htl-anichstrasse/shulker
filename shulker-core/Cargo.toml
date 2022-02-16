@@ -17,6 +17,7 @@ rand_core = { version = "0.6.3", features = ["std"] }
 uuid = { version = "0.8.2", features = ["serde", "v4"] }
 interprocess = "1.1.1"
 crossbeam-channel = "0.5.2"
+chrono = { version = "0.4.19", features = ["serde"] }
 
 [dependencies.rustbreak]
 version = "2.0.0"

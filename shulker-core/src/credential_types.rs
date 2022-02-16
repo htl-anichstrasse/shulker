@@ -1,9 +1,11 @@
+use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
-use std::time::SystemTime;
+
 use uuid::Uuid;
 
 #[derive(Serialize, Clone, Deserialize, PartialEq, Eq, Debug)]
 pub struct Credential {
+    pub label: String,
     pub uuid: Uuid,
     pub time_frame: Option<TimeFrame>,
     pub uses_left: Option<u32>,
@@ -13,15 +15,11 @@ pub struct Credential {
 impl Credential {
     pub fn check_if_useable(&self) -> bool {
         let mut useable = true;
-        if self.uses_left.is_some() {
-            if self.uses_left.unwrap() == 0 {
-                useable = false;
-            }
+        if self.uses_left.is_some() && self.uses_left.unwrap() == 0 {
+            useable = false;
         }
-        if self.time_frame.is_some() {
-            if !self.time_frame.as_ref().unwrap().is_now() {
-                useable = false;
-            }
+        if self.time_frame.is_some() && !self.time_frame.as_ref().unwrap().is_now() {
+            useable = false;
         }
         useable
     }
@@ -44,13 +42,13 @@ pub enum Secret {
 
 #[derive(Serialize, Clone, Deserialize, PartialEq, Eq, Debug)]
 pub struct TimeFrame {
-    pub start_time: SystemTime,
-    pub end_time: SystemTime,
+    pub start_time: DateTime<Utc>,
+    pub end_time: DateTime<Utc>,
 }
 
 impl TimeFrame {
     pub fn is_now(&self) -> bool {
-        let now = SystemTime::now();
+        let now = Utc::now();
         if self.start_time < now && self.end_time > now {
             return true;
         }

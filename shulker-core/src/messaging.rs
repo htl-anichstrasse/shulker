@@ -8,22 +8,34 @@ use std::{
 use crossbeam_channel::{Receiver, Sender};
 use interprocess::local_socket::{LocalSocketListener, LocalSocketStream};
 use serde::{Deserialize, Serialize};
+use uuid::Uuid;
 
-use crate::{core::ShulkerCore, CONFIGURATION};
+use crate::{core::ShulkerCore, credential_types::Credential, CONFIGURATION};
 
 #[derive(Serialize, Deserialize, Debug)]
+#[serde(tag = "method")]
 pub enum Command {
-    //To Core
-    Lock(),
-    Unlock(),
-    UsePin(String),
-    UsePassword(String),
-    UseMaster(String),
+    //GENERAL
+    Lock,
+    Unlock,
+    Status,
+    Failed,
+    Created,
+    Removed,
+    Locked,
+    Unlocked,
+    Wrong,
+    Correct,
 
-    //From Core
-    Locked(),
-    Unlocked(),
-    Wrong(),
+    //MASTER
+    UseMaster { secret: String },
+
+    //PINS
+    CreatePin { pin: Credential },
+    DeletePin { uuid: Uuid },
+    GetPins,
+    PinList { pins: Vec<Credential> },
+    UsePin { secret: String },
 }
 
 pub fn listen(core: Arc<Mutex<ShulkerCore>>, sender: Sender<Command>) {
@@ -70,13 +82,13 @@ pub fn listen(core: Arc<Mutex<ShulkerCore>>, sender: Sender<Command>) {
                 }
             };
 
-            let mut answer: Option<Command> = None;
+            let answer: Option<Command>;
             {
                 let mut unlocked_core = core.lock().expect("Unable to aquire core lock!");
                 answer = unlocked_core.handle_command(cmd);
             }
-            if answer.is_some() {
-                match sender.send(answer.unwrap()) {
+            if let Some(cmd) = answer {
+                match sender.send(cmd) {
                     Ok(_) => (),
                     Err(e) => {
                         eprintln!("Answer-Channel closed? (sender): {:?}", e);
@@ -88,7 +100,7 @@ pub fn listen(core: Arc<Mutex<ShulkerCore>>, sender: Sender<Command>) {
     }
 }
 
-pub fn tell(core: Arc<Mutex<ShulkerCore>>, receiver: Receiver<Command>) {
+pub fn tell(_core: Arc<Mutex<ShulkerCore>>, receiver: Receiver<Command>) {
     let socket_path = CONFIGURATION
         .read()
         .unwrap()

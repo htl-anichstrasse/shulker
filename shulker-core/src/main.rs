@@ -2,11 +2,11 @@ slint::include_modules!();
 use crate::core::ShulkerCore;
 use std::{
     sync::{Arc, Mutex, RwLock},
-    thread::spawn, time::Duration,
+    thread::spawn,
 };
 
 use config::{Config, File};
-use credential_types::{Credential, Secret};
+
 use lazy_static::lazy_static;
 use messaging::Command;
 
@@ -31,6 +31,8 @@ lazy_static! {
             .set_default("receive_socket_path", "/tmp/toShulkerCore.sock")
             .unwrap()
             .set_default("send_socket_path", "/tmp/toShulkerServer.sock")
+            .unwrap()
+            .set_default("master_password", "master123")
             .unwrap()
             .clone();
 
@@ -62,35 +64,39 @@ fn main() {
     });
 
     // UI Event Handlers
-    let ui_handle = ui.as_weak();
+    let _ui_handle = ui.as_weak();
     let core_clone = core.clone();
     ui.on_use_pin(move |secret| {
-        let mut answer = None;
-        let cmd = Command::UsePin(secret.to_string());
+        let answer;
+        let cmd = Command::UsePin {
+            secret: secret.to_string(),
+        };
         {
             let mut lock = core_clone
                 .lock()
                 .expect("Unable to lock core (on_use_pin)!");
             answer = lock.handle_command(cmd);
         }
-        let answer = match answer {
+        let _answer = match answer {
             Some(cmd) => cmd,
             None => return,
         };
     });
 
-    let ui_handle = ui.as_weak();
+    let _ui_handle = ui.as_weak();
     let core_clone = core.clone();
     ui.on_use_password(move |secret| {
-        let mut answer = None;
-        let cmd = Command::UsePassword(secret.to_string());
+        let answer;
+        let cmd = Command::UsePin {
+            secret: secret.to_string(),
+        };
         {
             let mut lock = core_clone
                 .lock()
                 .expect("Unable to lock core (on_use_pin)!");
             answer = lock.handle_command(cmd);
         }
-        let answer = match answer {
+        let _answer = match answer {
             Some(cmd) => cmd,
             None => return,
         };
@@ -105,11 +111,9 @@ fn main() {
                 .expect("Unable to lock core (on_use_pin)!");
             lock.lock();
         }
-        let handle_copy = ui_handle.clone();
+        let _handle_copy = ui_handle.clone();
         ui_handle.upgrade_in_event_loop(move |handle_copy| handle_copy.invoke_lockFromRust());
     });
-
-
 
     ui.run();
 }
