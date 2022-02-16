@@ -43,7 +43,7 @@ namespace DoorlockServerAPI
             senderThread.Start(ct);
 
             Console.WriteLine("Sending test string");
-            IPCManager.getInstance().addToSendQueue("{\"method\": \"hello\"}\n");
+            IPCManager.getInstance().addToSendQueue("{\"method\": \"Lock\"}\n");
 
             Configuration = configuration;
         }
