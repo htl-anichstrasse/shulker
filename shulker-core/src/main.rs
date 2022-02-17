@@ -49,7 +49,6 @@ lazy_static! {
 fn main() {
     let ui = MainWindow::new();
     let core = Arc::new(Mutex::new(ShulkerCore::new(ui.as_weak())));
-
     let (messaging_channel_sender, messagin_channel_receiver) =
         crossbeam_channel::bounded::<Command>(0);
 

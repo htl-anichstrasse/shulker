@@ -6,7 +6,7 @@ use uuid::Uuid;
 
 use crate::CONFIGURATION;
 use crate::{
-    credential_types::{Credential, Secret},
+    credential_types::{Credential},
     hasher::Hasher,
 };
 
@@ -39,15 +39,8 @@ impl<'a> ShulkerDB<'a> {
         }
     }
 
-    fn hash_secret(&mut self, secret: Secret) -> Secret {
-        match secret {
-            Secret::PinCode(secret_string) => {
-                Secret::PinCode(self.hasher.hash(secret_string.as_bytes()))
-            }
-            Secret::Password(secret_string) => {
-                Secret::Password(self.hasher.hash(secret_string.as_bytes()))
-            }
-        }
+    fn hash_secret(&mut self, secret: String) -> String {
+        self.hasher.hash(secret.as_bytes())
     }
 
     pub fn add(&mut self, mut credential: Credential) -> Result<(), RustbreakError> {
@@ -73,50 +66,18 @@ impl<'a> ShulkerDB<'a> {
         Ok(deleted)
     }
 
-    pub fn get_all(
-        &self,
-        credential_type: Option<Secret>,
-    ) -> Result<Vec<Credential>, RustbreakError> {
+    pub fn get_all(&self) -> Result<Vec<Credential>, RustbreakError> {
         let data = self.rustbreak.get_data(true)?;
-        if credential_type.is_none() {
-            return Ok(data.data);
-        }
-        let ctype = credential_type.unwrap();
-        let mut result = Vec::new();
-        for i in 0..data.data.len() {
-            if std::mem::discriminant(&data.data[i].secret) == std::mem::discriminant(&ctype) {
-                result.push(data.data[i].clone());
-            }
-        }
-        Ok(result)
+        return Ok(data.data);
     }
 
-    pub fn use_credential(&mut self, user_input: Secret) -> Result<bool, RustbreakError> {
+    pub fn use_credential(&mut self, user_input: String) -> Result<bool, RustbreakError> {
         let mut credentials = self.rustbreak.get_data(true)?;
-        match user_input {
-            Secret::PinCode(pin_code) => {
-                for c in &mut credentials.data {
-                    if let Secret::PinCode(secret) = c.secret.clone() {
-                        if self.hasher.verify(pin_code.as_bytes(), &secret) && c.check_if_useable()
-                        {
-                            c.reduce_uses();
-                            self.rustbreak.put_data(credentials, true)?;
-                            return Ok(true);
-                        }
-                    }
-                }
-            }
-            Secret::Password(password) => {
-                for c in &mut credentials.data {
-                    if let Secret::Password(secret) = c.secret.clone() {
-                        if self.hasher.verify(password.as_bytes(), &secret) && c.check_if_useable()
-                        {
-                            c.reduce_uses();
-                            self.rustbreak.put_data(credentials, true)?;
-                            return Ok(true);
-                        }
-                    }
-                }
+        for c in &mut credentials.data {
+            if self.hasher.verify(user_input.as_bytes(), &c.secret) && c.check_if_useable() {
+                c.reduce_uses();
+                self.rustbreak.put_data(credentials, true)?;
+                return Ok(true);
             }
         }
         Ok(false)

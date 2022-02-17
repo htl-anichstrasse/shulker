@@ -2,7 +2,7 @@ use std::path::PathBuf;
 
 use slint::Weak;
 
-use crate::{credential_types::Secret, messaging::Command, shulker_db::ShulkerDB, MainWindow};
+use crate::{messaging::Command, shulker_db::ShulkerDB, MainWindow};
 
 pub struct ShulkerCore<'a> {
     pub shulker_db: ShulkerDB<'a>,
@@ -52,10 +52,9 @@ impl ShulkerCore<'_> {
                 Some(Command::Unlocked)
             }
             Command::UsePin { secret } => {
-                println!("{:#?}", secret);
                 let is_correct = self
                     .shulker_db
-                    .use_credential(Secret::PinCode(secret))
+                    .use_credential(secret)
                     .expect("Rustbreakerror!");
 
                 if is_correct {
@@ -65,7 +64,7 @@ impl ShulkerCore<'_> {
                 Some(Command::Wrong)
             }
             Command::GetPins => {
-                let pins = match self.shulker_db.get_all(None) {
+                let pins = match self.shulker_db.get_all() {
                     Ok(c) => c,
                     Err(e) => panic!("Unable to get pins: {}", e),
                 };
