@@ -13,19 +13,21 @@ namespace DoorlockServerAPI.Models
         public DateTime endDateTime { get; set; }
         public int usesLeft { get; set; }
         public string secret { get; set; }
+        public string label {get; set;}
 
-        public Credential(string uuid, DateTime startDateTime, DateTime endDateTime, int usesLeft, string secret)
+        public Credential(string uuid, DateTime startDateTime, DateTime endDateTime, int usesLeft, string secret, string label)
         {
             this.uuid = uuid;
             this.startDateTime = startDateTime;
             this.endDateTime = endDateTime;
             this.usesLeft = usesLeft;
             this.secret = secret;
+            this.label = label;
         }
 
         public override string ToString()
         {
-            return uuid + "; " + startDateTime + "-" + endDateTime + "; Uses: " + usesLeft;
+            return uuid + "; " + label + ": " + startDateTime + "-" + endDateTime + "; Uses: " + usesLeft;
         }
     }
 }

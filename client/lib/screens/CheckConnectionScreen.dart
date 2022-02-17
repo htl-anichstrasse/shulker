@@ -88,9 +88,7 @@ class _CheckConnectionScreenState extends State<CheckConnectionScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print("BUILD of CHECK CONNECTION SCREEN");
     return new Builder(builder: (context) {
-      print("_vpnConnected:");
       print(_vpnConnected);
       if (_vpnConnected == null) {
         return LoadingScreen();
@@ -98,8 +96,7 @@ class _CheckConnectionScreenState extends State<CheckConnectionScreen> {
       if (!_vpnConnected) {
         return ConnectVPN();
       }
-      print("_ipPortExists:");
-      print(_ipPortExists);
+
       if (_ipPortExists == null){
         return LoadingScreen();
       }

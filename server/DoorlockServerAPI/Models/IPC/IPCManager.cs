@@ -34,7 +34,6 @@ namespace DoorlockServerAPI.Models
 
         public void addToSendQueue(String toAdd)
         {
-            Console.WriteLine("Adding something to sendqueue");
             sendQueue.Enqueue(toAdd);
         }
 

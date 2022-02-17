@@ -50,5 +50,17 @@ namespace DoorlockServerAPI.Models
                 return false;
             }
         }
+
+        public static async Task<bool> isDoorLocked() {
+            try {
+                CancellationTokenSource cancelSource = new CancellationTokenSource();
+                cancelSource.CancelAfter(TimeSpan.FromMilliseconds(timeoutMillis));
+                CancellationToken cancelToken = cancelSource.Token;
+
+                return await MessageManager.isLocked(cancelToken);
+            } catch (TimeoutException e) {
+                throw new TimeoutException();
+            } 
+        }
     }
 }

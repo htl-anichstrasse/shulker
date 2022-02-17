@@ -1,3 +1,4 @@
+import 'package:doorlock_app/models/Credential.dart';
 import 'package:doorlock_app/util/SharedPrefsHelper.dart';
 import 'dart:async';
 import 'package:dio/dio.dart';
@@ -97,6 +98,10 @@ class ServerManager {
       print(e);
     }
     return false;
+  }
+
+  Future<List<Credential>> getCredentials() async {
+    String url = await getBaseUrl() + ""
   }
 
 

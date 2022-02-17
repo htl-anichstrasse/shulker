@@ -21,72 +21,85 @@ class _AuthScreenState extends State<AuthScreen> {
         child: Form(
           key: authFormKey,
           child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 50, horizontal: 10),
+            padding: const EdgeInsets.fromLTRB(10, 50, 10, 10),
             child: Center(
               child: Column(
                 children: [
-                  Text(
-                    "PIN eingeben um fortzufahren",
-                    style: TextStyle(
-                      fontSize: 16,
-                    ),
-                  ),
-                  SizedBox(
-                    width: 100,
-                    child: TextFormField(
-                      obscureText: true,
-                      enableSuggestions: false,
-                      autocorrect: false,
-                      keyboardType: TextInputType.number,
-                      inputFormatters: [
-                        FilteringTextInputFormatter.digitsOnly,
-                      ],
-                      decoration: InputDecoration(
-                        labelText: "PIN Code",
+                  Column(
+                    children: [
+                      Text(
+                        "PIN eingeben um fortzufahren",
+                        style: TextStyle(
+                          fontSize: 16,
+                        ),
                       ),
-                      validator: (value) {
-                        if (value.length < 6) {
-                          return "Der Pin muss mindestens 6 Zeichen lang sein";
-                        }
-                        if (value.length > 10) {
-                          return "Der Pin darf maximal 10 Zeichen betragen";
-                        }
-                        return null;
-                      },
-                      onChanged: (value) {
-                        setState(() {
-                          _pin = value;
-                        });
-                      },
-                    ),
+                      SizedBox(
+                        width: 100,
+                        child: TextFormField(
+                          obscureText: true,
+                          enableSuggestions: false,
+                          autocorrect: false,
+                          keyboardType: TextInputType.number,
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly,
+                          ],
+                          decoration: InputDecoration(
+                            labelText: "PIN Code",
+                          ),
+                          validator: (value) {
+                            if (value.length < 6) {
+                              return "Der Pin muss mindestens 6 Zeichen lang sein";
+                            }
+                            if (value.length > 10) {
+                              return "Der Pin darf maximal 10 Zeichen betragen";
+                            }
+                            return null;
+                          },
+                          onChanged: (value) {
+                            setState(() {
+                              _pin = value;
+                            });
+                          },
+                        ),
+                      ),
+                      ElevatedButton(
+                          onPressed: () {
+                            if (!authFormKey.currentState.validate()) {
+                              return;
+                            }
+
+                            ServerManager.getInstance()
+                                .requestAndSaveSession(_pin)
+                                .then((value) {
+                              if (value == "error") {
+                                displaySnackBar(context, Colors.red,
+                                    "Fehler bei der Kommunikation mit dem Türschloss");
+                                return;
+                              }
+
+                              if (value != null) {
+                                displaySnackBar(
+                                    context, Colors.green, "Erfolgreich verbunden");
+                                Navigator.pushNamedAndRemoveUntil(
+                                    context, "/", (route) => false);
+                              } else {
+                                displaySnackBar(
+                                    context, Colors.redAccent, "Falscher Pin");
+                              }
+                            });
+                          },
+                          child: Text("Bestätigen"))
+                    ],
                   ),
-                  ElevatedButton(
+                  Expanded(child: Align(
+                    alignment: Alignment.bottomRight,
+                    child: ElevatedButton(
                       onPressed: () {
-                        if (!authFormKey.currentState.validate()) {
-                          return;
-                        }
-
-                        ServerManager.getInstance()
-                            .requestAndSaveSession(_pin)
-                            .then((value) {
-                          if (value == "error") {
-                            displaySnackBar(context, Colors.red,
-                                "Fehler bei der Kommunikation mit dem Türschloss");
-                            return;
-                          }
-
-                          if (value != null) {
-                            displaySnackBar(
-                                context, Colors.green, "Erfolgreich verbunden");
-                            Navigator.pushNamedAndRemoveUntil(
-                                context, "/", (route) => false);
-                          } else {
-                            displaySnackBar(
-                                context, Colors.redAccent, "Falscher Pin");
-                          }
-                        });
+                        Navigator.popAndPushNamed(context, "/pairDevice");
                       },
-                      child: Text("Bestätigen"))
+                      child: Text("Türschloss neu verbinden"),
+                    ),
+                  ))
                 ],
               ),
             ),

@@ -15,14 +15,21 @@ namespace DoorlockServerAPI.Controllers
 
         [HttpGet]
         [Route("isLocked")]
-        public ActionResult<bool> isLocked(String session)
+        public async Task<ActionResult<bool>> isLockedAsync(String session)
         {
             if (!SessionManager.getInstance().sessionValid(session))
             {
                 return Unauthorized();
             }
 
-            return _closed;
+            bool doorLocked;
+            try {
+                doorLocked = await MessageWrapper.isDoorLocked();
+            } catch {
+                return StatusCode(500);
+            }
+
+            return doorLocked;
         }
 
         [HttpPost]
