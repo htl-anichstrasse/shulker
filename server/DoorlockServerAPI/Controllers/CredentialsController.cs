@@ -12,16 +12,23 @@ namespace DoorlockServerAPI.Controllers
     public class CredentialsController : Controller
     {
         [HttpGet]
-        public async Task<String> GetAllCredentialsAsync()
+        public async Task<ActionResult<List<Credential>>> GetAllCredentialsAsync(String session)
         {
-            /*List<Credential> creds = new List<Credential>();
-            creds.Add(new Credential("test", new DateTime(1000, 01, 01),
-                new DateTime(9999, 01, 01), 999999, "1206bcfe14b9d52ea93c17e73112"));
-            creds.Add(new Credential("22986d1a-4b9d-11ec-81d3-0242ac130003", new DateTime(1000, 01, 01),
-                new DateTime(9999, 01, 01), 999999, "fdd56d19e6324fb8ba69c19a13fe "));*/
+            if (!SessionManager.getInstance().sessionValid(session))
+            {
+                return Unauthorized();
+            }
 
-            String pins = await MessageWrapper.getAllPinsWithTimeoutASYNC();
-            Console.WriteLine(pins);
+            List<Credential> pins;
+            
+            try
+            {
+                 pins = await MessageWrapper.getAllPinsWithTimeoutASYNC();
+            }
+            catch
+            {
+                return StatusCode(500);
+            }
 
             return pins;
         }

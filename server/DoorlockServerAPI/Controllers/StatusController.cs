@@ -13,7 +13,7 @@ namespace DoorlockServerAPI.Controllers
     {
         [HttpGet]
         [Route("")]
-        public IActionResult checkConection()
+        public IActionResult checkConnection()
         {
             return Ok();
         }

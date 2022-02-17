@@ -20,7 +20,7 @@ namespace DoorlockServerAPI.Models
             MessageManager.unlockDoor();
         }
 
-        public static async Task<string> getAllPinsWithTimeoutASYNC()
+        public static async Task<List<Credential>> getAllPinsWithTimeoutASYNC()
         {
             try
             {
@@ -31,7 +31,7 @@ namespace DoorlockServerAPI.Models
                 return await MessageManager.getAllPins(cancelToken);
             } catch
             {
-                return "error";
+                throw new Exception();
             }
         }
 

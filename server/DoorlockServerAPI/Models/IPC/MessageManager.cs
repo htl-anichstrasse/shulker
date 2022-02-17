@@ -91,7 +91,7 @@ namespace DoorlockServerAPI.Models
             }
         }
 
-        public static Task<String> getAllPins(CancellationToken cancellationToken)
+        public static Task<List<Credential>> getAllPins(CancellationToken cancellationToken)
         {
             // send request for pins
             Dictionary<String, String> dataToSend = new Dictionary<string, string>();
@@ -110,10 +110,12 @@ namespace DoorlockServerAPI.Models
                     throw new TimeoutException();
                 }
 
-                Console.WriteLine("last recieved:" + lastRecieved);
-                if (lastRecieved.Contains("pins"))
+                dynamic json = JsonConvert.DeserializeObject(lastRecieved);
+
+                if (json["method"] == "PinList")
                 {
-                    return Task.FromResult(lastRecieved);
+                    lastRecieved = "";
+                    return Task.FromResult(JsonConvert.DeserializeObject<List<Credential>>(JsonConvert.SerializeObject(json["pins"])));
                 }
             }
         }
