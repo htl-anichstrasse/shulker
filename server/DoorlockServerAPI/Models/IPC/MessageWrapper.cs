@@ -20,6 +20,16 @@ namespace DoorlockServerAPI.Models
             MessageManager.unlockDoor();
         }
 
+        public static void createPin(Credential c)
+        {
+            MessageManager.createPin(c);
+        }
+
+        public static void deletePin(String uuid)
+        {
+            MessageManager.deletePin(uuid);
+        }
+
         public static async Task<List<Credential>> getAllPinsWithTimeoutASYNC()
         {
             try
@@ -35,7 +45,7 @@ namespace DoorlockServerAPI.Models
             }
         }
 
-        public static async Task<bool> checkAdminCredentialWithTimeoutASYNC(String secret)
+        public static async Task<bool> checkAdminPin(String secret)
         {
             try
             {
@@ -43,7 +53,7 @@ namespace DoorlockServerAPI.Models
                 cancelSource.CancelAfter(TimeSpan.FromMilliseconds(timeoutMillis));
                 CancellationToken cancelToken = cancelSource.Token;
 
-                return await MessageManager.isAdminCredentialValidASYNC(cancelToken, secret);
+                return await MessageManager.checkAdminPin(cancelToken, secret);
             }
             catch
             {

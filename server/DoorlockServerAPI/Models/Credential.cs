@@ -8,22 +8,22 @@ namespace DoorlockServerAPI.Models
 {
     public class Credential
     {
+        public Credential(string uuid, DateTime start_time, DateTime end_time, int uses_left, string secret, string label)
+        {
+            this.uuid = uuid;
+            this.start_time = start_time;
+            this.end_time = end_time;
+            this.uses_left = uses_left;
+            this.secret = secret;
+            this.label = label;
+        }
+
         public String uuid { get; set; }
         public DateTime start_time { get; set; }
         public DateTime end_time { get; set; }
         public int uses_left { get; set; }
         public string secret { get; set; }
         public string label {get; set;}
-
-        public Credential(string uuid, DateTime startDateTime, DateTime endDateTime, int usesLeft, string secret, string label)
-        {
-            this.uuid = uuid;
-            this.start_time = startDateTime;
-            this.end_time = endDateTime;
-            this.uses_left = usesLeft;
-            this.secret = secret;
-            this.label = label;
-        }
 
         public override string ToString()
         {

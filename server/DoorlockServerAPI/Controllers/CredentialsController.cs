@@ -33,6 +33,31 @@ namespace DoorlockServerAPI.Controllers
             return pins;
         }
 
-        
+        [HttpPost]
+        [Route("/createPin")]
+        public IActionResult createPin(String session, Credential c)
+        {
+            if (!SessionManager.getInstance().sessionValid(session))
+            {
+                return Unauthorized();
+            }
+
+            MessageWrapper.createPin(c);
+            return Ok();
+        }
+
+        [HttpDelete]
+        [Route("/deletePin/{uuid}")]
+        public IActionResult deletePin(String session, String uuid)
+        {
+            if (!SessionManager.getInstance().sessionValid(session))
+            {
+                return Unauthorized();
+            }
+
+            MessageWrapper.deletePin(uuid);
+            return Ok();
+        }
+
     }
 }

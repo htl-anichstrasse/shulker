@@ -66,27 +66,53 @@ namespace DoorlockServerAPI.Models
             }
         }
 
-        public static Task<bool> isAdminCredentialValidASYNC(CancellationToken cancellationToken, String secret)
+        public static void deletePin(String uuid)
         {
-            // send request
+            Dictionary<String, dynamic> dataToSend = new Dictionary<string, dynamic>();
+            dataToSend["method"] = "DeletePin";
+            dataToSend["uuid"] = uuid;
+
+            IPCManager.getInstance().addToSendQueue(JsonConvert.SerializeObject(dataToSend) + "\n");
+        }
+
+
+
+        public static void createPin(Credential c)
+        {
+            Dictionary<String, dynamic> dataToSend = new Dictionary<string, dynamic>();
+            dataToSend["method"] = "CreatePin";
+            dataToSend["pin"] = c;
+
+            IPCManager.getInstance().addToSendQueue(JsonConvert.SerializeObject(dataToSend) + "\n");
+        }
+
+        public static Task<bool> checkAdminPin(CancellationToken cancellationToken, String secret)
+        {
             Dictionary<String, String> dataToSend = new Dictionary<string, string>();
-            dataToSend["method"] = "CHECK ADMIN CREDENTIAL";
+            dataToSend["method"] = "UseMaster";
             dataToSend["secret"] = secret;
             IPCManager.getInstance().addToSendQueue(JsonConvert.SerializeObject(dataToSend) + "\n");
 
-            // wait for response
             while (true)
             {
                 Thread.Sleep(25);
-
                 if (cancellationToken.IsCancellationRequested)
                 {
                     throw new TimeoutException();
                 }
 
-                if (lastRecieved.Contains("ADMIN CREDENTIAL VALID"))
+                dynamic json = JsonConvert.DeserializeObject(lastRecieved);
+
+                // toDo: important fix bug
+                if (json["method"] == "Correct")
                 {
+                    lastRecieved = "";
                     return Task.FromResult(true);
+                }
+                if (json["method"] == "Wrong")
+                {
+                    lastRecieved = "";
+                    return Task.FromResult(false);
                 }
             }
         }
@@ -109,7 +135,6 @@ namespace DoorlockServerAPI.Models
                 {
                     throw new TimeoutException();
                 }
-
                 dynamic json = JsonConvert.DeserializeObject(lastRecieved);
 
                 if (json["method"] == "PinList")
