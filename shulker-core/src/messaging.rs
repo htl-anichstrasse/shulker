@@ -5,6 +5,7 @@ use std::{
     time::Duration,
 };
 
+use chrono::{DateTime, Utc};
 use crossbeam_channel::{Receiver, Sender};
 use interprocess::local_socket::{LocalSocketListener, LocalSocketStream};
 use serde::{Deserialize, Serialize};
@@ -34,8 +35,17 @@ pub enum Command {
     CreatePin { pin: Credential },
     DeletePin { uuid: Uuid },
     GetPins,
-    PinList { pins: Vec<Credential> },
+    PinList { pins: Vec<CredentialNoSecret> },
     UsePin { secret: String },
+}
+
+#[derive(Serialize, Clone, Deserialize, PartialEq, Eq, Debug)]
+pub struct CredentialNoSecret {
+    pub label: String,
+    pub uuid: Uuid,
+    pub start_time: DateTime<Utc>,
+    pub end_time: DateTime<Utc>,
+    pub uses_left: i32,
 }
 
 pub fn listen(core: Arc<Mutex<ShulkerCore>>, sender: Sender<Command>) {

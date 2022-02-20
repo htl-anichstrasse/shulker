@@ -2,7 +2,11 @@ use std::path::PathBuf;
 
 use slint::Weak;
 
-use crate::{messaging::Command, shulker_db::ShulkerDB, MainWindow};
+use crate::{
+    messaging::{Command, CredentialNoSecret},
+    shulker_db::ShulkerDB,
+    MainWindow,
+};
 
 pub struct ShulkerCore<'a> {
     pub shulker_db: ShulkerDB<'a>,
@@ -67,7 +71,18 @@ impl ShulkerCore<'_> {
                     Ok(c) => c,
                     Err(e) => panic!("Unable to get pins: {}", e),
                 };
-                Some(Command::PinList { pins })
+                let mut result: Vec<CredentialNoSecret> = Vec::new();
+                for p in pins {
+                    let no_secret = CredentialNoSecret {
+                        label: p.label,
+                        uuid: p.uuid,
+                        start_time: p.start_time,
+                        end_time: p.end_time,
+                        uses_left: p.uses_left,
+                    };
+                    result.push(no_secret);
+                }
+                Some(Command::PinList { pins: result })
             }
             Command::CreatePin { pin } => match self.shulker_db.add(pin) {
                 Ok(()) => Some(Command::Created),
