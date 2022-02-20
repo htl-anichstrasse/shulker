@@ -5,6 +5,7 @@ use std::{
     thread::spawn,
 };
 
+use chrono::Utc;
 use config::{Config, File};
 
 use lazy_static::lazy_static;
@@ -49,6 +50,21 @@ lazy_static! {
 fn main() {
     let ui = MainWindow::new();
     let core = Arc::new(Mutex::new(ShulkerCore::new(ui.as_weak())));
+
+    {
+        let mut lock = core.lock().unwrap();
+        lock.shulker_db
+            .add(credential_types::Credential {
+                label: "TESTLABEL".to_string(),
+                uuid: uuid::Uuid::new_v4(),
+                start_time: Utc::now(),
+                end_time: Utc::now(),
+                uses_left: 304,
+                secret: "1234".to_string(),
+            })
+            .unwrap()
+    }
+
     let (messaging_channel_sender, messagin_channel_receiver) =
         crossbeam_channel::bounded::<Command>(0);
 

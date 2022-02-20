@@ -5,10 +5,7 @@ use std::path::PathBuf;
 use uuid::Uuid;
 
 use crate::CONFIGURATION;
-use crate::{
-    credential_types::{Credential},
-    hasher::Hasher,
-};
+use crate::{credential_types::Credential, hasher::Hasher};
 
 pub struct ShulkerDB<'a> {
     rustbreak: Database<Credentials, PathBackend, Bincode>,

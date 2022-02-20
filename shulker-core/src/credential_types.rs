@@ -10,6 +10,7 @@ pub struct Credential {
     pub start_time: DateTime<Utc>,
     pub end_time: DateTime<Utc>,
     pub uses_left: i32,
+    #[serde(skip_serializing)]
     pub secret: String,
 }
 

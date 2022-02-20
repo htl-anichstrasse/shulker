@@ -56,7 +56,6 @@ impl ShulkerCore<'_> {
                     .shulker_db
                     .use_credential(secret)
                     .expect("Rustbreakerror!");
-
                 if is_correct {
                     self.unlock();
                     return Some(Command::Unlocked);
