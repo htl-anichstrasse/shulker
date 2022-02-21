@@ -20,7 +20,8 @@ namespace DoorlockServerAPI.Controllers
         [Route("getToken/{secret}")]
         public async Task<IActionResult> getToken(String secret)
         {
-            if (!await MessageWrapper.checkAdminPin(secret))
+            bool pinValid = await MessageWrapper.checkAdminPin(secret);
+            if (!pinValid)
             {
                 return BadRequest();
             }

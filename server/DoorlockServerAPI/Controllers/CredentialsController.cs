@@ -21,14 +21,7 @@ namespace DoorlockServerAPI.Controllers
 
             List<Credential> pins;
             
-            try
-            {
                  pins = await MessageWrapper.getAllPinsWithTimeoutASYNC();
-            }
-            catch
-            {
-                return StatusCode(500);
-            }
 
             return pins;
         }

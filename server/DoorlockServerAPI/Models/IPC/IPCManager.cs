@@ -100,48 +100,47 @@ namespace DoorlockServerAPI.Models
             // loop forever
             while (true)
             {
-                string dataRec = null;
-                byte[] bytes = null;
 
-                // loop for every message
-                while (true)
+
+                if (cancellationToken.IsCancellationRequested)
                 {
-                    if (cancellationToken.IsCancellationRequested)
-                    {
-                        socket.Close();
-                        return;
-                    }
+                    socket.Close();
+                    return;
+                }
 
-                    // sleep with cancellation Token check
-                    cancellationToken.WaitHandle.WaitOne(TimeSpan.FromMilliseconds(30));
+                // sleep with cancellation Token check
+                cancellationToken.WaitHandle.WaitOne(TimeSpan.FromMilliseconds(30));
 
-                    try
+                string dataRec = null;
+                try
+                {
+                    while (true)
                     {
-                        bytes = new byte[1024];
-                        int bytesRec = s.Receive(bytes);
-                        dataRec += Encoding.ASCII.GetString(bytes, 0, bytesRec);
-                        if (dataRec.IndexOf("\n") > -1)
+                        byte[] buffer = new byte[1024];
+                        int bytesCount = s.Receive(buffer);
+                        dataRec += Encoding.ASCII.GetString(buffer, 0, bytesCount);
+                        Console.WriteLine(dataRec);
+                        if (dataRec.Contains("\n"))
                         {
+                            Console.WriteLine("ends in newline");
                             break;
                         }
-
-                        byte[] msg = Encoding.ASCII.GetBytes(dataRec);
-                        String message = Encoding.UTF8.GetString(msg, 0, msg.Length);
-                        Console.WriteLine($"Received: {message}");
-                        MessageManager.newMessage(message);
                     }
-                    catch (TimeoutException e)
-                    {
-                        Console.WriteLine("Timeout Exception when recieving bytes from socket");
-                        Console.WriteLine(e.StackTrace);
-                    }
-                    catch (Exception e)
-                    {
-                        Console.WriteLine("Other Exception when recieiving bytes from socket");
-                        Console.WriteLine(e.StackTrace);
-                    }
-                    break;
-
+                    Console.WriteLine("after break");
+                    byte[] msg = Encoding.ASCII.GetBytes(dataRec);
+                    String message = Encoding.UTF8.GetString(msg, 0, msg.Length);
+                    Console.WriteLine($"Received: {message}");
+                    MessageManager.newMessage(message);
+                }
+                catch (TimeoutException e)
+                {
+                    Console.WriteLine("Timeout Exception when recieving bytes from socket");
+                    Console.WriteLine(e.StackTrace);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("Other Exception when recieiving bytes from socket");
+                    Console.WriteLine(e.StackTrace);
                 }
 
 

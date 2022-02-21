@@ -39,32 +39,6 @@ namespace DoorlockServerAPI.Models
             IPCManager.getInstance().addToSendQueue(JsonConvert.SerializeObject(dataToSend) + "\n");
         }
 
-        public static Task<bool> isLocked(CancellationToken cancellationToken) {
-            Dictionary<String, String> dataToSend = new Dictionary<string, string>();
-            dataToSend["method"] = "Status";
-            IPCManager.getInstance().addToSendQueue(JsonConvert.SerializeObject(dataToSend) + "\n");
-
-            while (true) {
-                Thread.Sleep(25);
-
-                if (cancellationToken.IsCancellationRequested)
-                {
-                    throw new TimeoutException();
-                }
-
-                dynamic json = JsonConvert.DeserializeObject(lastRecieved);
-                
-                if (json["method"] == "Locked") {
-                    lastRecieved = "";
-                    return Task.FromResult(true);
-                }
-                if (json["method"] == "Unlocked")
-                {
-                    lastRecieved = "";
-                    return Task.FromResult(false);
-                }
-            }
-        }
 
         public static void deletePin(String uuid)
         {
@@ -100,16 +74,51 @@ namespace DoorlockServerAPI.Models
                 {
                     throw new TimeoutException();
                 }
-
-                dynamic json = JsonConvert.DeserializeObject(lastRecieved);
+                if (lastRecieved == "")
+                {
+                    continue;
+                }
 
                 // toDo: important fix bug
+                dynamic json = JsonConvert.DeserializeObject(lastRecieved);
+
                 if (json["method"] == "Correct")
                 {
                     lastRecieved = "";
                     return Task.FromResult(true);
                 }
                 if (json["method"] == "Wrong")
+                {
+                    lastRecieved = "";
+                    return Task.FromResult(false);
+                }
+            }
+        }
+
+        public static Task<bool> isLocked(CancellationToken cancellationToken) {
+            Dictionary<String, String> dataToSend = new Dictionary<string, string>();
+            dataToSend["method"] = "Status";
+            IPCManager.getInstance().addToSendQueue(JsonConvert.SerializeObject(dataToSend) + "\n");
+
+            while (true) {
+                Thread.Sleep(25);
+
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    throw new TimeoutException();
+                }
+                if (lastRecieved == "")
+                {
+                    continue;
+                }
+
+                dynamic json = JsonConvert.DeserializeObject(lastRecieved);
+                
+                if (json["method"] == "Locked") {
+                    lastRecieved = "";
+                    return Task.FromResult(true);
+                }
+                if (json["method"] == "Unlocked")
                 {
                     lastRecieved = "";
                     return Task.FromResult(false);
@@ -135,12 +144,21 @@ namespace DoorlockServerAPI.Models
                 {
                     throw new TimeoutException();
                 }
+                if (lastRecieved == "")
+                {
+                    continue;
+                }
+
                 dynamic json = JsonConvert.DeserializeObject(lastRecieved);
 
                 if (json["method"] == "PinList")
                 {
                     lastRecieved = "";
-                    return Task.FromResult(JsonConvert.DeserializeObject<List<Credential>>(JsonConvert.SerializeObject(json["pins"])));
+                    String pinsAsString = JsonConvert.SerializeObject(json["pins"]);
+                    return Task.FromResult(JsonConvert.DeserializeObject<List<Credential>>(pinsAsString, settings: new JsonSerializerSettings
+                    {
+                        MissingMemberHandling = MissingMemberHandling.Ignore
+                    }));
                 }
             }
         }
