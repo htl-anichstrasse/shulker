@@ -80,6 +80,8 @@ namespace DoorlockServerAPI.Models
             }
         }
 
+        int bufferSize = 2048;
+
         public void ListenerThread(Object data)
         {
             CancellationToken cancellationToken = (CancellationToken)data;
@@ -93,35 +95,38 @@ namespace DoorlockServerAPI.Models
 
             socket.Listen(64);
             Console.WriteLine("Server started, waiting for client to connect...");
-
+            // socket.ReceiveBufferSize = bufferSize;
             var s = socket.Accept();
             Console.WriteLine("Client connected");
 
             // loop forever
             while (true)
             {
-
-
-                if (cancellationToken.IsCancellationRequested)
-                {
-                    socket.Close();
-                    return;
-                }
-
                 // sleep with cancellation Token check
                 cancellationToken.WaitHandle.WaitOne(TimeSpan.FromMilliseconds(30));
 
                 string dataRec = null;
                 try
                 {
-                    while (true)
+                    while (true) // loops till newline is recieved
                     {
-                        byte[] buffer = new byte[1024];
+                        if (cancellationToken.IsCancellationRequested)
+                        {
+                            socket.Close();
+                            return;
+                        }
+
+                        cancellationToken.WaitHandle.WaitOne(TimeSpan.FromMilliseconds(10));
+                        byte[] buffer = new byte[bufferSize];
                         int bytesCount = s.Receive(buffer);
                         dataRec += Encoding.ASCII.GetString(buffer, 0, bytesCount);
-                        Console.WriteLine(dataRec);
-                        if (dataRec.Contains("\n"))
+
+                        byte[] endCharacter = buffer.Skip(bytesCount - 2).Take(2).ToArray();
+                        byte[] newLine = Encoding.ASCII.GetBytes(Environment.NewLine);
+                        if (!(endCharacter.Equals(Encoding.ASCII.GetBytes(Environment.NewLine))))
                         {
+                            Console.WriteLine("ended in newline... START ----");
+                            Console.WriteLine(dataRec.Split("\n")[0]);
                             Console.WriteLine("ends in newline");
                             break;
                         }
