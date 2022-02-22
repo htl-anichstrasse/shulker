@@ -108,16 +108,16 @@ class ServerManager {
   }
 
   Future<List<Credential>> getCredentials() async {
-    String url = await getBaseUrl() + "/api/Credentials?session" + sessionToken;
-
+    String url = await getBaseUrl() + "/api/Credentials?session=" + sessionToken;
+    List<Credential> creds = [];
     try {
       var response = await dio.get(url);
       if (response.statusCode == 200) {
-        Map creds_raw = json.decode(response.data);
-        creds_raw.forEach((key, value) {
-          print(key + ":" + value);
+        response.data.forEach((pin) {
+          creds.add(Credential.fromJson(pin));
         });
       }
+      return creds;
     } catch(e) {
       print(e);
     }

@@ -27,10 +27,6 @@ class _HomeScreenState extends State<HomeScreen> {
   String title = "Shulker";
 
   changeLockStatus() {
-    // if button is disabled -> do nothing
-    if (!buttonEnabled) {
-      return;
-    }
     // disable button, updateLockStatus will re-enable
     setState(() {
       buttonEnabled = false;
@@ -46,8 +42,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   updateLockStatus() async {
     print("updating local lock status");
-    bool serverLockStatus =
-        await ServerManager.getInstance().isLockLocked();
+    bool serverLockStatus = await ServerManager.getInstance().isLockLocked();
     setState(() {
       buttonEnabled = true;
       _locked = serverLockStatus;
@@ -59,7 +54,7 @@ class _HomeScreenState extends State<HomeScreen> {
     //if (timer == null) {
     //  timer = Timer.periodic(Duration(milliseconds: 2000), (Timer t) => updateLockStatus());
     //}
-
+    updateLockStatus();
     super.initState();
   }
 
@@ -103,14 +98,13 @@ class _HomeScreenState extends State<HomeScreen> {
                           constraints:
                               BoxConstraints.tightFor(width: 200, height: 200),
                           child: ElevatedButton(
-                              onPressed: changeLockStatus,
+                              onPressed:
+                                  buttonEnabled ? changeLockStatus : null,
                               child:
                                   Text(_locked ? "Tür öffnen" : "Tür sperren"),
                               style: ElevatedButton.styleFrom(
-                                  shape: CircleBorder(),
-                                  primary: buttonEnabled
-                                      ? Colors.blueAccent
-                                      : Colors.grey)),
+                                shape: CircleBorder(),
+                              )),
                         ),
                         SizedBox(
                           height: 10,
@@ -123,13 +117,22 @@ class _HomeScreenState extends State<HomeScreen> {
                                   ? "Die Tür ist gesperrt"
                                   : "Die Tür ist geöffnet",
                               style: TextStyle(
-                                color: _locked ? Colors.green : Colors.deepOrange,
+                                color:
+                                    _locked ? Colors.green : Colors.deepOrange,
                                 fontSize: 15,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
-                            SizedBox(width: 10,),
-                            Builder(builder: (context) => !buttonEnabled ? Container(height: 20.0, width: 20.0, child: CircularProgressIndicator()) : SizedBox.shrink()),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            Builder(
+                                builder: (context) => !buttonEnabled
+                                    ? Container(
+                                        height: 20.0,
+                                        width: 20.0,
+                                        child: CircularProgressIndicator())
+                                    : SizedBox.shrink()),
                           ],
                         )
                       ],

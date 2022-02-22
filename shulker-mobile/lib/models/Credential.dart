@@ -12,8 +12,13 @@ class Credential {
       this.secret, this.label);
 
   factory Credential.fromJson(Map<String, dynamic> item) {
-    return Credential(item["uuid"], item["start_time"], item["end_time"],
-        item["uses_left"], item["secret"], item["label"]);
+    return Credential(
+        item["uuid"],
+        DateTime.parse(item["start_time"]),
+        DateTime.parse(item["end_time"]),
+        item["uses_left"],
+        item["secret"],
+        item["label"]);
   }
 
   static List<Credential> creds = [

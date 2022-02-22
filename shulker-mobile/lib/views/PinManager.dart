@@ -11,20 +11,42 @@ class PinManager extends StatefulWidget {
 
 class _PinManagerState extends State<PinManager> {
   getCredentials() async {
-    ServerManager.getInstance().getCredentials();
+    List<Credential> temp = await ServerManager.getInstance().getCredentials();
+    setState(() {
+      credentials = temp;
+      loading = false;
+    });
   }
 
-  List<Credential> credentials = Credential.getExampleCredentials();
+  List<Credential> credentials = [];
+  bool loading;
+
+  @override
+  void initState() {
+    getCredentials();
+    loading = true;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return new Builder(builder: (context)
-    {
-      if (credentials == null){
+    if (loading == null || loading) {
+      return new Builder(builder: (context) {
+        return Container(
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CircularProgressIndicator(),
+                ],
+              ),
+            )
+        );
+      });
+    }
 
-      }
 
-
+    return new Builder(builder: (context) {
       return Container(
         margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
         child: Center(
@@ -64,8 +86,8 @@ class _PinManagerState extends State<PinManager> {
                           Container(
                             alignment: Alignment.bottomLeft,
                             child: ConstrainedBox(
-                              constraints:
-                              BoxConstraints.tightFor(width: 30, height: 30),
+                              constraints: BoxConstraints.tightFor(
+                                  width: 30, height: 30),
                               child: ElevatedButton(
                                 onPressed: () {},
                                 child: Icon(Icons.delete),
@@ -80,7 +102,6 @@ class _PinManagerState extends State<PinManager> {
         ),
       );
     });
-
   }
 }
 
