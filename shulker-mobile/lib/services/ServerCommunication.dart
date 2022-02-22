@@ -86,16 +86,18 @@ class ServerManager {
     return "Fehler";
   }
 
-  Future<bool> requestLockStatus() async {
+  Future<bool> isLockLocked() async {
     String url = await getBaseUrl() + "/api/Lock/isLocked?session=" + sessionToken;
 
     try {
       var response = await dio.get(url);
       if (response.statusCode == 200) {
-        if (response.data == "true") {
+        if (response.data.toString() == "true") {
+          print("true");
           return true;
         }
-        if (response.data == "false") {
+        if (response.data.toString() == "false") {
+          print("false");
           return false;
         }
       }

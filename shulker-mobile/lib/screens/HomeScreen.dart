@@ -39,7 +39,7 @@ class _HomeScreenState extends State<HomeScreen> {
     // updates the lock status on the server, then run updateLockStatus
     print("sending new lock status to server");
     ServerManager.getInstance()
-        .changeLockStatus(_locked)
+        .changeLockStatus(!_locked)
         .then((value) => value == "ok" ? updateLockStatus() : null);
     //changeDoorStateAsync(!_locked);
   }
@@ -47,7 +47,7 @@ class _HomeScreenState extends State<HomeScreen> {
   updateLockStatus() async {
     print("updating local lock status");
     bool serverLockStatus =
-        await ServerManager.getInstance().requestLockStatus();
+        await ServerManager.getInstance().isLockLocked();
     setState(() {
       buttonEnabled = true;
       _locked = serverLockStatus;
