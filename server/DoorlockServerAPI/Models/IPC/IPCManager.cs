@@ -80,7 +80,7 @@ namespace DoorlockServerAPI.Models
             }
         }
 
-        int bufferSize = 2048;
+        int bufferSize = 2048 * 2 * 2;
 
         public void ListenerThread(Object data)
         {
@@ -105,35 +105,19 @@ namespace DoorlockServerAPI.Models
                 // sleep with cancellation Token check
                 cancellationToken.WaitHandle.WaitOne(TimeSpan.FromMilliseconds(30));
 
-                string dataRec = null;
                 try
                 {
-                    while (true) // loops till newline is recieved
+                    if (cancellationToken.IsCancellationRequested)
                     {
-                        if (cancellationToken.IsCancellationRequested)
-                        {
-                            socket.Close();
-                            return;
-                        }
-
-                        cancellationToken.WaitHandle.WaitOne(TimeSpan.FromMilliseconds(10));
-                        byte[] buffer = new byte[bufferSize];
-                        int bytesCount = s.Receive(buffer);
-                        dataRec += Encoding.ASCII.GetString(buffer, 0, bytesCount);
-
-                        byte[] endCharacter = buffer.Skip(bytesCount - 2).Take(2).ToArray();
-                        byte[] newLine = Encoding.ASCII.GetBytes(Environment.NewLine);
-                        if (!(endCharacter.Equals(Encoding.ASCII.GetBytes(Environment.NewLine))))
-                        {
-                            Console.WriteLine("ended in newline... START ----");
-                            Console.WriteLine(dataRec.Split("\n")[0]);
-                            Console.WriteLine("ends in newline");
-                            break;
-                        }
+                        socket.Close();
+                        return;
                     }
-                    Console.WriteLine("after break");
-                    byte[] msg = Encoding.ASCII.GetBytes(dataRec);
-                    String message = Encoding.UTF8.GetString(msg, 0, msg.Length);
+
+                    cancellationToken.WaitHandle.WaitOne(TimeSpan.FromMilliseconds(10));
+                    byte[] buffer = new byte[bufferSize];
+                    int bytesCount = s.Receive(buffer);
+                    String message = Encoding.UTF8.GetString(buffer, 0, bytesCount);
+
                     Console.WriteLine($"Received: {message}");
                     MessageManager.newMessage(message);
                 }
@@ -142,11 +126,11 @@ namespace DoorlockServerAPI.Models
                     Console.WriteLine("Timeout Exception when recieving bytes from socket");
                     Console.WriteLine(e.StackTrace);
                 }
-                catch (Exception e)
+                /*catch (Exception e)
                 {
                     Console.WriteLine("Other Exception when recieiving bytes from socket");
                     Console.WriteLine(e.StackTrace);
-                }
+                }*/
 
 
             }
