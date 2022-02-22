@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 class Credential {
   String uuid;
   DateTime startDateTime;
@@ -9,9 +11,18 @@ class Credential {
   Credential(this.uuid, this.startDateTime, this.endDateTime, this.usesLeft,
       this.secret, this.label);
 
+  factory Credential.fromJson(Map<String, dynamic> item) {
+    return Credential(item["uuid"], item["start_time"], item["end_time"],
+        item["uses_left"], item["secret"], item["label"]);
+  }
+
   static List<Credential> creds = [
-    new Credential("04bbb3b1-80b7-4ed2-a501-a077ce11cf04",
-        DateTime.utc(2020, 11, 1), DateTime.utc(2022, 1, 1), -1, "secretuk",
+    new Credential(
+        "04bbb3b1-80b7-4ed2-a501-a077ce11cf04",
+        DateTime.utc(2020, 11, 1),
+        DateTime.utc(2022, 1, 1),
+        -1,
+        "secretuk",
         "Main"),
     new Credential(
         "09394daa-0ca1-4ac5-a24f-dc50844c8835",
@@ -25,25 +36,29 @@ class Credential {
         DateTime.utc(2003, 1, 1),
         DateTime.utc(2025, 1, 1),
         -1,
-        "stillsecret", "Opa"),
+        "stillsecret",
+        "Opa"),
     new Credential(
         "f84bff9a-e550-4cac-ad30-a402450ab499",
         DateTime.utc(2021, 5, 23),
         DateTime.utc(2022, 1, 1),
         -1,
-        "stillsecret", "Putzkraft"),
+        "stillsecret",
+        "Putzkraft"),
     new Credential(
         "6f488a65-2942-4acf-ab00-a039e9a41daa",
         DateTime.utc(2020, 15, 3),
         DateTime.utc(2027, 1, 1),
         -1,
-        "stillsecret", "Zusatz"),
+        "stillsecret",
+        "Zusatz"),
     new Credential(
         "14f86ce8-ca8a-493d-a5e6-4c4458e80840",
         DateTime.utc(2013, 9, 12),
         DateTime.utc(2022, 1, 1),
         -1,
-        "stillsecret", "Test"),
+        "stillsecret",
+        "Test"),
   ];
 
   static List<Credential> getExampleCredentials() {

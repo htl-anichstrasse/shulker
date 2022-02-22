@@ -11,7 +11,7 @@ class PinManager extends StatefulWidget {
 
 class _PinManagerState extends State<PinManager> {
   getCredentials() async {
-    ServerManager.getInstance().ge
+    ServerManager.getInstance().getCredentials();
   }
 
   List<Credential> credentials = Credential.getExampleCredentials();

@@ -2,6 +2,7 @@ import 'package:doorlock_app/models/Credential.dart';
 import 'package:doorlock_app/util/SharedPrefsHelper.dart';
 import 'dart:async';
 import 'package:dio/dio.dart';
+import 'dart:convert';
 
 class ServerManager {
   Dio dio;
@@ -39,6 +40,10 @@ class ServerManager {
       if (response.statusCode == 200) {
         sessionToken = response.data;
         return response.data;
+      }
+    } on DioError catch (ex) {
+      if (ex.response.statusCode == 401){
+        return "invalid";
       }
     } catch (e) {
       print(e);
@@ -101,7 +106,19 @@ class ServerManager {
   }
 
   Future<List<Credential>> getCredentials() async {
-    String url = await getBaseUrl() + ""
+    String url = await getBaseUrl() + "/api/Credentials?session" + sessionToken;
+
+    try {
+      var response = await dio.get(url);
+      if (response.statusCode == 200) {
+        Map creds_raw = json.decode(response.data);
+        creds_raw.forEach((key, value) {
+          print(key + ":" + value);
+        });
+      }
+    } catch(e) {
+      print(e);
+    }
   }
 
 

@@ -39,10 +39,6 @@ class _AuthScreenState extends State<AuthScreen> {
                           obscureText: true,
                           enableSuggestions: false,
                           autocorrect: false,
-                          keyboardType: TextInputType.number,
-                          inputFormatters: [
-                            FilteringTextInputFormatter.digitsOnly,
-                          ],
                           decoration: InputDecoration(
                             labelText: "PIN Code",
                           ),
@@ -74,6 +70,11 @@ class _AuthScreenState extends State<AuthScreen> {
                               if (value == "error") {
                                 displaySnackBar(context, Colors.red,
                                     "Fehler bei der Kommunikation mit dem Türschloss");
+                                return;
+                              }
+                              if (value == "invalid"){
+                                displaySnackBar(context, Colors.red,
+                                    "Falscher Pin");
                                 return;
                               }
 

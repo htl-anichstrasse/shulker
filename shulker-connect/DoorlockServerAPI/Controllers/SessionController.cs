@@ -23,7 +23,7 @@ namespace DoorlockServerAPI.Controllers
             bool pinValid = await MessageWrapper.checkAdminPin(secret);
             if (!pinValid)
             {
-                return BadRequest();
+                return Unauthorized();
             }
 
             Session newSession = new Session(DateTime.Now + TimeSpan.FromMinutes(20));
