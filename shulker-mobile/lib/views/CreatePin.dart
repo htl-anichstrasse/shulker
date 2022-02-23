@@ -1,4 +1,5 @@
 import 'package:doorlock_app/models/Credential.dart';
+import 'package:doorlock_app/screens/HomeScreen.dart';
 import 'package:doorlock_app/services/ServerCommunication.dart';
 import 'package:doorlock_app/util/SnackBarHelper.dart';
 import 'package:flutter/material.dart';
@@ -27,9 +28,7 @@ class _CreatePinState extends State<CreatePin> {
   String _pin2;
   var uuid = Uuid();
 
-  void uploadCredential(Credential c) {
-
-  }
+  void uploadCredential(Credential c) {}
 
   @override
   Widget build(BuildContext context) {
@@ -47,8 +46,6 @@ class _CreatePinState extends State<CreatePin> {
                 onPressed: () {
                   final isValid = formKey.currentState.validate();
                   if (isValid) {
-                    Navigator.pop(context);
-
                     DateTime fromDateTime = DateTime(
                         fromDate.year,
                         fromDate.month,
@@ -63,10 +60,26 @@ class _CreatePinState extends State<CreatePin> {
                     Credential c = new Credential(uuid.v4(), fromDateTime,
                         untilDateTime, int.tryParse(_uses), _pin1, _name);
 
-                    ServerManager.getInstance().uploadCredential(c);
+                    ServerManager.getInstance()
+                        .uploadCredential(c)
+                        .then((value) {
+                      if (value == "ok") {
+                        displaySnackBar(context, Colors.green,
+                            "PIN erfolgreich hinzugefügt");
 
-                    displaySnackBar(
-                        context, Colors.green, "PIN erfolgreich hinzugefügt");
+                        Navigator.pop(context); // pops the create pin view
+                        Navigator.pushReplacement( // replaces the pin manager
+                          // view with another pin manager to refresh the pins
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => HomeScreen(
+                                      sidenavIndex: 1,
+                                    )));
+                      } else {
+                        displaySnackBar(context, Colors.redAccent,
+                            "Fehler beim hinzufügen");
+                      }
+                    });
                   }
                 },
                 child: Text("Erstellen")),
@@ -104,6 +117,73 @@ class _CreatePinState extends State<CreatePin> {
                       onChanged: (value) {
                         _name = value;
                       },
+                    ),
+                  ),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  Container(
+                    decoration: borderOutlineDecoration(),
+                    padding: EdgeInsets.all(10),
+                    child: Column(
+                      children: [
+                        Text("Schlüssel:"),
+                        SizedBox(
+                          child: TextFormField(
+                            maxLength: 16,
+                            obscureText: true,
+                            enableSuggestions: false,
+                            autocorrect: false,
+                            validator: (value) {
+                              if (value.length < 6) {
+                                return "Der Pin muss mindestens 6 Zeichen lang sein";
+                              }
+                              print(_pin2);
+                              if (_pin2 != null && _pin2 != "") {
+                                if (_pin1 != _pin2) {
+                                  return "Die Pins stimmen nicht überein";
+                                }
+                              }
+
+                              return null;
+                            },
+                            decoration: InputDecoration(
+                              labelText: "PIN Code",
+                              hintText: "Bitte geben Sie einen Pin ein",
+                            ),
+                            onChanged: (value) {
+                              _pin1 = value;
+                            },
+                          ),
+                        ),
+                        SizedBox(
+                          child: TextFormField(
+                            maxLength: 16,
+                            obscureText: true,
+                            enableSuggestions: false,
+                            autocorrect: false,
+                            validator: (value) {
+                              if (value.length < 6) {
+                                return "Der Pin muss mindestens 6 Zeichen lang sein";
+                              }
+                              if (_pin1 != null) {
+                                if (_pin1 != _pin2) {
+                                  return "Die Pins stimmen nicht überein";
+                                }
+                              }
+
+                              return null;
+                            },
+                            decoration: InputDecoration(
+                              labelText: "PIN Code wiederholen",
+                              hintText: "Bitte wiederholen Sie ihren Pin",
+                            ),
+                            onChanged: (value) {
+                              _pin2 = value;
+                            },
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                   SizedBox(
@@ -279,73 +359,6 @@ class _CreatePinState extends State<CreatePin> {
                               _uses = value;
                             });
                           },
-                        ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(
-                    height: 15,
-                  ),
-                  Container(
-                    decoration: borderOutlineDecoration(),
-                    padding: EdgeInsets.all(10),
-                    child: Column(
-                      children: [
-                        Text("Schlüssel:"),
-                        SizedBox(
-                          child: TextFormField(
-                            maxLength: 16,
-                            obscureText: true,
-                            enableSuggestions: false,
-                            autocorrect: false,
-                            validator: (value) {
-                              if (value.length < 6) {
-                                return "Der Pin muss mindestens 6 Zeichen lang sein";
-                              }
-                              print(_pin2);
-                              if (_pin2 != null && _pin2 != "") {
-                                if (_pin1 != _pin2) {
-                                  return "Die Pins stimmen nicht überein";
-                                }
-                              }
-
-                              return null;
-                            },
-                            decoration: InputDecoration(
-                              labelText: "PIN Code",
-                              hintText: "Bitte geben Sie einen Pin ein",
-                            ),
-                            onChanged: (value) {
-                              _pin1 = value;
-                            },
-                          ),
-                        ),
-                        SizedBox(
-                          child: TextFormField(
-                            maxLength: 16,
-                            obscureText: true,
-                            enableSuggestions: false,
-                            autocorrect: false,
-                            validator: (value) {
-                              if (value.length < 6) {
-                                return "Der Pin muss mindestens 6 Zeichen lang sein";
-                              }
-                              if (_pin1 != null) {
-                                if (_pin1 != _pin2) {
-                                  return "Die Pins stimmen nicht überein";
-                                }
-                              }
-
-                              return null;
-                            },
-                            decoration: InputDecoration(
-                              labelText: "PIN Code wiederholen",
-                              hintText: "Bitte wiederholen Sie ihren Pin",
-                            ),
-                            onChanged: (value) {
-                              _pin2 = value;
-                            },
-                          ),
                         ),
                       ],
                     ),

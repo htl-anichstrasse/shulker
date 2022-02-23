@@ -1,17 +1,16 @@
-import 'dart:async';
-
-import 'package:doorlock_app/screens/ConnectDeviceScreen.dart';
 import 'package:doorlock_app/views/CreatePin.dart';
 import 'package:doorlock_app/views/PinManager.dart';
 import 'package:doorlock_app/views/Settings.dart';
 import 'package:doorlock_app/widgets/Sidenav.dart';
 import 'package:flutter/material.dart';
-import 'package:check_vpn_connection/check_vpn_connection.dart';
 
 import 'package:doorlock_app/services/ServerCommunication.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeScreen extends StatefulWidget {
+  int sidenavIndex;
+
+  HomeScreen({this.sidenavIndex = 0});
+
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
@@ -51,9 +50,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void initState() {
-    //if (timer == null) {
-    //  timer = Timer.periodic(Duration(milliseconds: 2000), (Timer t) => updateLockStatus());
-    //}
+    selectedSidenavIndex = widget.sidenavIndex;
     updateLockStatus();
     super.initState();
   }

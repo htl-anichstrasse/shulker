@@ -11,7 +11,10 @@ class PinManager extends StatefulWidget {
 
 class _PinManagerState extends State<PinManager> {
   getCredentials() async {
+    loading = true;
+
     List<Credential> temp = await ServerManager.getInstance().getCredentials();
+    print("updating credentials");
     setState(() {
       credentials = temp;
       loading = false;
@@ -24,7 +27,6 @@ class _PinManagerState extends State<PinManager> {
   @override
   void initState() {
     getCredentials();
-    loading = true;
     super.initState();
   }
 
@@ -44,7 +46,6 @@ class _PinManagerState extends State<PinManager> {
         );
       });
     }
-
 
     return new Builder(builder: (context) {
       return Container(
@@ -87,7 +88,17 @@ class _PinManagerState extends State<PinManager> {
                             alignment: Alignment.bottomLeft,
                             child: ElevatedButton(
                               onPressed: () {
-                                ServerManager.getInstance().deleteCredential(credentials[index].uuid);
+                                ServerManager.getInstance().deleteCredential(credentials[index].uuid).then((value) {
+                                  getCredentials();
+                                  if (value == "error") {
+                                    displaySnackBar(
+                                        context, Colors.redAccent, "Fehler beim löschen des Pins");
+                                  }
+                                  if (value == "ok"){
+                                    displaySnackBar(
+                                        context, Colors.green, "Pin erfolgreich gelöscht");
+                                  }
+                                });
                               },
                               child: Icon(Icons.delete),
                               style: ElevatedButton.styleFrom(
