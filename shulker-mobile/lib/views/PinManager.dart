@@ -57,7 +57,7 @@ class _PinManagerState extends State<PinManager> {
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(15)),
                     child: ExpansionTile(
-                        childrenPadding: EdgeInsets.all(15).copyWith(top: 0),
+                        childrenPadding: EdgeInsets.all(15).copyWith(top: 0, bottom: 2),
                         leading: const Icon(Icons.password),
                         title: Text(credentials[index].label),
                         children: [
@@ -85,15 +85,14 @@ class _PinManagerState extends State<PinManager> {
                           ),
                           Container(
                             alignment: Alignment.bottomLeft,
-                            child: ConstrainedBox(
-                              constraints: BoxConstraints.tightFor(
-                                  width: 30, height: 30),
-                              child: ElevatedButton(
-                                onPressed: () {},
-                                child: Icon(Icons.delete),
-                                style: ElevatedButton.styleFrom(
-                                  shape: CircleBorder(),
-                                ),
+                            child: ElevatedButton(
+                              onPressed: () {
+                                ServerManager.getInstance().deleteCredential(credentials[index].uuid);
+                              },
+                              child: Icon(Icons.delete),
+                              style: ElevatedButton.styleFrom(
+                                shape: CircleBorder(),
+                                padding: EdgeInsets.all(8),
                               ),
                             ),
                           ),

@@ -122,6 +122,19 @@ class ServerManager {
     return "error";
   }
 
+  Future<String> deleteCredential(String uuid) async {
+    String url =
+        await getBaseUrl() + "/deletePin/" + uuid + "?session=" + sessionToken;
+    try {
+      var response = await dio.delete(url);
+      if (response.statusCode == 200) {
+        return "ok";
+      }
+    } catch (ex) {
+      print(ex);
+    }
+  }
+
   Future<List<Credential>> getCredentials() async {
     String url =
         await getBaseUrl() + "/api/Credentials?session=" + sessionToken;
