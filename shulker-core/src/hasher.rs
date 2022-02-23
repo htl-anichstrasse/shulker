@@ -50,12 +50,8 @@ impl<'a> Hasher<'a> {
     }
 
     pub fn verify(&self, secret: &[u8], hash: &str) -> bool {
-        match self
-            .argon2
+        self.argon2
             .verify_password(secret, &PasswordHash::new(hash).unwrap())
-        {
-            Ok(_) => true,
-            Err(_) => false,
-        }
+            .is_ok()
     }
 }

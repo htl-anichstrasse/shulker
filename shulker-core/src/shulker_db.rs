@@ -65,7 +65,7 @@ impl<'a> ShulkerDB<'a> {
 
     pub fn get_all(&self) -> Result<Vec<Credential>, RustbreakError> {
         let data = self.rustbreak.get_data(true)?;
-        return Ok(data.data);
+        Ok(data.data)
     }
 
     pub fn use_credential(&mut self, user_input: String) -> Result<bool, RustbreakError> {

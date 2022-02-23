@@ -459,7 +459,11 @@ export MainWindow := Window {
     callback lock();
     callback unlockFromRust();
     callback lockFromRust();
-    callback startCountdown();
+    callback setCountdown(int);
+
+    setCountdown(x) => {
+        UiSecret.autolock-countdown = x;
+    }
 
     lockFromRust => {
         UiSecret.lock();

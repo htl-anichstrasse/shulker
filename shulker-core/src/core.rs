@@ -1,6 +1,7 @@
-use std::path::PathBuf;
+use crate::{UiSecret, CONFIGURATION};
+use std::{path::PathBuf, time::Duration};
 
-use slint::Weak;
+use slint::{ComponentHandle, Weak};
 
 use crate::{
     messaging::{Command, CredentialNoSecret},
@@ -33,9 +34,20 @@ impl ShulkerCore<'_> {
     fn unlock(&mut self) {
         self.locked = false;
         self.ui_handle_weak.upgrade_in_event_loop(move |ui| {
+            let secret = ui.global::<UiSecret>();
+            secret.set_autolock_countdown(
+                CONFIGURATION
+                    .read()
+                    .unwrap()
+                    .get_int("autolock_seconds")
+                    .unwrap()
+                    .try_into()
+                    .unwrap(),
+            );
             ui.invoke_unlockFromRust();
-            ui.invoke_startCountdown();
         });
+        let ui_clone = self.ui_handle_weak.clone();
+        let _handle = std::thread::spawn(move || autolock(ui_clone));
     }
 
     pub fn handle_command(&mut self, cmd: Command) -> Option<Command> {
@@ -53,6 +65,7 @@ impl ShulkerCore<'_> {
             }
             Command::Unlock => {
                 self.unlock();
+
                 Some(Command::Unlocked)
             }
             Command::UsePin { secret } => {
@@ -114,4 +127,30 @@ impl ShulkerCore<'_> {
             _ => None,
         }
     }
+}
+
+fn autolock(ui_handle: Weak<MainWindow>) {
+    let mut seconds = 1;
+    let mut locked;
+    let (s, r) = crossbeam_channel::bounded::<(i32, bool)>(1);
+    while seconds > 0 {
+        std::thread::sleep(Duration::from_secs(1));
+        let _s = s.clone();
+        ui_handle.upgrade_in_event_loop(move |ui| {
+            let secret = ui.global::<UiSecret>();
+            secret.set_autolock_countdown(secret.get_autolock_countdown() - 1);
+            _s.send((secret.get_autolock_countdown(), secret.get_locked()))
+                .unwrap();
+        });
+
+        let s = r.recv().unwrap();
+        seconds = s.0;
+        locked = s.1;
+        if locked {
+            return;
+        }
+    }
+    ui_handle.upgrade_in_event_loop(move |ui| {
+        ui.invoke_lock();
+    });
 }
