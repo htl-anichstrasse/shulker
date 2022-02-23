@@ -51,7 +51,7 @@ class _PinManagerState extends State<PinManager> {
         margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
         child: Center(
           child: ListView.builder(
-              itemCount: credentials.length,
+              itemCount: credentials != null ? credentials.length : 0,
               itemBuilder: (context, index) {
                 return Card(
                     shape: RoundedRectangleBorder(

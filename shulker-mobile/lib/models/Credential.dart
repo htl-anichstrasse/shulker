@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'package:intl/date_symbol_data_local.dart';
+import 'package:intl/intl.dart';
 
 class Credential {
   String uuid;
@@ -19,6 +21,29 @@ class Credential {
         item["uses_left"],
         item["secret"],
         item["label"]);
+  }
+
+  String toJson() {
+    DateFormat aspFormat = DateFormat("y-MM-ddTHH:mm:ss.000");
+
+    return "{\"uuid\": \"" +
+        this.uuid +
+        "\","
+            "\"start_time\": \"" +
+        aspFormat.format(this.startDateTime) + "Z" +
+        "\","
+            "\"end_time\": \"" +
+        aspFormat.format(this.endDateTime) + "Z" +
+        "\","
+            "\"uses_left\": " +
+        this.usesLeft.toString() +
+        ","
+            "\"secret\": \"" +
+        this.secret.toString() +
+        "\","
+            "\"label\": \"" +
+        this.label +
+        "\" }";
   }
 
   static List<Credential> creds = [

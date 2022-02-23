@@ -1,4 +1,5 @@
 import 'package:doorlock_app/models/Credential.dart';
+import 'package:doorlock_app/services/ServerCommunication.dart';
 import 'package:doorlock_app/util/SnackBarHelper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -26,6 +27,10 @@ class _CreatePinState extends State<CreatePin> {
   String _pin2;
   var uuid = Uuid();
 
+  void uploadCredential(Credential c) {
+
+  }
+
   @override
   Widget build(BuildContext context) {
     final localizations = MaterialLocalizations.of(context);
@@ -33,6 +38,40 @@ class _CreatePinState extends State<CreatePin> {
     return Scaffold(
       appBar: AppBar(
         title: Text("Pin hinzufügen"),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(8, 10, 8, 10),
+            child: ElevatedButton(
+                style:
+                    ElevatedButton.styleFrom(primary: Colors.blueAccent[200]),
+                onPressed: () {
+                  final isValid = formKey.currentState.validate();
+                  if (isValid) {
+                    Navigator.pop(context);
+
+                    DateTime fromDateTime = DateTime(
+                        fromDate.year,
+                        fromDate.month,
+                        fromDate.day,
+                        fromTime.hour,
+                        fromTime.minute);
+                    DateTime untilDateTime = untilForever
+                        ? DateTime.utc(9999)
+                        : DateTime(untilDate.year, untilDate.month,
+                            untilDate.day, untilTime.hour, untilTime.minute);
+
+                    Credential c = new Credential(uuid.v4(), fromDateTime,
+                        untilDateTime, int.tryParse(_uses), _pin1, _name);
+
+                    ServerManager.getInstance().uploadCredential(c);
+
+                    displaySnackBar(
+                        context, Colors.green, "PIN erfolgreich hinzugefügt");
+                  }
+                },
+                child: Text("Erstellen")),
+          )
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(12.0),
@@ -120,8 +159,7 @@ class _CreatePinState extends State<CreatePin> {
                                     double toDouble(TimeOfDay myTime) =>
                                         myTime.hour + myTime.minute / 60.0;
                                     if (fromDate.isAtSameMomentAs(untilDate) &&
-                                        toDouble(value) >
-                                            toDouble(untilTime)) {
+                                        toDouble(value) > toDouble(untilTime)) {
                                       untilTime = fromTime;
                                     }
                                   });
@@ -312,29 +350,6 @@ class _CreatePinState extends State<CreatePin> {
                       ],
                     ),
                   ),
-                  SizedBox(
-                    height: 30,
-                  ),
-                  SizedBox(
-                      child: ElevatedButton(
-                          onPressed: () {
-                            final isValid = formKey.currentState.validate();
-                            if (isValid) {
-                              Navigator.pop(context);
-
-                              Credential.creds.add(new Credential(
-                                  uuid.v4(),
-                                  DateTime.now(),
-                                  DateTime.utc(9999),
-                                  int.tryParse(_uses),
-                                  _pin1,
-                                  _name));
-
-                              displaySnackBar(context, Colors.green,
-                                  "PIN erfolgreich hinzugefügt");
-                            }
-                          },
-                          child: Text("Erstellen")))
                 ],
               ),
             ),

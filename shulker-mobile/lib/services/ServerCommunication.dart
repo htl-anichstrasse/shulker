@@ -45,7 +45,7 @@ class ServerManager {
       if (ex.type == DioErrorType.connectTimeout) {
         return "error";
       }
-      if (ex.response.statusCode == 401){
+      if (ex.response.statusCode == 401) {
         return "invalid";
       }
     } catch (e) {
@@ -90,7 +90,8 @@ class ServerManager {
   }
 
   Future<bool> isLockLocked() async {
-    String url = await getBaseUrl() + "/api/Lock/isLocked?session=" + sessionToken;
+    String url =
+        await getBaseUrl() + "/api/Lock/isLocked?session=" + sessionToken;
 
     try {
       var response = await dio.get(url);
@@ -104,14 +105,26 @@ class ServerManager {
           return false;
         }
       }
-    } catch(e) {
+    } catch (e) {
       print(e);
     }
     return false;
   }
 
+  Future<String> uploadCredential(Credential credential) async {
+    String url = await getBaseUrl() + "/createPin?session=" + sessionToken;
+    String cred_json = credential.toJson();
+    print(cred_json);
+    var response = await dio.post(url, data: cred_json);
+    if (response.statusCode == 200) {
+      return "ok";
+    }
+    return "error";
+  }
+
   Future<List<Credential>> getCredentials() async {
-    String url = await getBaseUrl() + "/api/Credentials?session=" + sessionToken;
+    String url =
+        await getBaseUrl() + "/api/Credentials?session=" + sessionToken;
     List<Credential> creds = [];
     try {
       var response = await dio.get(url);
@@ -121,27 +134,8 @@ class ServerManager {
         });
       }
       return creds;
-    } catch(e) {
+    } catch (e) {
       print(e);
     }
   }
-
-
-/*Future<bool> checkConnection(ip, port) async {
-    String url = "http://" + ip + ":" + port + "/api/status";
-    var client = new http.Client();
-    try {
-      final response = await client.get(Uri.parse(url));
-      if (response.statusCode == 200) {
-        return true;
-      }
-    } catch (ex) {
-      print(ex);
-      return false;
-    } finally {
-      client.close();
-    }
-    return false;
-  } */
-
 }
