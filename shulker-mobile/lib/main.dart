@@ -1,3 +1,4 @@
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:doorlock_app/screens/AuthScreen.dart';
 import 'package:doorlock_app/screens/CheckConnectionScreen.dart';
 import 'package:doorlock_app/screens/ConnectDeviceScreen.dart';
@@ -5,7 +6,6 @@ import 'package:doorlock_app/screens/ConnectVPN.dart';
 import 'package:doorlock_app/screens/HomeScreen.dart';
 import 'package:doorlock_app/util/Themes.dart';
 import 'package:flutter/material.dart';
-
 
 void main() {
   runApp(MyApp());
@@ -26,6 +26,8 @@ class MyApp extends StatelessWidget {
         "/connectVPN": (context) => ConnectVPN(),
         "/connectDevice": (context) => ConnectDeviceWizard(),
       },
+      localizationsDelegates: [GlobalMaterialLocalizations.delegate],
+      supportedLocales: [const Locale('de')],
     );
   }
 }

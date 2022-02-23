@@ -1,7 +1,7 @@
+import 'package:dio/dio.dart';
 import 'package:doorlock_app/models/Credential.dart';
 import 'package:doorlock_app/util/SharedPrefsHelper.dart';
 import 'dart:async';
-import 'package:dio/dio.dart';
 import 'dart:convert';
 
 class ServerManager {
@@ -42,6 +42,9 @@ class ServerManager {
         return response.data;
       }
     } on DioError catch (ex) {
+      if (ex.type == DioErrorType.connectTimeout) {
+        return "error";
+      }
       if (ex.response.statusCode == 401){
         return "invalid";
       }

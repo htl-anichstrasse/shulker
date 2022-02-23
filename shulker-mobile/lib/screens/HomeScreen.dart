@@ -119,8 +119,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               style: TextStyle(
                                 color:
                                     _locked ? Colors.green : Colors.deepOrange,
-                                fontSize: 15,
-                                fontWeight: FontWeight.bold,
+                                fontSize: 18,
                               ),
                             ),
                             SizedBox(

@@ -3,6 +3,7 @@ import 'package:doorlock_app/util/SnackBarHelper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:uuid/uuid.dart';
+import 'package:intl/intl.dart';
 
 class CreatePin extends StatefulWidget {
   @override
@@ -12,6 +13,13 @@ class CreatePin extends StatefulWidget {
 class _CreatePinState extends State<CreatePin> {
   final formKey = GlobalKey<FormState>();
   bool unlimitedUses = true;
+
+  DateTime fromDate = DateTime.now();
+  TimeOfDay fromTime = TimeOfDay(hour: 0, minute: 0);
+  DateTime untilDate = DateTime.now();
+  TimeOfDay untilTime = TimeOfDay(hour: 23, minute: 59);
+  bool untilForever = true;
+
   String _name;
   String _uses;
   String _pin1;
@@ -20,6 +28,8 @@ class _CreatePinState extends State<CreatePin> {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = MaterialLocalizations.of(context);
+
     return Scaffold(
       appBar: AppBar(
         title: Text("Pin hinzufügen"),
@@ -55,6 +65,134 @@ class _CreatePinState extends State<CreatePin> {
                       onChanged: (value) {
                         _name = value;
                       },
+                    ),
+                  ),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  Container(
+                    decoration: borderOutlineDecoration(),
+                    padding: EdgeInsets.all(10),
+                    child: Column(
+                      children: [
+                        Text("Verwendbar von bis:"),
+                        SizedBox(
+                          height: 4,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text("vom "),
+                            GestureDetector(
+                              child: Text(
+                                DateFormat("dd.MM.yyyy").format(fromDate),
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              onTap: () {
+                                showDatePicker(
+                                  context: context,
+                                  initialDate: fromDate,
+                                  firstDate: DateTime.now(),
+                                  lastDate: DateTime(2100),
+                                  locale: const Locale("de", "DE"),
+                                ).then((value) {
+                                  setState(() {
+                                    fromDate = value;
+                                    if (value.isAfter(untilDate)) {
+                                      untilDate = fromDate;
+                                    }
+                                  });
+                                });
+                              },
+                            ),
+                            Spacer(),
+                            GestureDetector(
+                              child: Text(
+                                localizations.formatTimeOfDay(fromTime),
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              onTap: () {
+                                showTimePicker(
+                                        context: context, initialTime: fromTime)
+                                    .then((value) {
+                                  setState(() {
+                                    fromTime = value;
+                                    double toDouble(TimeOfDay myTime) =>
+                                        myTime.hour + myTime.minute / 60.0;
+                                    if (fromDate.isAtSameMomentAs(untilDate) &&
+                                        toDouble(value) >
+                                            toDouble(untilTime)) {
+                                      untilTime = fromTime;
+                                    }
+                                  });
+                                });
+                              },
+                            ),
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text("bis "),
+                            GestureDetector(
+                              child: Text(
+                                untilForever
+                                    ? "für immer"
+                                    : DateFormat("dd.MM.yyyy")
+                                        .format(untilDate),
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              onTap: () {
+                                if (untilForever) {
+                                  return;
+                                }
+                                showDatePicker(
+                                  context: context,
+                                  initialDate: untilDate,
+                                  firstDate: DateTime.now(),
+                                  lastDate: DateTime(2100),
+                                  locale: const Locale("de", "DE"),
+                                ).then((value) {
+                                  setState(() {
+                                    untilDate = value;
+                                    if (value.isBefore(fromDate)) {
+                                      fromDate = value;
+                                    }
+                                  });
+                                });
+                              },
+                            ),
+                            Spacer(),
+                            GestureDetector(
+                              child: Text(
+                                untilForever
+                                    ? ""
+                                    : localizations.formatTimeOfDay(untilTime),
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              onTap: () {
+                                showTimePicker(
+                                        context: context,
+                                        initialTime: untilTime)
+                                    .then((value) {
+                                  setState(() {
+                                    untilTime = value;
+                                  });
+                                });
+                              },
+                            ),
+                            Spacer(),
+                            Text("für immer"),
+                            Checkbox(
+                                value: untilForever,
+                                onChanged: (value) {
+                                  setState(() {
+                                    untilForever = value;
+                                  });
+                                })
+                          ],
+                        ),
+                      ],
                     ),
                   ),
                   SizedBox(
@@ -115,23 +253,16 @@ class _CreatePinState extends State<CreatePin> {
                     padding: EdgeInsets.all(10),
                     child: Column(
                       children: [
-                        Text("Code:"),
+                        Text("Schlüssel:"),
                         SizedBox(
                           child: TextFormField(
                             maxLength: 16,
                             obscureText: true,
                             enableSuggestions: false,
                             autocorrect: false,
-                            keyboardType: TextInputType.number,
-                            inputFormatters: [
-                              FilteringTextInputFormatter.digitsOnly,
-                            ],
                             validator: (value) {
                               if (value.length < 6) {
                                 return "Der Pin muss mindestens 6 Zeichen lang sein";
-                              }
-                              if (value.length > 10) {
-                                return "Der Pin darf maximal 10 Zeichen betragen";
                               }
                               print(_pin2);
                               if (_pin2 != null && _pin2 != "") {
@@ -157,16 +288,9 @@ class _CreatePinState extends State<CreatePin> {
                             obscureText: true,
                             enableSuggestions: false,
                             autocorrect: false,
-                            keyboardType: TextInputType.number,
-                            inputFormatters: [
-                              FilteringTextInputFormatter.digitsOnly,
-                            ],
                             validator: (value) {
                               if (value.length < 6) {
                                 return "Der Pin muss mindestens 6 Zeichen lang sein";
-                              }
-                              if (value.length > 10) {
-                                return "Der Pin darf maximal 10 Zeichen betragen";
                               }
                               if (_pin1 != null) {
                                 if (_pin1 != _pin2) {
@@ -269,43 +393,3 @@ class PinInput extends StatelessWidget {
     );
   }
 }
-
-/*
-class DateTimeDisplayAndPicker extends StatefulWidget {
-  DateTime date;
-
-  @override
-  State<DateTimeDisplayAndPicker> createState() =>
-      _DateTimeDisplayAndPickerState();
-}
-
-class _DateTimeDisplayAndPickerState extends State<DateTimeDisplayAndPicker> {
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Text("Anfangs Datum: "),
-        Text(widget.date.toString()),
-        SizedBox(
-          width: 10,
-        ),
-        ElevatedButton(
-            onPressed: () {
-              showDatePicker(
-                      context: context,
-                      initialDate: DateTime.now(),
-                      firstDate:
-                          DateTime.now().subtract(const Duration(days: 1)),
-                      lastDate: DateTime(9999, 1, 1))
-                  .then((value) {
-                    setState(() {
-                      widget.date = value;
-                    });
-              });
-            },
-            child: Text("bearbeiten"))
-      ],
-    );
-  }
-}
-*/
