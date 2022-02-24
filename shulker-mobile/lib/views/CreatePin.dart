@@ -104,13 +104,10 @@ class _CreatePinState extends State<CreatePin> {
                         hintText: "Wie soll der Pin gennant werden?",
                         border: OutlineInputBorder(),
                       ),
-                      maxLength: 15,
+                      maxLength: 30,
                       validator: (value) {
                         if (value.length < 1) {
                           return "Der Name muss mind. 1 Buchstaben haben";
-                        }
-                        if (value.length > 15) {
-                          return "Der Name darf max. 15 Buchstaben haben";
                         }
                         return null;
                       },
@@ -324,7 +321,7 @@ class _CreatePinState extends State<CreatePin> {
                         Text("Verwendungen:"),
                         SizedBox(
                           child: CheckboxListTile(
-                            title: Text("∞ Verwendungen"),
+                            title: Text("Beliebig viele Verwendungen"),
                             checkColor: Colors.white,
                             value: unlimitedUses,
                             onChanged: (bool value) {

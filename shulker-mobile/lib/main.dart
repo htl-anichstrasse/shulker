@@ -28,6 +28,7 @@ class MyApp extends StatelessWidget {
       },
       localizationsDelegates: [GlobalMaterialLocalizations.delegate],
       supportedLocales: [const Locale('de')],
+      debugShowCheckedModeBanner: false,
     );
   }
 }

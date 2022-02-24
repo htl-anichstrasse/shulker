@@ -1,8 +1,6 @@
-import 'package:doorlock_app/services/CustomException.dart';
 import 'package:doorlock_app/services/ServerCommunication.dart';
 import 'package:doorlock_app/util/SnackBarHelper.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 class AuthScreen extends StatefulWidget {
   @override
@@ -30,12 +28,13 @@ class _AuthScreenState extends State<AuthScreen> {
                       Text(
                         "PIN eingeben um fortzufahren",
                         style: TextStyle(
-                          fontSize: 16,
+                          fontSize: 18,
                         ),
                       ),
                       SizedBox(
-                        width: 100,
+                        width: 180,
                         child: TextFormField(
+                          maxLength: 16,
                           obscureText: true,
                           enableSuggestions: false,
                           autocorrect: false,
@@ -44,10 +43,7 @@ class _AuthScreenState extends State<AuthScreen> {
                           ),
                           validator: (value) {
                             if (value.length < 6) {
-                              return "Der Pin muss mindestens 6 Zeichen lang sein";
-                            }
-                            if (value.length > 10) {
-                              return "Der Pin darf maximal 10 Zeichen betragen";
+                              return "Minimum 6 Zeichen";
                             }
                             return null;
                           },

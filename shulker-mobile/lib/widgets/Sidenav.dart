@@ -1,5 +1,4 @@
 import 'package:doorlock_app/util/Themes.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 // https://www.youtube.com/watch?v=n2wtljWWnpU
@@ -40,7 +39,7 @@ class Sidenav extends StatelessWidget {
                 selected: selectedIndex ==1,
                 onPressed: () { onIndexChanged(1); },
                 icon: Icons.insert_link,
-                text: "Pin verwaltung"
+                text: "PIN-Verwaltung"
               ),
             ]),
           ),

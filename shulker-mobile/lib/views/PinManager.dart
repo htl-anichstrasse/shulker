@@ -1,4 +1,5 @@
 import 'package:doorlock_app/models/Credential.dart';
+import 'package:doorlock_app/services/CustomException.dart';
 import 'package:doorlock_app/services/ServerCommunication.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -10,10 +11,15 @@ class PinManager extends StatefulWidget {
 }
 
 class _PinManagerState extends State<PinManager> {
-  getCredentials() async {
+  updateCredentials() async {
     loading = true;
-
-    List<Credential> temp = await ServerManager.getInstance().getCredentials();
+    List<Credential> temp = [];
+    try {
+      temp = await ServerManager.getInstance().getCredentials();
+    } on FetchDataException catch (e) {
+      print(e);
+      displaySnackBar(context, Colors.redAccent, "Fehler beim laden der Pins");
+    }
     print("updating credentials");
     setState(() {
       credentials = temp;
@@ -26,7 +32,7 @@ class _PinManagerState extends State<PinManager> {
 
   @override
   void initState() {
-    getCredentials();
+    updateCredentials();
     super.initState();
   }
 
@@ -36,14 +42,13 @@ class _PinManagerState extends State<PinManager> {
       return new Builder(builder: (context) {
         return Container(
             child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  CircularProgressIndicator(),
-                ],
-              ),
-            )
-        );
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              CircularProgressIndicator(),
+            ],
+          ),
+        ));
       });
     }
 
@@ -58,8 +63,10 @@ class _PinManagerState extends State<PinManager> {
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(15)),
                     child: ExpansionTile(
-                        childrenPadding: EdgeInsets.all(15).copyWith(top: 0, bottom: 2),
-                        leading: const Icon(Icons.password),
+                        key: GlobalKey(),
+                        childrenPadding:
+                            EdgeInsets.all(15).copyWith(top: 0, bottom: 2),
+                        leading: const Icon(Icons.lock),
                         title: Text(credentials[index].label),
                         children: [
                           TextField(
@@ -88,15 +95,17 @@ class _PinManagerState extends State<PinManager> {
                             alignment: Alignment.bottomLeft,
                             child: ElevatedButton(
                               onPressed: () {
-                                ServerManager.getInstance().deleteCredential(credentials[index].uuid).then((value) {
-                                  getCredentials();
+                                ServerManager.getInstance()
+                                    .deleteCredential(credentials[index].uuid)
+                                    .then((value) {
+                                  updateCredentials();
                                   if (value == "error") {
-                                    displaySnackBar(
-                                        context, Colors.redAccent, "Fehler beim löschen des Pins");
+                                    displaySnackBar(context, Colors.redAccent,
+                                        "Fehler beim löschen des Pins");
                                   }
-                                  if (value == "ok"){
-                                    displaySnackBar(
-                                        context, Colors.green, "Pin erfolgreich gelöscht");
+                                  if (value == "ok") {
+                                    displaySnackBar(context, Colors.green,
+                                        "Pin erfolgreich gelöscht");
                                   }
                                 });
                               },

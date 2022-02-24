@@ -2,20 +2,21 @@ import 'package:dio/dio.dart';
 import 'package:doorlock_app/models/Credential.dart';
 import 'package:doorlock_app/util/SharedPrefsHelper.dart';
 import 'dart:async';
-import 'dart:convert';
+
+import 'CustomException.dart';
 
 class ServerManager {
-  Dio dio;
+  Dio _dio;
 
   // singleton
   static ServerManager _instance;
 
   ServerManager._() {
     var options = BaseOptions(
-      connectTimeout: 1000,
-      receiveTimeout: 1000,
+      connectTimeout: 3000,
+      receiveTimeout: 2000,
     );
-    dio = Dio(options);
+    _dio = Dio(options);
   }
 
   static ServerManager getInstance() {
@@ -36,7 +37,7 @@ class ServerManager {
     String url = await getBaseUrl() + "/api/Session/getToken/" + secret;
     print(url);
     try {
-      var response = await dio.get(url);
+      var response = await _dio.get(url);
       if (response.statusCode == 200) {
         sessionToken = response.data;
         return response.data;
@@ -46,7 +47,7 @@ class ServerManager {
         return "error";
       }
       if (ex.response.statusCode == 401) {
-        return "invalid";
+        return "invalid"; // user provided an invalid
       }
     } catch (e) {
       print(e);
@@ -58,7 +59,7 @@ class ServerManager {
     String url = "http://" + ip + ":" + port + "/api/status";
 
     try {
-      var response = await dio.get(url);
+      var response = await _dio.get(url);
       if (response.statusCode == 200) {
         return true;
       }
@@ -79,7 +80,7 @@ class ServerManager {
         "&closed=" +
         closed.toString();
     try {
-      var response = await dio.post(url);
+      var response = await _dio.post(url);
       if (response.statusCode == 200) {
         return "ok";
       }
@@ -94,7 +95,7 @@ class ServerManager {
         await getBaseUrl() + "/api/Lock/isLocked?session=" + sessionToken;
 
     try {
-      var response = await dio.get(url);
+      var response = await _dio.get(url);
       if (response.statusCode == 200) {
         if (response.data.toString() == "true") {
           print("true");
@@ -114,11 +115,16 @@ class ServerManager {
   Future<String> uploadCredential(Credential credential) async {
     String url = await getBaseUrl() + "/createPin?session=" + sessionToken;
     String cred_json = credential.toJson();
-    print(cred_json);
-    var response = await dio.post(url, data: cred_json);
-    if (response.statusCode == 200) {
-      return "ok";
+
+    try {
+      var response = await _dio.post(url, data: cred_json);
+      if (response.statusCode == 200) {
+        return "ok";
+      }
+    } catch (e) {
+      print(e);
     }
+
     return "error";
   }
 
@@ -126,13 +132,14 @@ class ServerManager {
     String url =
         await getBaseUrl() + "/deletePin/" + uuid + "?session=" + sessionToken;
     try {
-      var response = await dio.delete(url);
+      var response = await _dio.delete(url);
       if (response.statusCode == 200) {
         return "ok";
       }
     } catch (ex) {
       print(ex);
     }
+    return "error";
   }
 
   Future<List<Credential>> getCredentials() async {
@@ -140,7 +147,7 @@ class ServerManager {
         await getBaseUrl() + "/api/Credentials?session=" + sessionToken;
     List<Credential> creds = [];
     try {
-      var response = await dio.get(url);
+      var response = await _dio.get(url);
       if (response.statusCode == 200) {
         response.data.forEach((pin) {
           creds.add(Credential.fromJson(pin));
@@ -150,5 +157,6 @@ class ServerManager {
     } catch (e) {
       print(e);
     }
+    throw FetchDataException();
   }
 }

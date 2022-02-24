@@ -22,7 +22,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   int selectedSidenavIndex = 0;
 
-  final List<String> titles = ["Shulker", "Pinverwaltung", "Einstellungen"];
+  final List<String> titles = ["Shulker", "PIN-Verwaltung", "Einstellungen"];
   String title = "Shulker";
 
   changeLockStatus() {

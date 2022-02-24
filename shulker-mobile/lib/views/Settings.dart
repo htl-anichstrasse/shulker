@@ -1,6 +1,4 @@
-import 'package:doorlock_app/util/RegexHelper.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 class SettingsView extends StatefulWidget {
   @override
@@ -31,7 +29,7 @@ class _SettingsViewState extends State<SettingsView> {
                       Navigator.pushNamed(context, "/pairDevice");
                     },
                   ),
-                  ListTile(
+                  /*ListTile(
                     leading: Icon(Icons.vpn_lock),
                     title: Text("VPN neu verbinden"),
                     trailing: SizedBox(
@@ -42,7 +40,7 @@ class _SettingsViewState extends State<SettingsView> {
                     onTap: () {
                       Navigator.pushNamed(context, "/connectVPN");
                     },
-                  ),
+                  ),*/
                 ],
               ),
             ),
@@ -55,7 +53,7 @@ class _SettingsViewState extends State<SettingsView> {
                 onTap: () {
                   showAboutDialog(
                     context: context,
-                    applicationVersion: "0.1",
+                    applicationVersion: "1.0",
                   );
                 },
               ),

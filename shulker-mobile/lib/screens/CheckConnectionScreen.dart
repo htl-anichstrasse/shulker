@@ -5,9 +5,7 @@ import 'package:doorlock_app/screens/AuthScreen.dart';
 import 'package:doorlock_app/screens/ConnectDeviceScreen.dart';
 import 'package:doorlock_app/screens/HomeScreen.dart';
 import 'package:doorlock_app/services/ServerCommunication.dart';
-import 'package:doorlock_app/util/SnackBarHelper.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:doorlock_app/screens/ConnectVPN.dart';
 import 'package:doorlock_app/util/SharedPrefsHelper.dart';
 
@@ -16,23 +14,31 @@ class CheckConnectionScreen extends StatefulWidget {
   _CheckConnectionScreenState createState() => _CheckConnectionScreenState();
 }
 
-
 class _CheckConnectionScreenState extends State<CheckConnectionScreen> {
   bool _ipPortExists;
+  bool _connectionWorks;
   bool _vpnConnected;
 
   var timer;
 
-  /* checkVPNConnectionLoop() async {
-    if (await CheckVpnConnection.isVpnActive()) {
-      timer.cancel();
-      Navigator.pushNamedAndRemoveUntil(context, "/", (route) => false);
-      displaySnackBar(context, Colors.green, "VPN Verbindung erfolgreich");
+  checkServerConnection() async {
+    bool ipPortExists = await ipPortExist();
+    if (!ipPortExists) {
+      return;
     }
-  } */
+
+    bool connectionWorking = await ServerManager.getInstance()
+        .checkConnection(await getIp(), await getPort());
+    setState(() {
+      _connectionWorks = connectionWorking;
+    });
+  }
 
   checkVPNConnection() async {
     print("check vpn connection method");
+    print(_connectionWorks);
+    if (_connectionWorks) timer.cancel();
+
     if (await CheckVpnConnection.isVpnActive()) {
       setState(() {
         timer.cancel();
@@ -50,15 +56,13 @@ class _CheckConnectionScreenState extends State<CheckConnectionScreen> {
     print("check ip port saved method");
 
     bool keysExist = await ipPortExist();
-    print(await getIp());
-    print(await getPort());
     setState(() {
       _ipPortExists = keysExist;
       print(_ipPortExists);
     });
   }
 
-  doesSessionExist(){
+  doesSessionExist() {
     if (ServerManager.getInstance().sessionToken == null) {
       return false;
     }
@@ -75,11 +79,16 @@ class _CheckConnectionScreenState extends State<CheckConnectionScreen> {
   void initState() {
     super.initState();
     if (timer == null) {
-      timer = Timer.periodic(Duration(milliseconds: 300), (Timer t) => checkVPNConnection());
+      timer = Timer.periodic(
+          Duration(milliseconds: 300), (Timer t) => checkVPNConnection());
     }
 
-    if (_vpnConnected == null) {
-      checkVPNConnection();
+    if (_connectionWorks == null) {
+      checkServerConnection();
+    }
+    if (timer == null) {
+      timer = Timer.periodic(
+          Duration(milliseconds: 300), (Timer t) => checkVPNConnection());
     }
     if (_ipPortExists == null) {
       checkIpPortSaved();
@@ -90,6 +99,15 @@ class _CheckConnectionScreenState extends State<CheckConnectionScreen> {
   Widget build(BuildContext context) {
     return new Builder(builder: (context) {
       print(_vpnConnected);
+      // if the connection already works -> no vpn connection is required
+      // and the ip and port are also saved already
+      if (_connectionWorks == null) return LoadingScreen();
+      if (_connectionWorks) {
+        if (!doesSessionExist()) return AuthScreen();
+
+        return HomeScreen();
+      }
+
       if (_vpnConnected == null) {
         return LoadingScreen();
       }
@@ -97,14 +115,14 @@ class _CheckConnectionScreenState extends State<CheckConnectionScreen> {
         return ConnectVPN();
       }
 
-      if (_ipPortExists == null){
+      if (_ipPortExists == null) {
         return LoadingScreen();
       }
       if (!_ipPortExists) {
         return ConnectDeviceWizard();
       }
 
-      if(!doesSessionExist()){
+      if (!doesSessionExist()) {
         return AuthScreen();
       }
 
@@ -120,25 +138,26 @@ class LoadingScreen extends StatelessWidget {
       onWillPop: () async => false,
       child: Scaffold(
         body: Container(
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text("Überprüfe Verbindung...",
+            child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  "Überprüfe Verbindung...",
                   style: TextStyle(
                     fontSize: 14,
-                  ),),
-                  SizedBox(
-                    height: 10,
                   ),
-                  CircularProgressIndicator(),
-                ],
-              ),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                CircularProgressIndicator(),
+              ],
             ),
-          )
-        ),
+          ),
+        )),
       ),
     );
   }
