@@ -14,7 +14,6 @@ pub struct ShulkerCore<'a> {
     pub shulker_db: ShulkerDB<'a>,
     pub locked: bool,
     ui_handle_weak: Weak<MainWindow>,
-    line: Option<Line>,
     line_handle: Option<LineHandle>,
 }
 
@@ -39,7 +38,7 @@ impl ShulkerCore<'_> {
             Some(line) => match line.request(LineRequestFlags::OUTPUT, 0, "shulker_lock") {
                 Ok(line_handle) => Some(line_handle),
                 Err(e) => {
-                    eprintln!("Unable to get gpio_pin line handle!");
+                    eprintln!("Unable to get gpio_pin line handle: {e}");
                     None
                 }
             },
@@ -50,7 +49,6 @@ impl ShulkerCore<'_> {
             shulker_db: ShulkerDB::new(PathBuf::from("credentials")),
             locked: true,
             ui_handle_weak,
-            line,
             line_handle,
         }
     }
