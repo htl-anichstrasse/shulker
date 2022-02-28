@@ -1351,6 +1351,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "gpio"
+version = "0.4.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "4fe6783270536547ac473c9d2ae5a7e0e715ea43f29004ced47fbd1c1372d2c7"
+
+[[package]]
 name = "half"
 version = "1.8.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2795,6 +2801,7 @@ dependencies = [
  "chrono",
  "config",
  "crossbeam-channel",
+ "gpio",
  "interprocess",
  "lazy_static",
  "rand_core",

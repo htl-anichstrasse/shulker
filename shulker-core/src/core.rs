@@ -1,6 +1,7 @@
 use crate::{UiSecret, CONFIGURATION};
 use std::{path::PathBuf, time::Duration};
 
+use gpio::{sysfs::SysFsGpioOutput, GpioOut};
 use slint::{ComponentHandle, Weak};
 
 use crate::{
@@ -13,14 +14,22 @@ pub struct ShulkerCore<'a> {
     pub shulker_db: ShulkerDB<'a>,
     pub locked: bool,
     ui_handle_weak: Weak<MainWindow>,
+    gpio: SysFsGpioOutput,
 }
 
 impl ShulkerCore<'_> {
     pub fn new(ui_handle_weak: Weak<MainWindow>) -> Self {
+        let gpio_pin_number = crate::CONFIGURATION
+            .read()
+            .unwrap()
+            .get_int("gpio_pin")
+            .unwrap() as u16;
+
         ShulkerCore {
             shulker_db: ShulkerDB::new(PathBuf::from("credentials")),
             locked: true,
             ui_handle_weak,
+            gpio: SysFsGpioOutput::open(gpio_pin_number).unwrap(),
         }
     }
 
@@ -29,6 +38,10 @@ impl ShulkerCore<'_> {
         self.ui_handle_weak.upgrade_in_event_loop(move |ui| {
             ui.invoke_lockFromRust();
         });
+        match self.gpio.set_high() {
+            Ok(_) => {}
+            Err(e) => eprintln!("Unable to set gpio pin to high! {e}"),
+        }
     }
 
     fn unlock(&mut self) {
@@ -48,6 +61,10 @@ impl ShulkerCore<'_> {
         });
         let ui_clone = self.ui_handle_weak.clone();
         let _handle = std::thread::spawn(move || autolock(ui_clone));
+        match self.gpio.set_low() {
+            Ok(_) => {}
+            Err(e) => eprintln!("Unable to set gpio pin to low! {e}"),
+        }
     }
 
     pub fn handle_command(&mut self, cmd: Command) -> Option<Command> {
@@ -131,7 +148,7 @@ impl ShulkerCore<'_> {
 
 fn autolock(ui_handle: Weak<MainWindow>) {
     let mut seconds = 1;
-    let mut locked;
+    let mut locked: bool;
     let (s, r) = crossbeam_channel::bounded::<(i32, bool)>(1);
     while seconds > 0 {
         std::thread::sleep(Duration::from_secs(1));
@@ -143,9 +160,8 @@ fn autolock(ui_handle: Weak<MainWindow>) {
                 .unwrap();
         });
 
-        let s = r.recv().unwrap();
-        seconds = s.0;
-        locked = s.1;
+        (seconds, locked) = r.recv().unwrap();
+
         if locked {
             return;
         }

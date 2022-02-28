@@ -32,6 +32,8 @@ lazy_static! {
             .unwrap()
             .set_default("send_socket_path", "/tmp/toShulkerServer.sock")
             .unwrap()
+            .set_default("gpio_pin", 27)
+            .unwrap()
             .set_default("master_password", "master123")
             .unwrap()
             .clone();
