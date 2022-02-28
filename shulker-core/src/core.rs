@@ -1,7 +1,7 @@
 use crate::{UiSecret, CONFIGURATION};
 use std::{path::PathBuf, time::Duration};
 
-use gpio_cdev::{Chip, Line, LineHandle, LineRequestFlags};
+use gpio_cdev::{Chip, LineHandle, LineRequestFlags};
 use slint::{ComponentHandle, Weak};
 
 use crate::{
