@@ -1,7 +1,7 @@
 use crate::{UiSecret, CONFIGURATION};
 use std::{path::PathBuf, time::Duration};
 
-use gpio::{sysfs::SysFsGpioOutput, GpioOut};
+use gpio_cdev::{Chip, Line, LineHandle, LineRequestFlags};
 use slint::{ComponentHandle, Weak};
 
 use crate::{
@@ -14,7 +14,8 @@ pub struct ShulkerCore<'a> {
     pub shulker_db: ShulkerDB<'a>,
     pub locked: bool,
     ui_handle_weak: Weak<MainWindow>,
-    gpio: Option<SysFsGpioOutput>,
+    line: Option<Line>,
+    line_handle: Option<LineHandle>,
 }
 
 impl ShulkerCore<'_> {
@@ -23,21 +24,34 @@ impl ShulkerCore<'_> {
             .read()
             .unwrap()
             .get_int("gpio_pin")
-            .unwrap() as u16;
+            .unwrap() as u32;
 
-        let gpio = match SysFsGpioOutput::open(gpio_pin_number) {
-            Ok(gpio) => Some(gpio),
+        let mut chip = Chip::new("/dev/gpiochip0").unwrap();
+        let line = match chip.get_line(gpio_pin_number) {
+            Ok(line) => Some(line),
             Err(e) => {
                 eprintln!("Unable to get GPIO Output: {e}");
                 None
             }
         };
 
+        let line_handle = match line {
+            Some(line) => match line.request(LineRequestFlags::OUTPUT, 0, "shulker_lock") {
+                Ok(line_handle) => Some(line_handle),
+                Err(e) => {
+                    eprintln!("Unable to get gpio_pin line handle!");
+                    None
+                }
+            },
+            None => None,
+        };
+
         ShulkerCore {
             shulker_db: ShulkerDB::new(PathBuf::from("credentials")),
             locked: true,
             ui_handle_weak,
-            gpio,
+            line,
+            line_handle,
         }
     }
 
@@ -46,10 +60,10 @@ impl ShulkerCore<'_> {
         self.ui_handle_weak.upgrade_in_event_loop(move |ui| {
             ui.invoke_lockFromRust();
         });
-        match &mut self.gpio {
-            Some(gpio) => match gpio.set_high() {
+        match &self.line_handle {
+            Some(handle) => match handle.set_value(1) {
                 Ok(_) => {}
-                Err(e) => eprintln!("Unable to set gpio pin to high: {e}"),
+                Err(e) => eprintln!("Unable to set gpio line to high: {e}"),
             },
             None => {}
         }
@@ -72,10 +86,10 @@ impl ShulkerCore<'_> {
         });
         let ui_clone = self.ui_handle_weak.clone();
         let _handle = std::thread::spawn(move || autolock(ui_clone));
-        match &mut self.gpio {
-            Some(gpio) => match gpio.set_low() {
+        match &self.line_handle {
+            Some(handle) => match handle.set_value(0) {
                 Ok(_) => {}
-                Err(e) => eprintln!("Unable to set gpio pin to low: {e}"),
+                Err(e) => eprintln!("Unable to set gpio line to low: {e}"),
             },
             None => {}
         }
