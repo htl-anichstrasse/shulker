@@ -14,7 +14,7 @@ pub struct ShulkerCore<'a> {
     pub shulker_db: ShulkerDB<'a>,
     pub locked: bool,
     ui_handle_weak: Weak<MainWindow>,
-    gpio: SysFsGpioOutput,
+    gpio: Option<SysFsGpioOutput>,
 }
 
 impl ShulkerCore<'_> {
@@ -25,11 +25,19 @@ impl ShulkerCore<'_> {
             .get_int("gpio_pin")
             .unwrap() as u16;
 
+        let gpio = match SysFsGpioOutput::open(gpio_pin_number) {
+            Ok(gpio) => Some(gpio),
+            Err(e) => {
+                eprintln!("Unable to get GPIO Output: {e}");
+                None
+            }
+        };
+
         ShulkerCore {
             shulker_db: ShulkerDB::new(PathBuf::from("credentials")),
             locked: true,
             ui_handle_weak,
-            gpio: SysFsGpioOutput::open(gpio_pin_number).unwrap(),
+            gpio,
         }
     }
 
@@ -38,9 +46,12 @@ impl ShulkerCore<'_> {
         self.ui_handle_weak.upgrade_in_event_loop(move |ui| {
             ui.invoke_lockFromRust();
         });
-        match self.gpio.set_high() {
-            Ok(_) => {}
-            Err(e) => eprintln!("Unable to set gpio pin to high! {e}"),
+        match &mut self.gpio {
+            Some(gpio) => match gpio.set_high() {
+                Ok(_) => {}
+                Err(e) => eprintln!("Unable to set gpio pin to high: {e}"),
+            },
+            None => {}
         }
     }
 
@@ -61,9 +72,12 @@ impl ShulkerCore<'_> {
         });
         let ui_clone = self.ui_handle_weak.clone();
         let _handle = std::thread::spawn(move || autolock(ui_clone));
-        match self.gpio.set_low() {
-            Ok(_) => {}
-            Err(e) => eprintln!("Unable to set gpio pin to low! {e}"),
+        match &mut self.gpio {
+            Some(gpio) => match gpio.set_low() {
+                Ok(_) => {}
+                Err(e) => eprintln!("Unable to set gpio pin to low: {e}"),
+            },
+            None => {}
         }
     }
 
