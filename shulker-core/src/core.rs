@@ -35,7 +35,7 @@ impl ShulkerCore<'_> {
         };
 
         let line_handle = match line {
-            Some(line) => match line.request(LineRequestFlags::OUTPUT, 0, "shulker_lock") {
+            Some(line) => match line.request(LineRequestFlags::OUTPUT, 1, "shulker_lock") {
                 Ok(line_handle) => Some(line_handle),
                 Err(e) => {
                     eprintln!("Unable to get gpio_pin line handle: {e}");
