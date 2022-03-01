@@ -1,0 +1,586 @@
+import { Button } from "std-widgets.slint";
+
+export global UiSecret := {
+    property <string> secret: "";
+    property <int> secret_length: 0;
+    property <bool> locked: true;
+    property <int> autolock_countdown: 0;
+
+    callback add_char(string);
+    callback clear();
+    callback lock();
+    callback unlock();
+
+    lock() => {
+        self.locked = true;
+        self.autolock_countdown = 0;
+    }
+
+    unlock() => {
+        self.locked = false;
+    }
+
+    add-char(char) => {
+        self.secret += char;
+        self.secret-length += 1;
+    }
+
+    clear() => {
+        self.secret = "";
+        self.secret-length = 0;
+    }
+}
+
+
+// SIDE BAR
+SidebarIcon := Rectangle {
+    height: 130px;
+    width: 130px;
+    border-radius: self.height/2;
+    border-color: white;
+    border-width: 3px;
+    
+    property <string> text: "";
+    property <length> font_size: 35px;
+
+    icon_text := Text {
+        text: parent.text;
+        font-size: parent.font-size;
+        color: white;
+
+        x: (parent.width - self.width) / 2;
+        y: (parent.height - self.height) / 2;
+    }
+}
+
+// PINPAGE
+PinKey := Rectangle {
+    border-color: white;
+    border-width: 3px;
+    border-radius: 0px;
+    background: ta.has-hover ? grey : transparent;
+    property <string> text;
+    property <length> font_size: 80px;
+    property <length> x_offset;
+    property <length> y_offset;
+    callback clicked;
+
+    clicked => {
+        UiSecret.add-char(self.text);
+    }
+
+    Text {
+        text: parent.text;
+        font-size: parent.font-size;
+        color: white;
+        x: (parent.width - self.width) / 2 + parent.x_offset;
+        y: (parent.height - self.height) / 2 + parent.y_offset;
+    }
+
+    ta := TouchArea {
+        clicked() => {
+            parent.clicked();
+        }
+    }
+}
+
+PinPage := Rectangle {
+    width: 100%;
+    height: 100%;
+    x: 0;
+    y: 0;
+
+    callback enter();
+
+    pin_input := Rectangle {
+        width: 300px;
+        height: 400px;
+        x: (parent.width - self.width) / 2 - 120px;
+        y: (parent.height - self.height) / 2;
+
+        GridLayout {
+            Row {
+                PinKey { 
+                    text: "1";
+                }
+
+                PinKey { 
+                    text: "2";
+                }
+
+                PinKey { 
+                    text: "3";
+                }
+            }
+
+            Row {
+                PinKey { 
+                    text: "4";
+                }
+
+                PinKey { 
+                    text: "5";
+                }
+
+                PinKey { 
+                    text: "6";
+                }
+            }
+
+            Row {
+                PinKey { 
+                    text: "7";
+                }
+
+                PinKey { 
+                    text: "8";
+                }
+
+                PinKey { 
+                    text: "9";
+                }
+            }
+
+            Row {
+                PinKey { 
+                    text: "C";
+                    clicked => {
+                        UiSecret.clear();
+                    }
+                }
+
+                PinKey { 
+                    text: "0";
+                }
+
+                PinKey { 
+                    text: "E";
+                    clicked => {
+                        root.enter();
+                        UiSecret.clear();
+                    }
+                }
+            }
+        }
+    }
+
+    pinbuffer_rect := Rectangle {
+        x: (parent.width - self.width) / 2 + 180px;
+        y: (parent.height - self.height) / 2;
+        width: 260px;
+        height: 40px;
+        clip: true;
+
+        property <string> text: UiSecret.secret-length == 0 ? "":
+                                UiSecret.secret-length == 1 ? "*":
+                                UiSecret.secret-length == 2 ? "**":
+                                UiSecret.secret-length == 3 ? "***":
+                                UiSecret.secret-length == 4 ? "****":
+                                UiSecret.secret-length == 5 ? "*****":
+                                UiSecret.secret-length == 6 ? "******":
+                                UiSecret.secret-length == 7 ? "*******":
+                                UiSecret.secret-length == 8 ? "********": "********";
+
+        Text {
+            x: (parent.width - self.width) / 2;
+            y: (parent.height - self.height) / 2 + 17px;
+            text: parent.text;
+            color: white;
+            font-size: 80px;
+        }
+    }
+}
+
+// Password Page
+PwKey := Rectangle {
+    border-color: white;
+    border-width: 3px;
+    border-radius: 0px;
+    background: ta.has-hover ? grey : transparent;
+    property <string> text;
+    property <length> font_size: 80px;
+    property <length> x_offset;
+    property <length> y_offset;
+    callback clicked;
+
+    clicked => {
+        UiSecret.add-char(self.text);
+    }
+
+    Text {
+        text: parent.text;
+        font-size: parent.font-size;
+        color: white;
+        x: (parent.width - self.width) / 2 + parent.x_offset;
+        y: (parent.height - self.height) / 2 + parent.y_offset;
+    }
+
+    ta := TouchArea {
+        clicked() => {
+            parent.clicked();
+        }
+    }
+}
+
+PasswordPage := Rectangle {
+    width: 100%;
+    height: 100%;
+    x: 0;
+    y: 0;
+
+    callback enter();
+
+    Rectangle {
+        x: 0;
+        y: 0;
+        width: 400px;
+        height: 147px;
+
+        Text {
+            text: UiSecret.secret-length == 0 ? "":
+                  UiSecret.secret-length == 1 ? "*":
+                  UiSecret.secret-length == 2 ? "**":
+                  UiSecret.secret-length == 3 ? "***":
+                  UiSecret.secret-length == 4 ? "****":
+                  UiSecret.secret-length == 5 ? "*****":
+                  UiSecret.secret-length == 6 ? "******":
+                  UiSecret.secret-length == 7 ? "*******":
+                  UiSecret.secret-length == 8 ? "********": "********";
+            color: white;
+            font-size: 100px;
+            x: (parent.width - self.width) / 2;
+            y: (parent.height - self.height) / 2 + 23px;
+        }
+    }
+
+
+    pw_control_input := Rectangle {
+        x: 400px;
+        y: 0;
+        height: 147px;
+        width: 256px;
+
+        GridLayout {
+            Row {
+                PwKey {
+                    text: "Enter";
+                    font-size: 60px;
+                    clicked => {
+                        root.enter();
+                        UiSecret.clear();
+                    }
+                }
+            }
+            Row {
+                PwKey {
+                    text: "Clear";
+                    font-size: 60px;
+                    clicked => {
+                        UiSecret.clear();
+                    }
+                }
+            }
+        }
+    }
+
+    pw_keyboard_input := Rectangle {
+        x: 0;
+        y: parent.height - self.height;
+        width: 100%;
+        height: 70%;
+
+        GridLayout {
+            Row {
+                PwKey {
+                    text: "1";
+                }
+
+                PwKey {
+                    text: "2";
+                }
+
+                PwKey {
+                    text: "3";
+                }
+                
+                PwKey {
+                    text: "4";
+                }
+
+                PwKey {
+                    text: "5";
+                }
+
+                PwKey {
+                    text: "6";
+                }
+
+                PwKey {
+                    text: "7";
+                }
+
+                PwKey {
+                    text: "8";
+                }
+
+                PwKey {
+                    text: "9";
+                }
+            }
+
+            Row {
+                PwKey {
+                    text: "0";
+                }
+
+                PwKey {
+                    text: "A";
+                }
+
+                PwKey {
+                    text: "B";
+                }
+                
+                PwKey {
+                    text: "C";
+                }
+
+                PwKey {
+                    text: "D";
+                }
+
+                PwKey {
+                    text: "E";
+                }
+
+                PwKey {
+                    text: "F";
+                }
+
+                PwKey {
+                    text: "G";
+                }
+
+                PwKey {
+                    text: "H";
+                }
+            }
+
+            Row {
+                PwKey {
+                    text: "I";
+                }
+
+                PwKey {
+                    text: "J";
+                }
+
+                PwKey {
+                    text: "K";
+                }
+                
+                PwKey {
+                    text: "L";
+                }
+
+                PwKey {
+                    text: "M";
+                }
+
+                PwKey {
+                    text: "N";
+                }
+
+                PwKey {
+                    text: "O";
+                }
+
+                PwKey {
+                    text: "P";
+                }
+
+                PwKey {
+                    text: "Q";
+                }
+            }
+
+            Row {
+                PwKey {
+                    text: "R";
+                }
+
+                PwKey {
+                    text: "S";
+                }
+
+                PwKey {
+                    text: "T";
+                }
+                
+                PwKey {
+                    text: "U";
+                }
+
+                PwKey {
+                    text: "V";
+                }
+
+                PwKey {
+                    text: "W";
+                }
+
+                PwKey {
+                    text: "X";
+                }
+
+                PwKey {
+                    text: "Y";
+                }
+
+                PwKey {
+                    text: "Z";
+                }
+            }
+        }
+    }
+}
+
+
+export MainWindow := Window {
+    title: "Shulker";
+    no-frame: true;
+    background: black;
+    width: 800px;
+    height: 480px;
+
+    property <int> active_page: 0;
+    callback use_password(string);
+    callback use_pin(string);
+    callback lock();
+    callback unlockFromRust();
+    callback lockFromRust();
+    callback setCountdown(int);
+
+    setCountdown(x) => {
+        UiSecret.autolock-countdown = x;
+    }
+
+    lockFromRust => {
+        UiSecret.lock();
+    }
+
+    unlockFromRust => {
+        UiSecret.unlock();
+    }
+    
+
+    sidebar := Rectangle {
+        x: 0;
+        y: 0;
+        width: 18%;
+        height: 100%;
+
+        VerticalLayout {
+            x: (parent.width - pw-sidebar-button.width) / 2;
+            alignment: space-around;
+
+            pin_sidebar_button := SidebarIcon {
+                text: "PIN";
+
+                TouchArea {
+                    clicked => {
+                        UiSecret.clear();
+                        root.active-page = 0;
+                    }
+                }
+            }
+
+            pw_sidebar_button := SidebarIcon {
+                text: "PW";
+
+                TouchArea {
+                    clicked => {
+                        UiSecret.clear();
+                        root.active-page = 1;
+                    }
+                }
+            }
+
+            qr_sidebar_button := SidebarIcon {
+                text: "M";
+
+                TouchArea {
+                    clicked => {
+                        UiSecret.clear();
+                        root.active-page = 2;
+                    }
+                }
+            }
+        }
+    }
+
+    view := Rectangle {
+        x: sidebar.width;
+        y: 0;
+        width: 82%;
+        height: 100%;
+        
+
+        PinPage {
+            y: root.active-page == 0 ? 0 : root.active-page < 0 ? + height + 1px : - parent.height - 1px;
+            animate y { duration: 125ms; easing: ease; }
+            enter => {
+                root.use_pin(UiSecret.secret);
+            }
+        }
+
+        PasswordPage {
+            y: root.active-page == 1 ? 0 : root.active-page < 2 ? + height + 1px : - parent.height - 1px;
+            animate y { duration: 125ms; easing: ease; }
+            enter => {
+                root.use_password(UiSecret.secret);
+            }
+        }
+
+        m_page := Rectangle {
+            y: root.active-page == 2 ? 0 : root.active-page < 2 ? + height + 1px : - parent.height - 1px;
+            animate y { duration: 125ms; easing: ease; }
+        }
+    }
+
+    lockedOverlay := Rectangle {
+        background: green;
+        visible: !UiSecret.locked;
+        x: 0;
+        y: 0;
+        width: 100%;
+        height: 100%;
+
+        Text {
+            x: (parent.width - self.width) / 2;
+            y: (parent.height - self.height) / 2 - 20px;
+            font-size: 50px;
+            text: "UNLOCKED";
+            color: white;
+        }
+
+        Text {
+            x: (parent.width - self.width) / 2;
+            y: (parent.height - self.height) / 2 + 25px;
+            font-size: 34px;
+            text: "SELFLOCKS IN " + UiSecret.autolock-countdown + " SECONDS";
+            color: white;
+        }
+
+        TouchArea {
+            clicked => {
+                root.lock();
+            }
+        }
+    }
+}
+
+
+
+
+
