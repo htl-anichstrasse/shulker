@@ -43,5 +43,40 @@ primär imperativ, deklaratives Programmieren ist trotzdem auch ein wichtiger
 Teil der Programmiersprache.
 
 \subsection{Ownership-Model}
-Das Ownership-Model ist Rusts größtes Verkaufsargument. Das Ownership-Model baut 
-auf bestimmten Regeln auf, die den Arbeitsspeicher verwalten.
+Jedes auf auf einem herkömmlichen Computer ausgeführte Programm muss den eigenen Arbeitsspeicher selbst verwalten.
+Der Arbeitsspeicher wird in Stack und Heap eingeteilt.
+
+Der Stack funktioniert auf dem \textit{First-In-First-Out}-Prinzip. Man kann das Prinzip mit einem Stapel Teller vergleichen.
+Will man dem Tellerstapel (also dem Teller-Stack) einen Teller hinzufügen, ist es einfacher,
+den Teller auf den Stapel dazu zulegen. Will man einen Teller wegnehmen, ist das am einfachsten indem man den obersten Teller wegnimmt.
+Auf dem Stack kann man also nur einen Wert auf die oberste Stelle abspeichern und eben genau den obersten, also den als letztes hinzugefügten
+Wert entfernen. Alle auf dem Stack speicherbaren Daten müssen eine bekannte und konstante Größe aufweisen, also eine genau definierte Anzahl
+an Bits einnehmen. Zur Speicherung von Daten mit einer zur Kompilierzeit unbekannten oder variablen Größe muss der Heap verwendet werden.
+
+Auf dem Heap herrscht nur minimale Ordnung. Will man Daten auf dem Heap ablegen, muss sich das Computerprogramm einen Teil des Heaps
+reservieren. Um erst mal einen Teil des Heaps verwenden zu können, muss ein \textit{memory allocator} (ein Teil des Programms) einen nicht
+verwendeten und groß genugen Teilbereich des Heaps finden und als benutzt markieren. Der memory allocator liefert im Anschluss einen Pointer zurück,
+also eine Speicheraddresse, welche auf den Beginn des neu belegten Heapspeicherteils zeigt. Den Pointer kann man dann auf den Stack speichern, da eine
+Speicheraddresse eine fixe Anzahl an Bits einnimmt. Wichtig: Der Heap erfordert das Freigeben der reservierten Speicherteile, wenn sie nicht
+mehr in Gebrauch sind. Wird der Speicher nicht befreit, kann es zu Problemen kommen. Zum Beispiel könnte der Arbeitsspeicher bei längerer
+Ausführung des Programms voll laufen, da immer mehr und mehr Teile des Heaps als benutzt markiert werden.
+
+Bei Sprachen wie \textit{C} und teilweise auch \textit{C++} liegt die Verantwortung des Heaps in den Händen der Programmierer. Der Programmierer
+muss manuell Heapspeicher anlegen und befreien. Bugs haben so ein leichtes Spiel, da jeder Mensch Fehler macht. Viele höhere Programmiersprachen setzten
+deshalb zur Vereinfachung und Fehlervermeidung auf einen \textit{Garbage Collector}. Der Garbage Collector scannt regelmäßig nach nicht mehr
+gebrauchten Speicher. Findet er nicht mehr gebrauchten Speicher, markiert er diesen Teil des Arbeitsspeichers als ungenutzt und ermöglicht so 
+das Wiederverwenden dieses Speicherabschnitts. Ein Garbage Collector hat aber einen großen Nachteil: Er ist ineffizient.
+
+Um dem Problem der Ineffizienz zu entgehen verwendet Rust das \textit{Ownership-Model}. Das Model besteht
+aus drei Regeln, welche zur \textit{compile time}, also während des Kompilierprozesses, im Quellcode validiert werden. Erfüllt der Rustcode nicht
+alle diese Regeln weist der Compiler auf den Fehler hin und bricht die Kompilation ab. Somit wird das Auftreten von Fehlern in der Speicherverwaltung
+vollständig behoben. Laut \textit{Google} sind ungefähr 70\% aller Sicherheitsbugs mit inkorrekter Speicherverwaltung verbunden. Das Ownership-Model allein
+verhindert also einen Großteil der Sicherheitsbugs.
+
+Die drei Ownership-Regeln lauten:
+
+\begin{itemize}
+    \item Jeder Wert ist einer Variable zugeteilt, welche man den \textit{Owner} (Besitzer) nennt
+    \item Es kann immer nur einen Owner geben
+    \item Wenn der Owner out-of-scope fällt, wird der zugewiesene Wert gedropped (der Speicher wird freigegeben)
+\end{itemize}
