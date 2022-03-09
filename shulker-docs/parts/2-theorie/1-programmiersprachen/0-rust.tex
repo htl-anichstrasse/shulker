@@ -4,22 +4,44 @@
 \textit{Rust} ist eine kompilierte Programmiersprache, welche auf mehrereren
 Programmierparadigmen aufbaut. Die Sprache krönt sich damit, dass
 sie extrem schnelle und sichere Binärprogramme erzeugt. Der gesamte Quellcode
-vom gesamten Rust-Ökosystem ist quelloffen.
+vom gesamten Rust-Ökosystem ist quelloffen. Rust besitzt keinen Garbage-Collector,
+Arbeitsspeicher wird mithilfe des Ownership-Models verwaltet.
 
 \subsection{Warum Rust?}
 Wir haben uns beim Komponent \textit{Shulker-Core}, also bei der Programmierung
 des Touchdisplays und der Hardwareschaltung, sowie der Speicherung
 von Daten, für Rust entschieden. Diese Entscheidung trafen wir primär
-aus vier Gründen:
+aus sechs Gründen:
 
 \begin{itemize}
     \item Das Ownership-Model und die Einfachkeit von nebenläufiger Programmierung in Rust zwingt uns, vor allem im Bereich vom Touchdisplay, zu einer korrekten Lösung und weniger Fehlern
     \item Vorkenntnisse in \textit{Rust} und dem UI-Toolkit \textit{Slint} erleichtern uns das Arbeiten
     \item Die hohe Performance des Endprodukts minimiert die Hardwareauslastung
     \item Die Einfachkeit der Kompilierung macht es dem Nutzer leichter
+    \item Da Rust eine Systemprogrammiersprache ist, ermöglicht es hardwarenahe Programmierung trotz hoher Abstraktionen
 \end{itemize}
+
+\subsection{Geschichte von Rust}
+Rust enstand im Jahr 2006 als Hobbyprojekt von Graydon Hoare, einem Angestellten
+bei Mozilla. Im Jahr 2009 begann Mozilla das Projekt zu unterstützen. Die erste
+offiziell stabile Version (Version 1.0) wurde im Jahr 2015, also ganze neun Jahre danach, veröffentlicht.
+Im Jahr 2020 wurden 250 Angestellte von Mozilla entlassen.  Ein großer
+Teil des Rust Teams wurde damit entlassen. Das schien eine Bedrohung für
+die Programmiersprache sein. Glücklicherweise wurde im darauffolgenden Jahr die
+\textit{Rust Foundation} von den Firmen \textit{AWS, Google, Huawei, Microsoft und Mozilla} gegründet.
+Rust wurde in der \textit{Stackoverflow Developer Survey}, einer großen Umfrage
+für Programmierer, 2016, 2017, 2018, 2019, 2020 und 2021 zur am meisten geliebten Programmiersprache
+ernannt. Ob das im Jahr 2022 so der Fall bleibt, wird sich zeigen.
+
 
 \subsection{Programmierparadigmen}
 Rust bietet verschiedenste Möglichkeiten, seinen Code zu gestalten. Unter
-anderem borgt sich Rust Ideen von der funktionalen und objektorientierten
-Programmierung.
+anderem borgt sich die Sprache Ideen von der funktionalen und objektorientierten
+Programmierung. Auch das nebenläufige Programmieren, unter Rust-Usern als
+\textit{Fearless Concurrency} bekannt, ist möglich. Man programmiert in Rust
+primär imperativ, deklaratives Programmieren ist trotzdem auch ein wichtiger
+Teil der Programmiersprache.
+
+\subsection{Ownership-Model}
+Das Ownership-Model ist Rusts größtes Verkaufsargument. Das Ownership-Model baut 
+auf bestimmten Regeln auf, die den Arbeitsspeicher verwalten.
