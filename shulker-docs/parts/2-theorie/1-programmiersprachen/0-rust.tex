@@ -1,4 +1,25 @@
 \section{Rust}
 \label{Rust}
 
-\textit{Rust} ist eine tolle Programmiersprache.
+\textit{Rust} ist eine kompilierte Programmiersprache, welche auf mehrereren
+Programmierparadigmen aufbaut. Die Sprache krönt sich damit, dass
+sie extrem schnelle und sichere Binärprogramme erzeugt. Der gesamte Quellcode
+vom gesamten Rust-Ökosystem ist quelloffen.
+
+\subsection{Warum Rust?}
+Wir haben uns beim Komponent \textit{Shulker-Core}, also bei der Programmierung
+des Touchdisplays und der Hardwareschaltung, sowie der Speicherung
+von Daten, für Rust entschieden. Diese Entscheidung trafen wir primär
+aus vier Gründen:
+
+\begin{itemize}
+    \item Das Ownership-Model und die Einfachkeit von nebenläufiger Programmierung in Rust zwingt uns, vor allem im Bereich vom Touchdisplay, zu einer korrekten Lösung und weniger Fehlern
+    \item Vorkenntnisse in \textit{Rust} und dem UI-Toolkit \textit{Slint} erleichtern uns das Arbeiten
+    \item Die hohe Performance des Endprodukts minimiert die Hardwareauslastung
+    \item Die Einfachkeit der Kompilierung macht es dem Nutzer leichter
+\end{itemize}
+
+\subsection{Programmierparadigmen}
+Rust bietet verschiedenste Möglichkeiten, seinen Code zu gestalten. Unter
+anderem borgt sich Rust Ideen von der funktionalen und objektorientierten
+Programmierung.
