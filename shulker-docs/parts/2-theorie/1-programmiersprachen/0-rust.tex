@@ -163,3 +163,133 @@ nicht ganz so einfach zu kopierende Daten verwendet. Strings um genau zu sein:
 Man könnte jetzt denken, dass der String \textit{a} einfach mittels copy zu \textit{b} kopiert wird. Das würde aber die Ownership-Regel brechen, dass
 es nur einen Owner zur gleichen Zeit geben darf. Auf den ersten Blick wird dieser Umstand nicht ganz klar. Dafür muss man sich anschauen, wie Strings
 in Rust aufgebaut sind:
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=0.55\textwidth]{images/rust/string_repr.png}
+        \caption{Veranschaulichung eines Rust-Strings}
+    \end{center}
+\end{figure}
+Würde man den Copy-Trait nutzen, also einfach Bit für Bit kopieren, würde folgende Situation resultieren:
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=0.55\textwidth]{images/rust/string_copy_repr.png}
+        \caption{Bild zur Veranschaulichung eines kopierten Rust-Strings}
+    \end{center}
+\end{figure}
+\subsection{move}
+Wie man sieht, würden beide Variablen auf die selben Daten zeigen. Es würde also wieder zwei Owner zur gleichen Zeit geben. Die Regeln des Ownerships würden
+nicht eingehalten werden. Um dieses Problem zu umgehen, wird die Variable a als nicht mehr gültig angesehen. Wichtig: a wird nicht gedropped, sonst
+würde b auf nicht existente Daten zeigen. Das nennt man \textit{move}:
+\begin{lstlisting}
+    let a = String::from("Shulker");
+    let b = a;
+    println!("{}", a); // <- Fehler
+    println!("{}", b); // <- funktional, a wurde in b "gemoved"
+\end{lstlisting}
+\textit{Shallow Copy} ist eine wichtige Begrifflichkeit in vielen Sprachen. \textit{Shallow copy} ist dem Verhalten von \textit{move} sehr ähnlich. Einen
+großer Unterschied gibt es jedoch: Die Invalidierung der ersteren Variable. Dieses Verhalten existiert so nur bei \textit{move}.
+
+\subsection{clone}
+Will man also korrekt den String \textit{a} kopieren, verwendet man \textit{clone}. Clone ist im Grunde genommen das gleiche wie eine \textit{deep copy}.
+Es werden nicht nur die Daten auf dem Stack kopiert, sondern auch die auf dem Heap:
+\begin{lstlisting}
+    let a = String::from("Shulker");
+    let b = a.clone();
+    println!("{}", a); // <- funktional
+    println!("{}", b); // <- funktional
+\end{lstlisting}
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=0.5\textwidth]{images/rust/string_clone_repr.png}
+        \caption{Bild zur Veranschaulichung eines geklonten Rust-Strings}
+    \end{center}
+\end{figure}
+
+\subsection{Ownership und Funktionen}
+Eine Funktion ist ein eigener Scope. Daraus resultiert sich, dass Variablen am Ende einer Funktion out-of-scope fallen und gedropped werden müssen:
+\begin{lstlisting}
+    fn sag_hallo(name: String) {
+        println!("Hallo {}", name);
+    } // <- name wird gedropped
+
+    fn main() {
+        let mein_name = String::from("Alexander");
+        sag_hallo(mein_name);
+    }
+\end{lstlisting}
+Es gibt hierbei ein Problem. Man kann die Variable \textit{mein\_name} nicht wiederverwenden:
+\begin{lstlisting}
+    fn sag_hallo(name: String) {
+        println!("Hallo {}", name);
+    } // <- name wird gedropped
+
+    fn main() {
+        let mein_name = String::from("Alexander");
+        sag_hallo(mein_name);
+        println!("Bis spaeter {}", mein_name);
+        // ^ Fehler, da mein_name gedropped wurde
+    }
+\end{lstlisting}
+Anzumerken ist hierbei jedoch, dass Variablen welche den copy trait besitzen, also nicht gemoved werden müssen, einfach kopiert werden. Das
+Problem gibt es also nur, wenn man komplexere Datentypen einer Funktion als Parameter übergeben will.
+
+Es gibt grundsätzlich zwei Lösungswege:
+
+Man könnte die übergebene Variable wieder zurückgeben:
+\begin{lstlisting}
+    fn sag_hallo(name: String) -> String {
+        println!("Hallo {}", name);
+        return name; 
+    //  ^ name wird zurueckgegeben und nicht gedropped
+    }
+
+    fn main() {
+        let mein_name = String::from("Alexander");
+        let mein_name = sag_hallo(mein_name);
+    //  ^ Rueckgabewert wieder in mein_name uebergeben
+        println!("Bis spaeter {}", mein_name);
+    }
+\end{lstlisting}
+
+Der elegantere Lösungsweg macht sich Referenzen zu nutze. Referenzen sind in Rust so ähnlich wie Pointer, nur dass Referenzen
+garantieren, dass die Daten auf die gezeigt wird noch valide sind. Referenzen werden durch das Zeichen \& gekennzeichnet. Die Lösung
+ist somit um einiges angenehmer:
+\begin{lstlisting}
+    fn sag_hallo(name: &String) {
+        println!("Hallo {}", name);
+    } // Referenz wird gedropped, Wert aber nicht
+
+    fn main() {
+        let mein_name = String::from("Alexander");
+        sag_hallo(&mein_name);
+        println!("Bis spaeter {}", mein_name); // funktioniert
+    }
+\end{lstlisting}
+
+Referenzen sind ein riesiger Bestandteil von Rust und somit auch des Shulker-Quellcodes.
+
+\subsection{Mutabilität und mutable Referenzen}
+Alle Variablen in Rust sind grundsätzlich unveränderbar. Um den Wert einer Variable dennoch zu verändern,
+muss diese als \textit{mutable} gekennzeichnet werden. Dafür gibt es das \textit{mut} Keyword:
+\begin{lstlisting}
+    let mut a = 10;
+\end{lstlisting}
+Will man den Wert durch eine Referenz verändern, muss die Referenz und der Owner als veränderbar gekennzeichnet werden:
+\begin{lstlisting}
+    fn veraendern(name: &mut String) {
+        name.push('a');
+    } // Referenz wird gedropped, Veraenderung bleibt
+
+    fn main() {
+        let mut mein_name = String::from("Alexander");
+    //  ^ Achtung: mein_name muss mutable sein
+        veraendern(&mut mein_name);
+    // mein_name ist nun "Alexandera"
+    }
+\end{lstlisting}
+Zu beachten ist:
+\begin{itemize}
+    \item Es kann entweder eine mutable Referenz oder unendlich viele immutable Referenzen zur gleichen Zeit geben
+    \item Jede Referenz muss valid sein
+    \item Referenzen dürfen nicht länger als der Owner leben
+\end{itemize}
