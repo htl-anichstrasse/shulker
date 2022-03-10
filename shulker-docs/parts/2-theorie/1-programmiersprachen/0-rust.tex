@@ -1,5 +1,6 @@
 \section{Rust}
 \label{Rust}
+\lstset{language=rust}
 
 \textit{Rust} ist eine kompilierte Programmiersprache, welche auf mehrereren
 Programmierparadigmen aufbaut. Die Sprache krönt sich damit, dass
@@ -11,7 +12,7 @@ Arbeitsspeicher wird mithilfe des Ownership-Models verwaltet.
 Wir haben uns beim Komponent \textit{Shulker-Core}, also bei der Programmierung
 des Touchdisplays und der Hardwareschaltung, sowie der Speicherung
 von Daten, für Rust entschieden. Diese Entscheidung trafen wir primär
-aus sechs Gründen:
+aus fünf Gründen:
 
 \begin{itemize}
     \item Das Ownership-Model und die Einfachkeit von nebenläufiger Programmierung in Rust zwingt uns, vor allem im Bereich vom Touchdisplay, zu einer korrekten Lösung und weniger Fehlern
@@ -80,3 +81,85 @@ Die drei Ownership-Regeln lauten:
     \item Es kann immer nur einen Owner geben
     \item Wenn der Owner out-of-scope fällt, wird der zugewiesene Wert gedropped (der Speicher wird freigegeben)
 \end{itemize}
+
+\subsection{Scope von Variablen}
+Der Scope einer Variable ist der Bereich im Quellcode, in dem eine Variable gültig ist. Ein kleines Beispiel:
+
+\begin{lstlisting}
+    let x: i32 = 10;
+\end{lstlisting}
+
+Hier wird eine Ganzzahl (ein Integer), die 32 Bit an Information einnimmt, angelegt. Die Variable \textit{x} hat also den Wert \textit{10} vom Typ \textit{i32};
+Aus dem Beispiel ist der \textit{Scope} von x aber nicht ablesbar. Eine Erweiterung mit Scope:
+
+\begin{lstlisting}
+    {
+        let x: i32 = 10;
+    }
+\end{lstlisting}
+
+Der Scope von x liegt hier innerhalb der geschwungenen Klammern. Ein Zugreifen auf x außerhalb des Scopes ist nicht möglich. x existiert also nur
+zwischen den Klammern. Um genauer zu sein: x existiert von der Deklaration bis hin zum Ende des Scopes:
+\begin{lstlisting}
+    println!("{}", x); // <- Fehler
+    {
+        println!("{}", x); // <- Fehler
+        let x: i32 = 10;
+        println!("{}", x); // <- Funktional
+    }
+    println!("{}", x); // <- Fehler
+\end{lstlisting}
+
+Dieses Verhalten ist in vielen bekannten Programmiersprachen identisch, also was ist nun das \textbf{besondere} an Rust? Da ein 32 Bit Integer
+eine zur Kompilierzeit bekannte und konstante Größe hat, kann x einfach auf dem Stack gespeichert werden. Rusts Vorteile werden beim Umgang mit
+auf dem Heap gespeicherten Daten erst richtig ersichtlich. Als Veranschaulichung werden wir den \textit{String}-Typen verwenden, da er eine
+variable Größe hat:
+\begin{lstlisting}
+    {
+        let s1 = String::from("Shulker");
+        let s2 = String::from("HTL-Anichstrasse");
+    }
+\end{lstlisting}
+
+Da der String \textit{s2} mehr Zeichen als der String \textit{s1} hat, braucht \textit{s2} auch mehr Speicherplatz. Strings können auch zur Laufzeit
+verändert werden. Man könnte zum Beispiel dem \textit{Shulker}-String eine zufällige Zahl hinzufügen. Das verändert natürlich den Speicherbedarf zur
+Laufzeit. Somit ist klar, dass Strings auf dem Heap abgelegt werden müssen.
+
+\subsection{Der Drop Trait}
+Wie es in der letzten Regel des Ownership-Models beschrieben wird, werden Variablen die out-of-scope fallen gedropped. Gedropped bedeutet, dass Rust
+eine Funktion namens \textit{drop} ausführt, welche den Speicher der out-of-scope gefallenen Variable befreit. Die \textit{drop}-Funktion wurde in
+unserem Fall von den Entwicklern vom String-Typ implementiert. Rust regelt also, wann eine Variable gedropped werden kann und sollte. Der Programmierer
+muss sich keine Gedanken darum machen, den Heap-Speicher zu befreien.
+
+\subsection{Immer nur ein Owner}
+Eine Regel des Ownership-Models besagt, dass ein Wert immer nur einen Owner zugeteilt sein darf. Welche Auswirkungen das auf unseren Code hat, kann anhand
+von wenigen einfachen Beispielen veranschaulicht werden:
+\begin{lstlisting}
+    let a = 10;
+    let b = a;
+\end{lstlisting}
+Im obigen Beispiel ist die Variable \textit{a} der Owner von den Daten mit dem Wert \textit{10}. In der zweiten Zeile sollte dann die Variable \textit{b}
+der Owner vom Wert in der Variable \textit{a} werden, oder? Wäre das der Fall, würde die zweite Regel des Ownership-Models gebrochen werden. Es würde zwei
+Owner von dem gleichen Speicherort zur gleichen Zeit geben, \textit{a} und \textit{b}.
+
+\subsubsection{Der Copy Trait}
+Da der Wert 10 einfach kopiert werden kann, wird er auch kopiert. \textit{b} wird also nicht der Owner von den gleichen Daten wie \textit{a}, sondern
+von einer Kopie der Daten in \textit{a}. Das obige Beispiel wäre also equivalent zu:
+\begin{lstlisting}
+    let a = 10;
+    let b = 10;
+\end{lstlisting}
+In Rust nennt man dieses Verfahren des einfachen Kopierens \textit{copy}. Wird ein Wert kopiert, so ruft Rust die Funktion \textit{copy} auf. Das
+ist aber nur möglich, wenn der zu kopierende Wert den Copy-Trait besitzt. Grundsätzlich müssen Daten nur eine Vorraussetzung erfüllen, um den
+Copy Trait besitzen zu dürfen: Der Wert muss vollständig kopierbar sein.
+
+\subsubsection{Das Problem mit Copy}
+Das obige Beispiel hat auf dem Stack gespeicherte, einfach zu kopierende Werte verwendet. Im folgenden Beispiel werden jetzt auf dem Heap gespeicherte,
+nicht ganz so einfach zu kopierende Daten verwendet. Strings um genau zu sein:
+\begin{lstlisting}
+    let a = String::from("Shulker");
+    let b = a;
+\end{lstlisting}
+Man könnte jetzt denken, dass der String \textit{a} einfach mittels copy zu \textit{b} kopiert wird. Das würde aber die Ownership-Regel brechen, dass
+es nur einen Owner zur gleichen Zeit geben darf. Auf den ersten Blick wird dieser Umstand nicht ganz klar. Dafür muss man sich anschauen, wie Strings
+in Rust aufgebaut sind:
