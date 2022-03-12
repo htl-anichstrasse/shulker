@@ -1,0 +1,92 @@
+\section{Allgemeines}
+Shulker-Core besteht aus einer \textit{Rust-Binary}. Das bedeutet, dass der gesamte Quellcode von Shulker-Core zu einem einzigen
+Binärprogramm kompiliert wird. Shulker-Cores gesamter Code befindet sich in einem Unterordner in der Shulker Git-Repository.
+
+Wie der Name schon sagt, ist \textit{Shulker-Core} der Kern von Shulker. Das Binärprogramm ist dafür verantwortlich,
+Pins zu speichern, Pins abzugleichen, das Touchdisplay zu steuern, das elektronische Schloss zu steuern und eine Schnittstelle
+für \textit{Shulker-Connect} bereitzustellen. Um all diese Dinge effizient und sicher bewältigen zu können, wurde Rust als
+Programmiersprache gewählt. Shulker-Core macht starken Gebrauch vom Cargo-Packagemanager und der offiziellen Package-Registry \textit{crates.io}.
+
+\section{Konfiguration}
+Die gesamte Konfiguration von Shulker-Core befindet sich in einer optionalen Textdatei. Da für jede mögliche Einstellung ein
+Standartwert einprogrammiert ist, muss man nur nötige Änderungen vornehmen. Man muss sich also keine unnötigen Gedanken machen,
+wie man jeden Wert in der Konfigurationsdatei definieren möchte.
+
+Die Konfigurationsdatei hat das Dateiformat TOML und den Namen \textbf{config.toml}. Das Programm sucht im lokalen Ordner
+nach dieser Datei. Das bedeutet, dass die config.toml-Datei sich im gleichen Ordner befinden muss, wie die Binary. Findet
+Shulker-Core diese Datei nicht, werden alle Standartwerte übernommen. Als Warnung wird eine 
+Warnmeldung an den Standart-Error ausgegeben.
+
+\subsection{Mögliche Konfigurationen}
+Es folgt eine Auflistung aller Konfigurationsschlüssel und ihrer Standartwerte:
+
+\lstinline{master_password = "master123"}
+
+Das Master-Passwort dient zur Identifikation der Admins. Das standartmäßige Adminpasswort sollte dringend durch 
+ein Passwort vernünftiger Komplexität ersetzt werden. Es ist das einzige Passwort, das nicht gehashed wird. Dafür
+gibt es drei Gründe: 
+\begin{enumerate}
+    \item Wer Zugriff zum Raspberry Pi hat, hat Zugriff zum Schloss.
+    \item Dem Admin wird die Fähigkeit, ein einzigartiges Passwort zu erstellen, vorrausgesetzt.
+    \item Bei Vergessen des Passworts kann der Admin es einfach wieder herausfinden. 
+\end{enumerate}
+
+\lstinline{send_socket_path = "/tmp/toShulkerServer.sock"}
+
+Gibt den Pfad der Unix-Socket an, die zur Kommunikation mit Shulker-Connect dient; In Richtung Shulker-Core zu Shulker-Connect.
+Um das System möglichst flexibel zu gestalten, wurde diese Konfiguration erschaffen. Man kann so leicht das System anpassen.
+
+\lstinline{receive_socket_path = "/tmp/toShulkerCore.sock"}
+
+Gibt den Pfad der Unix-Socket an, die zur Kommunikation mit Shulker-Connect dient; In Richtung Shulker-Connect zu Shulker-Core.
+Um das System möglichst flexibel zu gestalten, wurde diese Konfiguration erschaffen. Man kann so leicht das System anpassen.
+
+\lstinline{gpio_pin = 27}
+
+Gibt an, welcher GPIO-Pin des Raspberries für die Ansteuerung des elektronischen Schlosses verwendet werden soll. Zu beachten:
+soll das Schloss geschlossen sein, ist der GPIO-Pin auf High.
+
+\lstinline{autolock_seconds = 24}
+
+Die Dauer, die der GPIO-Pin bei richtiger Eingabe eines Pins (Passworts) auf High bleibt.
+
+\lstinline{hash_memory_size = 10}
+
+Anzahl an Arbeitsspeicher, der für das Hashing der Pins verwendet wird. Genaueres wird später erklärt.
+
+\lstinline{hash_iterations = 3}
+
+Anzahl der Argon2id Durchläufe. Genaueres wird später erklärt.
+
+\lstinline{hash_parallelism = 1}
+
+Anzahl der Hash-Threads. Genaueres wird später erklärt.
+
+
+\section{Abhängigkeiten}
+Shulker-Core baut auf vielen \textit{crates}, also Codebibliotheken auf. Alle direkten Abhängigkeiten sind in der 
+Cargo.toml-Datei nachvollziehbar. Es folgt eine kurze Auflistung und Erklärung der wichtigsten Abhängigkeiten:
+
+\begin{itemize}
+    \item \textbf{slint}; früher bekannt als SixtyFPS, ist ein User-Interface-Toolkit. Es ermöglicht relativ simples
+    und plattformübergreifendes Programmieren von grafischen Benutzeroberflächen.
+
+    \item \textbf{serde}; steht für \textbf{Ser}ialize und \textbf{De}serialize. Es ist das am bekannteste Framework,
+    um Rust-Strukturen zu serialisieren und zu entserialisieren. Benutzt wird es, um die Kommunikation über Unix-Sockets zu
+    ermöglichen.
+
+    \item \textbf{argon2}; ist ein kryptographischer Passwort-Hashing Algorithmus. Das \textit{argon2}-crate implementiert diesen
+    Algorithmus 100\%-ig mit Rust-Code. Die Variante Argon2id wird für das Unkenntlichmachen der Pins benutzt.
+
+    \item \textbf{gpio-cdev}; wird verwendet, um den GPIO-Pin zu benutzen. Dabei wird auf die Linux-Kernel-API namens \textit{GPIO character device ABI}
+    aufgebaut.
+
+    \item \textbf{config}; ist ein crate, welches das Einlesen der Konfigurationsdatei erleichter.
+    
+    \item \textbf{chrono}; stellt Code zur Verfügung, um den Umgang mit Zeit und Datum zu erleichtern.
+    
+    \item \textbf{interprocess}; erleichtert die Verwendung von Unix-Sockets.
+    
+    \item \textbf{rustbreak}; eine einfache, in sich geschlossene Datenbank. Wird zur Speicherung von Daten verwendet.
+\end{itemize}
+
