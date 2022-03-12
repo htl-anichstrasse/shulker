@@ -1,0 +1,53 @@
+\chapter{Speicherung von Daten}
+Shulker-Core speichert die vom Admin angelegten Pins ab. Alle Pins werden in einer Datei namens \textit{credentials} abgespeichert.
+Es wird keine vollwertige Datenbank verwendet, um das System nicht zu groß zu gestalten und den Resourcenverbrauch auf dem 
+Raspberry möglichst gering zu halten.
+
+\section{Rustbreak}
+Shulker-Core verwendet das crate \textit{rustbreak} zum Speichern von Daten. Rustbreak ist eine von der Ruby-Datenbank \textit{daybreak} inspirierte
+Datenbank, welche Daten nur in einer Datei speichert. Es wird die Version 2.0 von rustbreak verwendet.
+
+\section{Funktionsweise}
+Shulker-Core lädt die gesamte \textit{credentials}-Datei beim Start in den Arbeitsspeicher. Wird ein eingegebener Pin
+mit der Datenbank abgeglichen, muss so nur die geladene Datenbank abgefragt werden. Um Änderung an der Datenbank permament zu 
+machen, wird die geladene Datei nach jeder Änderung wieder auf die Festplatte kopiert. Das System ist so konfiguriert, dass
+ein Fehler beim Abspeichern der Datei keine Probleme verursacht. Die Ursprungsdatei bleibt in solchen Fällen erhalten. Es kommt 
+zu keinem Datenverlust.
+
+\section{Hashing von Pins}
+Da die Nutzer von Shulker aus Einfachkeit möglicherweise Passwörter nutzen wollen, die sie an anderen Orten bereits verwenden, werden
+alle Pins gehashed abgespeichert. Somit ist es dem Admin und einem möglichen Hacker nicht möglich, die originalen Pins nachzuvollziehen und
+somit möglicherweise in anderen Bereichen Schaden anzurichten.
+
+\subsection{Argon2}
+Als Hashing-Algorithmus wird Argon2, genauer Argon2id verwendet. Argon2 wurde gewählt, da eine reine Rustimplementation des Algorithmus
+existiert und der Algorithmus sich als Gewinner der \textit{Password Hashing Competition} behaupten.
+
+\subsubsection{PHC-String}
+Die unkenntlich gemachten Pins werden in der Form von PHC-Strings abgespeichert. Ein PHC-String besteht aus:
+\begin{itemize}
+    \item \textbf{id}: Kennzeichnung des verwendeten Hash-Algorithmus
+    \item \textbf{version}: Version des Algorithmus
+    \item \textbf{param}: mehrere Parameter, die dem Algorithmus gefüttert werden
+    \item \textbf{salt}: zufällige Zeichenkette, welche das Schützen des Passworts weiter verbessert
+    \item \textbf{hash}: der eigentliche Hash, also der unkenntlich gemachte Pin
+\end{itemize}
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=1\textwidth]{images/core/phc_string.png}
+        \caption{Beispiel eines PHC-Strings}
+    \end{center}
+\end{figure}
+
+\subsubsection{Konfiguration von Argon2id}
+Shulker-Core nimmt drei Parameter für Argon2id an:
+
+\begin{itemize}
+    \item \textbf{Memory}: Die Menge an Arbeitsspeicher die der Algorithmus verwenden soll. Je höher dieser Wert ist,
+    desto schwieriger ist es, den Hash zu berechnen. Somit wird es einem Angreifer ebenfalls schwerer, viele Hashes zu generieren
+    und somit das originale Passwort herauszufinden. Wird in der Shulker-Core-Konfigurationsdatei als \textit{hash\_memory\_size} definiert.
+    \item \textbf{Iterations}: Wie oft sich der Algorithmus durch die ausgewählte größe an Arbeitsspeicher durcharbeiten soll. Je höher, desto
+    sicherer die Hashes. Wird in der Shulker-Core-Konfigurationsdatei als \textit{hash\_iterations} definiert.
+    \item \textbf{Parallelism}: Wie viele Threads der Algorithmus verwenden soll. Desto höher dieser Wert, desto sicherer ist der Hash
+    vor großen parallelen Attacken (zum Beispiel das Cracken mit Grafikkarten). Wird in der Shulker-Core-Konfigurationsdatei als \textit{hash\_parallelism} definiert.
+\end{itemize}
