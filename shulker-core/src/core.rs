@@ -25,13 +25,23 @@ impl ShulkerCore<'_> {
             .get_int("gpio_pin")
             .unwrap() as u32;
 
-        let mut chip = Chip::new("/dev/gpiochip0").unwrap();
-        let line = match chip.get_line(gpio_pin_number) {
-            Ok(line) => Some(line),
+        let chip = match Chip::new("/dev/gpiochip0") {
+            Ok(chip) => Some(chip),
             Err(e) => {
-                eprintln!("Unable to get GPIO Output: {e}");
+                eprintln!("Couldn't get GPIO chip: {e}");
                 None
-            }
+            },
+        };
+
+        let line = match chip {
+            Some(mut c) => match c.get_line(gpio_pin_number) {
+                Ok(line) => Some(line),
+                Err(e) => {
+                    eprintln!("Unable to get GPIO Output: {e}");
+                    None
+                }
+            },
+            None => None,
         };
 
         let line_handle = match line {
