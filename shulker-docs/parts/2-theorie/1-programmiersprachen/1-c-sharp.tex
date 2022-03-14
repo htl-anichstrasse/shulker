@@ -2,16 +2,43 @@
 \label{C-Sharp}
 
 \textit{C-Sharp} ist eine typsichere objektorientierte Allzweck-Programmiersprache.
-In C-Sharp geschriebene Anwendungen können in \textit{.NET-Core} ausgeführt werden. 
+In C-Sharp geschriebene Anwendungen können mittels \textit{.NET}, \textit{CLR} und bestimmten 
+\textit{Klassenbibliotheken} ausgeführt werden. 
 Da der C-Sharp Syntax ähnlich zu anderen Sprachen in der C-Sprachfamilie ist, werden die meisten
 Programmierer keine großen Schwierigkeiten haben, C-Sharp Programmcode zu schreiben bzw. zu lesen.  
 \cite{csharpmicrosoft}
 
-\subsection{.NET-Architektur}
-C-Sharp Programme werden durch \textit{.NET-Core} ausgeführt. 
-Als erstes werden C-Sharp Programme in einen Zwischensprache kompiliert.
-
 \subsection{Warum C-Sharp?}
-Wir haben uns für C-Sharp entschieden, da C-Sharp über das \textit{ASP.NET Core} Web-Framework eine elegante Lösung bietet, dynamische Webservices zu erstellen.
+Wir haben uns für C-Sharp entschieden, da C-Sharp über das \textit{ASP.NET Core} Web-Framework eine elegante 
+Lösung bietet, dynamische Webservices zu erstellen.
 
-Die Integrierung von C-Sharp in \textit{.NET-Core} ermöglicht eine Plattformübergreifende Entwicklung, welche aufgrund des am Raspberry-PI laufendem ARM-Basierenden RaspiOS benötigt wird.
+Die Integrierung von C-Sharp in \textit{.NET-Core} ermöglicht eine Plattformübergreifende Entwicklung, 
+welche aufgrund des am Raspberry-PI laufendem ARM-Basierenden RaspiOS benötigt wird.
+
+\subsection{.NET-Architektur}
+Das .NET-Framework (bis 2020 .NET-Core) ist eine freie und offene Entwicklungs-Plattform. Mit .NET können eine breite Menge an
+Applikationen geschrieben werden, diese können Plattformunabhängig auf diversen Betriebssystemen
+und Architekturen ausgeführt werden. \cite{dotnetmicrosoft} 
+
+\subsubsection{Programmiersprachen}
+.NET unterstützt drei Programmiersprachen:
+\begin{itemize}
+    \item \textbf{C\#}: C-Sharp ist eine einfache und moderne Allzweck-Programmiersprache.
+    \item \textbf{F\#}: F-Sharp ist eine schnell zu schreibende und performante Programmiersprache.
+    \item \textbf{Visual Basic}: Visual Basic ist eine Programmiersprache mit einfacherem Syntax, für die keine
+    neuen Funktionen entwickelt werden.  
+\end{itemize}
+
+\subsection{Common Language Runtime}
+Die virtuelle Laufzeitumgebung von .NET heißt \textbf{Common Language Runtime} (CLR), diese wird von 
+Microsoft bereitgestellt und führt den Programmcode aus.
+CLR ist eine direkte Implementierung Microsofts der \textit{Common Language Infrastructure} (CLI).
+Die Common Language Infrastructure ist ein internationaler Standard, der sowohl eine 
+Programmiersprachen- als auch Plattformneutrale Entwicklung und Ausführung von Anwendungen ermöglicht.  
+
+\subsection{ASP.NET Core}
+\textit{ASP.NET Core} ist ein offenes Plattformunabhängiges Web-Framework, das es einem erlaubt,
+schnelle und moderne Webanwendungen zu schreiben. ASP.NET Core wird in .NET ausgeführt.
+
+ASP.NET Core ist eine Neugestaltung von ASP.NET, diese Neugestaltung ermöglichte ein 
+schlankeres und modulareres Framework. 
