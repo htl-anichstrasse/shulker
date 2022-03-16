@@ -65,7 +65,10 @@ fn main() {
             })
             .unwrap()
     }*/
-
+    {
+        let mut lock = core.lock().unwrap();
+        lock.lock();
+    }
     let (messaging_channel_sender, messagin_channel_receiver) =
         crossbeam_channel::bounded::<Command>(0);
 
