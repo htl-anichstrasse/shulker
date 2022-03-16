@@ -131,7 +131,7 @@ class _CheckConnectionScreenState extends State<CheckConnectionScreen> {
   }
 }
 
-class LoadingScreen extends StatelessWidget {
+class LoadingScreeen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -159,6 +159,21 @@ class LoadingScreen extends StatelessWidget {
           ),
         )),
       ),
+    );
+  }
+}
+
+class LoadingScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Container(
+          child: Column(
+        children: [
+          Text("Überprüfe Verbindung"),
+          CircularProgressIndicator(),
+        ],
+      )),
     );
   }
 }
