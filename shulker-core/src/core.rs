@@ -2,6 +2,7 @@ use crate::{UiSecret, CONFIGURATION};
 use std::{path::PathBuf, time::Duration};
 
 use gpio_cdev::{Chip, LineHandle, LineRequestFlags};
+use qr_code::QrCode;
 use slint::{ComponentHandle, Weak};
 
 use crate::{
@@ -30,7 +31,7 @@ impl ShulkerCore<'_> {
             Err(e) => {
                 eprintln!("Couldn't get GPIO chip: {e}");
                 None
-            },
+            }
         };
 
         let line = match chip {
@@ -176,6 +177,29 @@ impl ShulkerCore<'_> {
                 } else {
                     Some(Command::Wrong)
                 }
+            }
+            Command::QrCode { data } => {
+                let code = match QrCode::new(data) {
+                    Ok(code) => code,
+                    Err(e) => {
+                        eprintln!("Unable to create QRCode: {e}");
+                        return None;
+                    }
+                };
+                let bmp = code.to_bmp();
+                match bmp.write(match std::fs::File::create("qr_code.bmp") {
+                    Ok(f) => f,
+                    Err(e) => {
+                        eprintln!("Unable to create/write qr_code.bmp file: {e}");
+                        return None;
+                    }
+                }) {
+                    Ok(_) => {}
+                    Err(e) => {
+                        eprintln!("Unable to save QR-Code: {e}");
+                    }
+                };
+                None
             }
             _ => None,
         }

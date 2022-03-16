@@ -1,6 +1,7 @@
 slint::include_modules!();
 use crate::core::ShulkerCore;
 use std::{
+    path::Path,
     sync::{Arc, Mutex, RwLock},
     thread::spawn,
 };
@@ -9,6 +10,7 @@ use config::{Config, File};
 
 use lazy_static::lazy_static;
 use messaging::Command;
+use qr_code::QrCode;
 
 mod core;
 mod credential_types;
@@ -49,6 +51,30 @@ lazy_static! {
 }
 
 fn main() {
+    if !Path::new("qr_code.bmp").exists() {
+        let code = match QrCode::new("not setup") {
+            Ok(code) => code,
+            Err(e) => {
+                eprintln!("Unable to create QRCode: {e}");
+                return;
+            }
+        };
+        let bmp = code.to_bmp();
+        match bmp.write(match std::fs::File::create("qr_code.bmp") {
+            Ok(f) => f,
+            Err(e) => {
+                eprintln!("Unable to create/write qr_code.bmp file: {e}");
+                return;
+            }
+        }) {
+            Ok(_) => {}
+            Err(e) => {
+                eprintln!("Unable to save QR-Code: {e}");
+                return;
+            }
+        };
+    }
+
     let ui = MainWindow::new();
     let core = Arc::new(Mutex::new(ShulkerCore::new(ui.as_weak())));
 

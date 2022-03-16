@@ -545,6 +545,25 @@ export MainWindow := Window {
         m_page := Rectangle {
             y: root.active-page == 2 ? 0 : root.active-page < 2 ? + height + 1px : - parent.height - 1px;
             animate y { duration: 125ms; easing: ease; }
+            Rectangle {
+                x: (parent.width - self.width) / 2;
+                y: (parent.height - self.height) / 2;
+                height: 75%;
+                width: self.height;
+                border-color: green;
+                border-width: 10px;
+                border-radius: 0px;
+                Image {
+                    source: @image-url("../qr_code.bmp");
+                    image-rendering: pixelated;
+                    image-fit: contain;
+                    height: 96%;
+                    width: 96%;
+                    x: (parent.width - self.width) / 2;
+                    y: (parent.height - self.height) / 2;
+                }
+            }
+            
         }
     }
 

@@ -27,6 +27,7 @@ pub enum Command {
     Unlocked,
     Wrong,
     Correct,
+    QrCode { data: String },
 
     //MASTER
     UseMaster { secret: String },
