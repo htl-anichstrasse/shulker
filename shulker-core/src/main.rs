@@ -1,16 +1,18 @@
 slint::include_modules!();
 use crate::core::ShulkerCore;
 use std::{
-    path::Path,
     sync::{Arc, Mutex, RwLock},
-    thread::spawn,
+    thread::{self, spawn},
+    time::Duration,
 };
 
 use config::{Config, File};
+use std::path::Path;
 
 use lazy_static::lazy_static;
 use messaging::Command;
 use qr_code::QrCode;
+use slint::Image;
 
 mod core;
 mod credential_types;
@@ -38,6 +40,8 @@ lazy_static! {
             .unwrap()
             .set_default("master_password", "master123")
             .unwrap()
+            .set_default("qr_code_link", "not setup!")
+            .unwrap()
             .clone();
 
         match config.merge(File::with_name("config.toml")) {
@@ -51,29 +55,45 @@ lazy_static! {
 }
 
 fn main() {
-    if !Path::new("qr_code.bmp").exists() {
-        let code = match QrCode::new("not setup") {
-            Ok(code) => code,
-            Err(e) => {
-                eprintln!("Unable to create QRCode: {e}");
-                return;
-            }
-        };
-        let bmp = code.to_bmp();
-        match bmp.write(match std::fs::File::create("qr_code.bmp") {
-            Ok(f) => f,
-            Err(e) => {
-                eprintln!("Unable to create/write qr_code.bmp file: {e}");
-                return;
-            }
-        }) {
-            Ok(_) => {}
-            Err(e) => {
-                eprintln!("Unable to save QR-Code: {e}");
-                return;
-            }
-        };
+    let mut count = 0;
+    while let Some(_e) = match std::fs::remove_file("qr_code.bmp") {
+        Ok(_) => Some(()),
+        Err(_) => None,
+    } {
+        thread::sleep(Duration::from_millis(200));
+        if count >= 10 {
+            panic!("Unable to delete qr_code file!");
+        }
+        count += 1;
     }
+
+    let code = match QrCode::new(
+        crate::CONFIGURATION
+            .read()
+            .unwrap()
+            .get_str("qr_code_link")
+            .unwrap(),
+    ) {
+        Ok(code) => code,
+        Err(e) => {
+            eprintln!("Unable to create QRCode: {e}");
+            return;
+        }
+    };
+    let bmp = code.to_bmp();
+    match bmp.write(match std::fs::File::create("qr_code.bmp") {
+        Ok(f) => f,
+        Err(e) => {
+            eprintln!("Unable to create/write qr_code.bmp file: {e}");
+            return;
+        }
+    }) {
+        Ok(_) => {}
+        Err(e) => {
+            eprintln!("Unable to save QR-Code: {e}");
+            return;
+        }
+    };
 
     let ui = MainWindow::new();
     let core = Arc::new(Mutex::new(ShulkerCore::new(ui.as_weak())));
@@ -160,5 +180,18 @@ fn main() {
         ui_handle.upgrade_in_event_loop(move |handle_copy| handle_copy.invoke_lockFromRust());
     });
 
+    let ui_handle = ui.as_weak();
+    ui_handle.upgrade_in_event_loop(move |ui| {
+        while !Path::new("qr_code.bmp").exists() {
+            std::thread::sleep(Duration::from_millis(100));
+        }
+        let qr = ui.global::<qr_code_ui>();
+        qr.set_qr_code(match Image::load_from_path(Path::new("qr_code.bmp")) {
+            Ok(qr) => qr,
+            Err(_e) => panic!("Unable to set QrCode Image"),
+        });
+    });
+
     ui.run();
+    std::fs::remove_file("qr_code.bmp").unwrap()
 }

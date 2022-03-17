@@ -31,6 +31,10 @@ export global UiSecret := {
     }
 }
 
+export global qr_code_ui := {
+    property <image> qr_code: @image-url("qr_code.bmp");
+}
+
 
 // SIDE BAR
 SidebarIcon := Rectangle {
@@ -554,7 +558,7 @@ export MainWindow := Window {
                 border-width: 10px;
                 border-radius: 0px;
                 Image {
-                    source: @image-url("../qr_code.bmp");
+                    source: qr-code-ui.qr-code;
                     image-rendering: pixelated;
                     image-fit: contain;
                     height: 96%;
