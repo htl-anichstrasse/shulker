@@ -8,6 +8,8 @@
         "Cupertino",
         "Designspezifische",
         "modulareres",
+        "POSIX",
+        "Shulker",
         "uuid"
     ]
 }

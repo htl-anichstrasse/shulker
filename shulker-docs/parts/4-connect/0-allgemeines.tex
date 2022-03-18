@@ -1,0 +1,43 @@
+\lstset{language=[Sharp]C}
+\chapter{Allgemeines}
+\textit{Shulker-Connect} ist die Softwarelösung, um von externen Ressourcen aus mit dem Türschloss zu kommunizieren.
+
+Dies haben wir mittels eines ASP.NET Core Web API Servers umgesetzt. Dieser Server stellt eine REST-API zur Verfügung, 
+die von beliebigen Applikationen aus verwendet werden kann, um Shulker-Core Befehle mitzuteilen und Abfragen zu stellen.
+
+In der Shulker-Zutrittsmanagement-Lösung wird der Shulker-Connect API-Server von Shulker-Mobile verwendet. 
+Durch die Implementierung von Shulker-Connect könnten allerdings auch beliebige andere Applikationen, 
+wie z.B.: eine Steuerungs-Website, das Türschloss steuern. 
+So könnten später auf einfacher weise die Steuerungsmöglichkeiten des Schlosses erweitert werden.
+
+\section{Verbindung zu Shulker-Core}
+\textit{Shulker-Connect} muss mit \textit{Shulker-Core} kommunizieren, sodass eine API-Anfrage an Shulker-Connect tatsächlich
+auch das Türschloss steuern kann.
+Um eine stabile und effiziente Kommunikation mit der auch auf dem Raspberry PI laufenden Rust-Software Shulker-Core zu 
+gewährleisten, haben wir dies mit \textit{POSIX-Sockets} implementiert.
+
+Beim Start der Applikation werden zwei neue Threads erstellt: Ein Listener-Thread und ein Sender-Thread.
+Beide Threads erstellen einen \textit{socket}, der auf eine Verbindung von \textit{Shulker-Core} wartet.
+Wird diese hergestellt, sind die Threads bereit, Daten zu senden bzw. zu empfangen. 
+
+\subsection{POSIX-Sockets}
+\textit{POSIX local inter-process communication sockets} (auch Unix Domain Sockets oder IPC Sockets genannt) ermöglichen
+eine bidirektionale Kommunikationsverbindung für die Interprozesskommunikation (IPC) auf UNIX basierenden Systemen.
+Hierbei wird von beiden Kommunikations-Partnern eine Datei vereinbart, über diese die Kommunikation erfolgt. \cite{ipcsockets}
+Die Kommunikation zwischen Shulker-Core und Shulker-Connect muss nicht verschlüsselt werden, da eine Kompromittierung des
+Raspberry-Pi's die einzige Möglichkeit darstellt, diese Kommunikation mitzulesen. Eine Kompromittierung des Raspberry-Pi's
+ist allerdings mehr als genug, um einem potentiellen Angreifer beliebige andere Möglichkeiten zu bieten, das Türschloss
+beliebig zu manipulieren.
+
+\section{Verschlüsselung der Anfragen von Shulker-Mobile zum API-Server}
+Da es sich bei einem Haustürschloss um eine sehr wichtige und sichere Vorrichtung handelt, muss natürlich auch die
+Kommunikation zu diesem auf sicherem Wege erfolgen. Das Türschloss soll schließlich mittels App von der ganzen Welt
+aus steuerbar sein.
+
+Um dieses Problem zu lösen und eine definitiv sichere und verschlüsselte Kommunikation zu gewährleisten, haben wir uns dazu 
+entschieden, den Nutzer zu zwingen, einen VPN-Tunnel zum lokalen Netzwerk, in dem auch das Türschloss steht, herstellen
+zu müssen, falls dieser sich nicht im lokalen Netzwerk befindet. So sicher wie das VPN-Protokoll, dass zur Verbindung genützt
+wird ist, ist somit auch die Verbindung zum Türschloss.
+
+Als zusätzlichen Vorteil bietet diese Lösung auch, dass das Türschloss nicht vom öffentlichen Internet aus erreichbar sein muss.
+Dies sichert das Gesamtsystem noch einmal zusätzlich ab und schließt einen wichtigen Angriffsvektor. 
