@@ -113,7 +113,7 @@ class ServerManager {
   }
 
   Future<String> uploadCredential(Credential credential) async {
-    String url = await getBaseUrl() + "/createPin?session=" + sessionToken;
+    String url = await getBaseUrl() + "/api/Credentials/createPin?session=" + sessionToken;
     String cred_json = credential.toJson();
 
     try {
@@ -130,7 +130,7 @@ class ServerManager {
 
   Future<String> deleteCredential(String uuid) async {
     String url =
-        await getBaseUrl() + "/deletePin/" + uuid + "?session=" + sessionToken;
+        await getBaseUrl() + "/api/Credentials/deletePin/{uuid}" + uuid + "?session=" + sessionToken;
     try {
       var response = await _dio.delete(url);
       if (response.statusCode == 200) {

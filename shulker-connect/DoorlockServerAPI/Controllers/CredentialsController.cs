@@ -27,7 +27,7 @@ namespace DoorlockServerAPI.Controllers
         }
 
         [HttpPost]
-        [Route("/createPin")]
+        [Route("createPin")]
         public IActionResult createPin(String session, Credential c)
         {
             if (!SessionManager.getInstance().sessionValid(session))
@@ -40,7 +40,7 @@ namespace DoorlockServerAPI.Controllers
         }
 
         [HttpDelete]
-        [Route("/deletePin/{uuid}")]
+        [Route("deletePin/{uuid}")]
         public IActionResult deletePin(String session, String uuid)
         {
             if (!SessionManager.getInstance().sessionValid(session))
