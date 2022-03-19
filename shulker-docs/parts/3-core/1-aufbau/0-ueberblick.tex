@@ -9,6 +9,46 @@ Pins zu speichern, Pins abzugleichen, das Touchdisplay zu steuern, das elektroni
 für \textit{Shulker-Connect} bereitzustellen. Um all diese Dinge effizient und sicher bewältigen zu können, wurde Rust als
 Programmiersprache gewählt. Shulker-Core macht starken Gebrauch vom Cargo-Packagemanager und der offiziellen Package-Registry \textit{crates.io}.
 
+\section{Funktionsweise und Aufbau}
+Der Aufbau von Shulker-Core ist recht komplex, da viele Aufgaben möglichst sicher und effizient erledigt werden müssen.
+In der Programmierung wurde darauf geachtet, Shulker-Core in möglichst verständliche Teilbereiche aufzuteilen, um das Überblicken
+der gesamten Funktionalität zu vereinfachen.
+
+Diese Teilbereiche sind im Quellcode auf verschiedene Dateien aufgeteilt und somit auch sofort erkennbar. Die jeweiligen Dateien besitzen die
+Dateiendung \textit{.rs}. Diese Endung kennzeichnet, dass die Datei Rust-Quellcode beinhaltet. Der Quellcode von Shulker-Core wurde
+auf folgende Dateien aufgeteilt:
+
+\begin{itemize}
+    \item \textbf{main.rs}: Der Quellcode in dieser Datei wird beim Start von Shulker-Core als erstes ausgeführt. Sie verwaltet unter anderem
+    das Einlesen der Konfigurationsdatei, die Erstellung des QrCodes, das Starten der grafischen Benutzeroberfläche und
+    das Initialisieren der ShulkerCore-Struktur, in der alle anderen Teilbereiche residieren.
+
+    \item \textbf{hasher.rs}: Diese Datei enthält den Quellcode für das Hashing der Pins. Zuständig ist sie also dafür, einen
+    Eingabe-Pin zu hashen oder einen Eingabe-Pin mit einem Hash zu vergleichen. Diese Datei ist essentiell zum Verifizieren von Pins.
+
+    \item \textbf{credential\_types.rs}: Enthalten ist die Definition eines Pins und einige wenige Pin-Operationen.
+    
+    \item \textbf{messaging.rs}: In dieser Datei befinden sich die verschiedenen Typen an Nachrichten, die Shulker-Connect an
+    Shulker-Core senden kann. Quellcode zum Senden und Empfangen solcher Nachrichten ist natürlich auch enthalten.
+
+    \item \textbf{shulker\_db.rs}: Der Quellcode in dieser Datei verwaltet die Datenbank zur Speicherung und Verwendung von Pins.
+    Sie macht starken Gerbrauch von \textit{hasher.rs}, um die Informationen sicher abzuspeichern und zu überprüfen.
+
+    \item \textbf{mainwindow.ui}: Der Großteil des Quellcodes, der die grafischen Benutzeroberfläche definiert, ist hier enthalten.
+
+    \item \textbf{core.rs}: Diese Datei ist die Datei, die die bereits genannten Teilbereiche zusammenführt und bildet somit den Kern von
+    Shulker-Core. In ihr ist Quellcode für die Verwendung der GPIO-Pins, das Öffnen und Schließen des elektronischen Schlosses und das Verarbeiten
+    von Nachrichten enthalten.
+\end{itemize}
+\begin{figure}[H]
+    \begin{center}
+        \hspace*{2cm}
+        \includegraphics[width=0.8\textwidth]{images/core/informationsfluss.png}
+        \caption{Informationsfluss in Shulker-Core}
+    \end{center}
+\end{figure}
+
+
 \section{Konfiguration}
 Die gesamte Konfiguration von Shulker-Core befindet sich in einer optionalen Textdatei. Da für jede mögliche Einstellung ein
 Standartwert einprogrammiert ist, muss man nur nötige Änderungen vornehmen. Man muss sich also keine unnötigen Gedanken machen,
