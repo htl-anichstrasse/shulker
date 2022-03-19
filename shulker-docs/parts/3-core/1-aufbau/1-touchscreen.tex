@@ -39,8 +39,29 @@ Schlosses. Der Menü-Selektor ermöglicht das Wechseln der Hauptansicht. Es gibt
 Die Hauptansicht nimmt den Großteil des Bildschirms in Anspruch. In ihr wird dem Nutzer das Eingeben von Pins und Passwörtern
 ermöglicht. Ein QR-Code zur Verbindung mit Shulker-Mobile lässt sich auch anzeigen.
 
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=0.99\textwidth]{images/core/ui_123.png}
+        \caption{Core-UI mit den verschiedenen Hauptansichten: PIN, PW und M}
+    \end{center}
+\end{figure}
+
 \subsection{Unlocked-Ansicht}
 Die Unlocked-Ansicht zeigt dem Nutzer, dass das Schloss momentan offen ist. Sie nimmt den ganzen Bildschirm in Anspruch und weicht
 als einzige Komponente vom standart Farbschema ab; grelles Grün vermittelt ein klares Signal. Auf ihr ist auch ersichtlich,
 wie lange das Schloss noch offen bleibt. Die Ansicht kann über mehrere Wege in den Vordergrund geschoben werden, grundsätzlich aber dann,
 wenn an Shulker-Core ein Öffnen-Signal oder ein korrekter Pin gesendet wurde.
+
+\section{Die Hardware}
+
+\subsection{Vorzeigemodell}
+Im Vorzeige Modell wird das offizielle \textit{Raspberry Pi Touch Display} verwendet. Das Display besitzt eine Auflösung von
+800x480 Pixeln und hat eine diagonale Größe von sieben Zoll. Natürlich unterstützt es auch Berührungseingaben, um die Nutzbarkeit
+von Shulker zu ermöglichen.
+
+\subsection{Mögliche Displays}
+Grundsätzlich kann Shulker-Core mit jedem Display, das mit dem Raspberry Pi kompatibel ist, arbeiten. Sollte ein besonders kleiner
+Bildschirm gewählt werden, ist es äußerst wahrscheinlich, dass die Standart-Implementation des User-Interfaces nicht mehr
+den Verhältnissen entspricht. Da das gesamte Projekt Open-Source und die Slint-Sprache nicht besonders komplex ist, kann
+in solchen Fällen der Admin selbst eine eigenen Implementation der grafischen Benutzeroberfläche nutzen. Das ist natürlich auch von
+Vorteil, wenn man zusätzliche Funktionen hinzugefügen will.
