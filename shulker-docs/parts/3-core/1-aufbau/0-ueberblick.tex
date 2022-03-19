@@ -52,6 +52,11 @@ soll das Schloss geschlossen sein, ist der GPIO-Pin auf High.
 
 Die Dauer, die der GPIO-Pin bei richtiger Eingabe eines Pins (Passworts) auf High bleibt.
 
+\lstinline{qr_code_link = "not setup!"}
+
+Die Daten, die der QrCode in der M-Ansicht des Core-UIs enkodieren und zugänglich machen soll. Gedacht ist, dass der
+Admin hier die IP des Raspberry Pis angibt.
+
 \lstinline{hash_memory_size = 10}
 
 Anzahl an Arbeitsspeicher, der für das Hashing der Pins verwendet wird. Genaueres wird später erklärt.
@@ -90,4 +95,8 @@ Cargo.toml-Datei nachvollziehbar. Es folgt eine kurze Auflistung und Erklärung 
     \item \textbf{interprocess}; erleichtert die Verwendung von Unix-Sockets.
     
     \item \textbf{rustbreak}; eine einfache, in sich geschlossene Datenbank. Wird zur Speicherung von Daten verwendet.
+    
+    \item \textbf{qr\_code}; ermöglicht schnelles Erstellen von QrCodes. Wird verwendet um die Verbindung mit Shulker-Mobile zu
+    erleichtern. Es ist das einzige crate, welches nicht von crates.io heruntergeladen wird. Das crate wird direkt von der Git-Repository auf
+    Github kopiert.
 \end{itemize}
