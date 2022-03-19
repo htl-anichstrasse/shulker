@@ -7,6 +7,12 @@ Raspberry möglichst gering zu halten.
 Shulker-Core verwendet das crate \textit{rustbreak} zum Speichern von Daten. Rustbreak ist eine von der Ruby-Datenbank \textit{daybreak} inspirierte
 Datenbank, welche Daten nur in einer Datei speichert. Es wird die Version 2.0 von rustbreak verwendet.
 
+Der großte Vorteil von Rustbreak gegenüber einer herkömmlichen Datenbank ist, dass die gesamte Rustbreak-Datenbank in den
+Arbeitsspeicher kopiert wird. Veränderungen an der Datenbank erfolgen dann im Arbeitsspeicher. Dem Programmierer ist es überlassen,
+wann er die Datenbank im Arbeitsspeicher auf den permanenten Speicher überträgt und somit permanent abspeichert. Das ist von großen Vorteil,
+da die meisten Raspberry Pi Setups eine sehr langsame SD-Karte als permanentes Speichermedium nutzen. Somit können Verzögerungen in der
+Anwendung minimiert werden.
+
 \section{Funktionsweise}
 Shulker-Core lädt die gesamte \textit{credentials}-Datei beim Start in den Arbeitsspeicher. Wird ein eingegebener Pin
 mit der Datenbank abgeglichen, muss so nur die geladene Datenbank abgefragt werden. Um Änderung an der Datenbank permament zu 
