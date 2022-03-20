@@ -30,6 +30,8 @@ impl<'a> ShulkerDB<'a> {
         )
         .unwrap_or_else(|_| panic!("Unable to create/open file at {:?}", path_clone));
 
+        rustbreak.load().expect("Unable to load credentials!");
+
         ShulkerDB {
             rustbreak,
             hasher: Hasher::new(),
@@ -64,12 +66,12 @@ impl<'a> ShulkerDB<'a> {
     }
 
     pub fn get_all(&self) -> Result<Vec<Credential>, RustbreakError> {
-        let data = self.rustbreak.get_data(true)?;
+        let data = self.rustbreak.get_data(false)?;
         Ok(data.data)
     }
 
     pub fn use_credential(&mut self, user_input: String) -> Result<bool, RustbreakError> {
-        let mut credentials = self.rustbreak.get_data(true)?;
+        let mut credentials = self.rustbreak.get_data(false)?;
         for c in &mut credentials.data {
             if self.hasher.verify(user_input.as_bytes(), &c.secret) && c.check_if_useable() {
                 c.reduce_uses();
@@ -81,10 +83,14 @@ impl<'a> ShulkerDB<'a> {
     }
 
     pub fn use_master(&self, secret: String) -> bool {
-        if secret == self.rustbreak.get_data(true).unwrap().master {
+        if secret == self.rustbreak.get_data(false).unwrap().master {
             return true;
         }
         false
+    }
+
+    pub fn save(&mut self) {
+        self.rustbreak.save().expect("Unable to save database!");
     }
 }
 

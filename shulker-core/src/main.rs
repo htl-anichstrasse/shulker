@@ -193,5 +193,9 @@ fn main() {
     });
 
     ui.run();
+    {
+        let mut lock = core.lock().unwrap();
+        lock.shulker_db.save();
+    }
     std::fs::remove_file("qr_code.bmp").unwrap()
 }
