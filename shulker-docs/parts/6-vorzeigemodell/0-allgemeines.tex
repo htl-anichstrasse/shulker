@@ -5,7 +5,7 @@ dass das gesamte Shulker-System voll funktionsfähig und in der Realität anwend
 
 Das Modell wird nach Fertigstellung des Diplomprojekts in die HTL-Anichstraße gebracht und dort vorgestellt.
 
-\section{Planung}
+\section{Planung des Grundgerüsts}
 In die Planung des Vorzeigemodells flossen verschiedene Faktoren ein. Die wichtigsten Entscheidungsgrundlagen lauten:
 
 \begin{itemize}
@@ -14,4 +14,34 @@ In die Planung des Vorzeigemodells flossen verschiedene Faktoren ein. Die wichti
 
     \item Das Modell dient nur als Veranschaulichung und Beweis der Funktionalität von Shulker. Daher müssen keine besonders aufwendige
     Sicherheitsmaßnahmen getroffen werden.
+
+    \item Das Modell soll mit wenig Aufwand anpassbar und abänderbar sein. Die Wahl der Baumaterialien ist daher mit Bedacht
+    zu wählen.
+
+    \item Die Kosten des Modells müssen sich in Grenzen halten.
+\end{itemize}
+
+Aus den oben genannten Gründen entstanden folgende Spezifikationen für das Grundgerüst:
+
+\begin{itemize}
+    \item Der Rahmen und das Türblatt der Modelltür wird aus Holz gefertigt.
+    \item Der Rahmen hat Außenmaße von rund 80x50cm und eine Breite von rund 5cm.
+    \item Das Türblatt sitzt bündig im Rahmen.
+    \item Der Raspberry Pi und Teile der elektronischen Schaltung werden sich in einer Holzbox befinden.
+    \item An der Vorderseite der Holzbox sitzt der Touchscreen.
+    \item Die Holzbox wird seitlich an den Türrahmen befestigt.
+    \item Die Außenmaße der Holzbox sind gleich den Außenmaßen des Touchscreens.
+\end{itemize}
+
+\section{Planung der elektronischen Schaltung}
+Da Shulker allein nur die anliegende Spannung eines GPIO-Pins verwaltet, musste für das Vorzeigemodell eine
+elektronische Schaltung zur Ansteuerung eines elektronischen Schlosses entworfen und gebaut werden.
+
+Die Planung der Schaltung war kein großer Aufwand. Es wurden nur grundlegende Dinge festgelegt:
+\begin{itemize}
+    \item Es soll wenn möglich nur ein Netzteil für Schloss und Raspberry Pi zugleich benötigt werden.
+    \item Das Schloss darf als Eingangsspannung nicht mehr als 12V benötigen.
+    \item Der Raspberry Pi soll das Schloss mittels eines Relais ansteuern.
+    \item Die Kosten der Komponenten müssen sich in Grenzen halten.
+    \item Die Schaltung muss so simpel wie möglich gestaltet sein.
 \end{itemize}
