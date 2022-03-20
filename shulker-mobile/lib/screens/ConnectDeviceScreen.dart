@@ -172,11 +172,11 @@ class _ConnectDeviceWizardState extends State<ConnectDeviceWizard> {
                               });
                             },
                             child: Text("Verbinden")),
-                        ElevatedButton(
+                        /*ElevatedButton(
                             onPressed: () {
                               deleteData();
                             },
-                            child: Text("Lokale Daten löschen"))
+                            child: Text("Lokale Daten löschen"))*/
                       ],
                     ),
                   )

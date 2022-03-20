@@ -24,6 +24,7 @@ class _CheckConnectionScreenState extends State<CheckConnectionScreen> {
   checkServerConnection() async {
     bool ipPortExists = await ipPortExist();
     if (!ipPortExists) {
+      _connectionWorks = false;
       return;
     }
 
@@ -36,8 +37,9 @@ class _CheckConnectionScreenState extends State<CheckConnectionScreen> {
 
   checkVPNConnection() async {
     print("check vpn connection method");
-    print(_connectionWorks);
-    if (_connectionWorks) timer.cancel();
+    if (_connectionWorks != null && _connectionWorks) timer.cancel();
+
+    if (_ipPortExists != null && _ipPortExists == false) timer.cancel();
 
     if (await CheckVpnConnection.isVpnActive()) {
       setState(() {
@@ -83,6 +85,10 @@ class _CheckConnectionScreenState extends State<CheckConnectionScreen> {
           Duration(milliseconds: 300), (Timer t) => checkVPNConnection());
     }
 
+    if (_ipPortExists == null) {
+      checkIpPortSaved();
+    }
+
     if (_connectionWorks == null) {
       checkServerConnection();
     }
@@ -90,15 +96,18 @@ class _CheckConnectionScreenState extends State<CheckConnectionScreen> {
       timer = Timer.periodic(
           Duration(milliseconds: 300), (Timer t) => checkVPNConnection());
     }
-    if (_ipPortExists == null) {
-      checkIpPortSaved();
-    }
   }
 
   @override
   Widget build(BuildContext context) {
     return new Builder(builder: (context) {
-      print(_vpnConnected);
+      if (_ipPortExists == null) {
+        return LoadingScreen();
+      }
+      if (!_ipPortExists) {
+        return ConnectDeviceWizard();
+      }
+
       // if the connection already works -> no vpn connection is required
       // and the ip and port are also saved already
       if (_connectionWorks == null) return LoadingScreen();
@@ -115,13 +124,6 @@ class _CheckConnectionScreenState extends State<CheckConnectionScreen> {
         return ConnectVPN();
       }
 
-      if (_ipPortExists == null) {
-        return LoadingScreen();
-      }
-      if (!_ipPortExists) {
-        return ConnectDeviceWizard();
-      }
-
       if (!doesSessionExist()) {
         return AuthScreen();
       }
@@ -131,7 +133,7 @@ class _CheckConnectionScreenState extends State<CheckConnectionScreen> {
   }
 }
 
-class LoadingScreeen extends StatelessWidget {
+class LoadingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -159,21 +161,6 @@ class LoadingScreeen extends StatelessWidget {
           ),
         )),
       ),
-    );
-  }
-}
-
-class LoadingScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-          child: Column(
-        children: [
-          Text("Überprüfe Verbindung"),
-          CircularProgressIndicator(),
-        ],
-      )),
     );
   }
 }

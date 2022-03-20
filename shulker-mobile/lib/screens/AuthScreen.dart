@@ -14,7 +14,10 @@ class _AuthScreenState extends State<AuthScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        title: Text("Authentifikation erforderlich"),
+        centerTitle: true,
+      ),
       body: Container(
         child: Form(
           key: authFormKey,
@@ -26,7 +29,7 @@ class _AuthScreenState extends State<AuthScreen> {
                   Column(
                     children: [
                       Text(
-                        "PIN eingeben um fortzufahren",
+                        "Master-Passwort eingeben um fortzufahren",
                         style: TextStyle(
                           fontSize: 18,
                         ),
@@ -39,7 +42,7 @@ class _AuthScreenState extends State<AuthScreen> {
                           enableSuggestions: false,
                           autocorrect: false,
                           decoration: InputDecoration(
-                            labelText: "PIN Code",
+                            labelText: "Master-Passwort",
                           ),
                           validator: (value) {
                             if (value.length < 6) {

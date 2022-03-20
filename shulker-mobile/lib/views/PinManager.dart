@@ -4,6 +4,7 @@ import 'package:doorlock_app/services/ServerCommunication.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:doorlock_app/util/SnackBarHelper.dart';
+import 'package:intl/intl.dart';
 
 class PinManager extends StatefulWidget {
   @override
@@ -71,8 +72,13 @@ class _PinManagerState extends State<PinManager> {
                         children: [
                           TextField(
                             controller: TextEditingController()
-                              ..text = credentials[index].usesLeft.toString(),
+                              ..text =
+                                  credentials[index].usesLeft.toString() != "-1"
+                                      ? credentials[index].usesLeft.toString()
+                                      : "Beliebig viele Verwendungen",
                             keyboardType: TextInputType.number,
+                            enableInteractiveSelection: false,
+                            focusNode: new AlwaysDisabledFocusNode(),
                             inputFormatters: [
                               FilteringTextInputFormatter.digitsOnly,
                             ],
@@ -86,9 +92,11 @@ class _PinManagerState extends State<PinManager> {
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
                               Text("Gültig ab: " +
-                                  credentials[index].startDateTime.toString()),
+                                  DateFormat("dd.MM.yyyy HH:mm").format(
+                                      credentials[index].startDateTime)),
                               Text("Gültig bis: " +
-                                  credentials[index].endDateTime.toString()),
+                                  DateFormat("dd.MM.yyyy HH:mm")
+                                      .format(credentials[index].endDateTime)),
                             ],
                           ),
                           Container(
@@ -134,4 +142,9 @@ class EditPin extends StatelessWidget {
       body: Text("edit pin"),
     );
   }
+}
+
+class AlwaysDisabledFocusNode extends FocusNode {
+  @override
+  bool get hasFocus => false;
 }

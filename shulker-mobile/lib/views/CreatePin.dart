@@ -68,8 +68,9 @@ class _CreatePinState extends State<CreatePin> {
                             "PIN erfolgreich hinzugefügt");
 
                         Navigator.pop(context); // pops the create pin view
-                        Navigator.pushReplacement( // replaces the pin manager
-                          // view with another pin manager to refresh the pins
+                        Navigator.pushReplacement(
+                            // replaces the pin manager
+                            // view with another pin manager to refresh the pins
                             context,
                             MaterialPageRoute(
                                 builder: (context) => HomeScreen(
@@ -124,7 +125,7 @@ class _CreatePinState extends State<CreatePin> {
                     padding: EdgeInsets.all(10),
                     child: Column(
                       children: [
-                        Text("Schlüssel:"),
+                        Text("Schlüssel"),
                         SizedBox(
                           child: TextFormField(
                             maxLength: 16,
@@ -191,7 +192,7 @@ class _CreatePinState extends State<CreatePin> {
                     padding: EdgeInsets.all(10),
                     child: Column(
                       children: [
-                        Text("Verwendbar von bis:"),
+                        Text("Gültigkeit"),
                         SizedBox(
                           height: 4,
                         ),
@@ -213,6 +214,10 @@ class _CreatePinState extends State<CreatePin> {
                                   locale: const Locale("de", "DE"),
                                 ).then((value) {
                                   setState(() {
+                                    if (value == null) {
+                                      return;
+                                    }
+
                                     fromDate = value;
                                     if (value.isAfter(untilDate)) {
                                       untilDate = fromDate;
@@ -232,6 +237,10 @@ class _CreatePinState extends State<CreatePin> {
                                         context: context, initialTime: fromTime)
                                     .then((value) {
                                   setState(() {
+                                    if (value == null) {
+                                      return;
+                                    }
+
                                     fromTime = value;
                                     double toDouble(TimeOfDay myTime) =>
                                         myTime.hour + myTime.minute / 60.0;
@@ -268,6 +277,10 @@ class _CreatePinState extends State<CreatePin> {
                                   lastDate: DateTime(2100),
                                   locale: const Locale("de", "DE"),
                                 ).then((value) {
+                                  if (value == null) {
+                                    return;
+                                  }
+
                                   setState(() {
                                     untilDate = value;
                                     if (value.isBefore(fromDate)) {
@@ -290,6 +303,10 @@ class _CreatePinState extends State<CreatePin> {
                                         context: context,
                                         initialTime: untilTime)
                                     .then((value) {
+                                  if (value == null) {
+                                    return;
+                                  }
+
                                   setState(() {
                                     untilTime = value;
                                   });
@@ -318,7 +335,7 @@ class _CreatePinState extends State<CreatePin> {
                     padding: EdgeInsets.all(10),
                     child: Column(
                       children: [
-                        Text("Verwendungen:"),
+                        Text("Verwendungen"),
                         SizedBox(
                           child: CheckboxListTile(
                             title: Text("Beliebig viele Verwendungen"),

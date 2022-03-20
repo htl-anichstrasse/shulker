@@ -130,7 +130,7 @@ class ServerManager {
 
   Future<String> deleteCredential(String uuid) async {
     String url =
-        await getBaseUrl() + "/api/Credentials/deletePin/{uuid}" + uuid + "?session=" + sessionToken;
+        await getBaseUrl() + "/api/Credentials/deletePin/" + uuid + "?session=" + sessionToken;
     try {
       var response = await _dio.delete(url);
       if (response.statusCode == 200) {
