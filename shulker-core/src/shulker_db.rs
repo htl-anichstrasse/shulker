@@ -64,12 +64,12 @@ impl<'a> ShulkerDB<'a> {
     }
 
     pub fn get_all(&self) -> Result<Vec<Credential>, RustbreakError> {
-        let data = self.rustbreak.get_data(false)?;
+        let data = self.rustbreak.get_data(true)?;
         Ok(data.data)
     }
 
     pub fn use_credential(&mut self, user_input: String) -> Result<bool, RustbreakError> {
-        let mut credentials = self.rustbreak.get_data(false)?;
+        let mut credentials = self.rustbreak.get_data(true)?;
         for c in &mut credentials.data {
             if self.hasher.verify(user_input.as_bytes(), &c.secret) && c.check_if_useable() {
                 c.reduce_uses();
@@ -81,7 +81,7 @@ impl<'a> ShulkerDB<'a> {
     }
 
     pub fn use_master(&self, secret: String) -> bool {
-        if secret == self.rustbreak.get_data(false).unwrap().master {
+        if secret == self.rustbreak.get_data(true).unwrap().master {
             return true;
         }
         false
