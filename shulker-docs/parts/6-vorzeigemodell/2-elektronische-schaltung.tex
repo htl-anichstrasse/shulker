@@ -17,3 +17,17 @@ bei einem Stromausfall öffnen würde. Das ist vollkommen in Ordnung, da das Vor
 keine hohe Sicherheit gewährleisten muss.
 
 \section{Die Schaltung}
+Damit der Raspberry Pi mit einem 5V GPIO-Pin ein 12V Schloss ansteuern kann, wird ein Relais verwendet.
+Ein Relais ist ein Schalter, welcher durch elektrischen Strom betätigt wird. Damit kann der Raspberry Pi
+den Stromkreis des elektronischen Schlosses schließen und öffnen und somit auch das Schloss.
+
+Da es um einiges angenehmer ist, nur ein Netzteil in eine Steckdose einstecken zu müssen, haben wir uns entschieden, ein
+Netzteil mit 12V Ausgangsspannung für das Schloss und den Raspberry Pi zu verwenden. Da der Raspberry Pi
+aber mit 5V arbeitet, muss ein Step-Down-Konverter zwischengeschaltet werden, der die 12V Spannung in eine 5V Spannung umwandelt.
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=0.9\textwidth]{images/core/schaltung.jpg}
+        \caption{Die elektronische Schaltung innerhalb der Box}
+    \end{center}
+\end{figure}
