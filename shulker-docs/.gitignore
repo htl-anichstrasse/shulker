@@ -14,3 +14,4 @@ main.pdf
 *.synctex
 *.synctex(busy)
 __latexindent*
+*.xdv

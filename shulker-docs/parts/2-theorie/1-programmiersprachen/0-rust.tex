@@ -4,8 +4,8 @@
 
 \textit{Rust} ist eine kompilierte Programmiersprache, welche auf mehrereren
 Programmierparadigmen aufbaut. Die Sprache krönt sich damit, dass
-sie extrem schnelle und sichere Binärprogramme erzeugt. Der gesamte Quellcode
-vom gesamten Rust-Ökosystem ist quelloffen. Rust besitzt keinen Garbage-Collector,
+sie extrem schnelle und sichere Binärprogramme erzeugt. \cite{rustlangbook1}
+Der gesamte Quellcode vom gesamten Rust-Ökosystem ist quelloffen. Rust besitzt keinen Garbage-Collector,
 Arbeitsspeicher wird mithilfe des Ownership-Models verwaltet.
 
 \subsection{Warum Rust?}
@@ -45,7 +45,7 @@ Teil der Programmiersprache.
 
 \subsection{Ownership-Model}
 Jedes auf auf einem herkömmlichen Computer ausgeführte Programm muss den eigenen Arbeitsspeicher selbst verwalten.
-Der Arbeitsspeicher wird in Stack und Heap eingeteilt.
+Der Arbeitsspeicher wird in Stack und Heap eingeteilt. \cite{rustlangbookownership1}
 
 Der Stack funktioniert auf dem \textit{First-In-First-Out}-Prinzip. Man kann das Prinzip mit einem Stapel Teller vergleichen.
 Will man dem Tellerstapel (also dem Teller-Stack) einen Teller hinzufügen, ist es einfacher,
@@ -71,8 +71,8 @@ das Wiederverwenden dieses Speicherabschnitts. Ein Garbage Collector hat aber ei
 Um dem Problem der Ineffizienz zu entgehen verwendet Rust das \textit{Ownership-Model}. Das Model besteht
 aus drei Regeln, welche zur \textit{compile time}, also während des Kompilierprozesses, im Quellcode validiert werden. Erfüllt der Rustcode nicht
 alle diese Regeln weist der Compiler auf den Fehler hin und bricht die Kompilation ab. Somit wird das Auftreten von Fehlern in der Speicherverwaltung
-vollständig behoben. Laut \textit{Google} sind ungefähr 70\% aller Sicherheitsbugs mit inkorrekter Speicherverwaltung verbunden. Das Ownership-Model allein
-verhindert also einen Großteil der Sicherheitsbugs.
+vollständig behoben. Laut \textit{Google} sind ungefähr 70\% aller Sicherheitsbugs in \textit{Google Chrome} mit inkorrekter Speicherverwaltung verbunden. \cite{googlechrome70}
+Das Ownership-Model allein würde einen Großteil dieser Sicherheitsbugs ausschließen.
 
 Die drei Ownership-Regeln lauten:
 
@@ -81,6 +81,7 @@ Die drei Ownership-Regeln lauten:
     \item Es kann immer nur einen Owner geben
     \item Wenn der Owner out-of-scope fällt, wird der zugewiesene Wert gedropped (der Speicher wird freigegeben)
 \end{itemize}
+\cite{rustlangbookownership2}
 
 \subsection{Scope von Variablen}
 Der Scope einer Variable ist der Bereich im Quellcode, in dem eine Variable gültig ist. Ein kleines Beispiel:

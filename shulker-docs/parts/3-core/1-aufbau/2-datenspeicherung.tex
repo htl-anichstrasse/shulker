@@ -27,7 +27,7 @@ somit möglicherweise in anderen Bereichen Schaden anzurichten.
 
 \subsection{Argon2}
 Als Hashing-Algorithmus wird Argon2, genauer Argon2id verwendet. Argon2 wurde gewählt, da eine reine Rustimplementation des Algorithmus
-existiert und der Algorithmus sich als Gewinner der \textit{Password Hashing Competition} behaupten.
+existiert und der Algorithmus sich als Gewinner der \textit{Password Hashing Competition} behaupten.\cite{passwordhashingcmp}
 
 \subsubsection{PHC-String}
 Die unkenntlich gemachten Pins werden in der Form von PHC-Strings abgespeichert. Ein PHC-String besteht aus:
@@ -44,6 +44,7 @@ Die unkenntlich gemachten Pins werden in der Form von PHC-Strings abgespeichert.
         \caption{Beispiel eines PHC-Strings}
     \end{center}
 \end{figure}
+\cite{phcstring}
 
 \subsubsection{Konfiguration von Argon2id}
 Shulker-Core nimmt drei Parameter für Argon2id an:
