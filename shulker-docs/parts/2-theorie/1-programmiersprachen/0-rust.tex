@@ -5,12 +5,12 @@
 \textit{Rust} ist eine kompilierte Programmiersprache, welche auf mehrereren
 Programmierparadigmen aufbaut. Die Sprache krönt sich damit, dass
 sie extrem schnelle und sichere Binärprogramme erzeugt. \cite{rustlangbook1}
-Der gesamte Quellcode vom gesamten Rust-Ökosystem ist quelloffen. Rust besitzt keinen Garbage-Collector,
+Der gesamte Quellcode des Rust-Ökosystems ist quelloffen. Rust besitzt keinen Garbage-Collector.
 Arbeitsspeicher wird mithilfe des Ownership-Models verwaltet.
 
 \subsection{Warum Rust?}
 Wir haben uns beim Komponent \textit{Shulker-Core}, also bei der Programmierung
-des Touchdisplays und der Hardwareschaltung, sowie der Speicherung
+des Bildschirms und der Hardwareschaltung, sowie der Speicherung
 von Daten, für Rust entschieden. Diese Entscheidung trafen wir primär
 aus fünf Gründen:
 
@@ -51,16 +51,16 @@ Der Stack funktioniert auf dem \textit{First-In-First-Out}-Prinzip. Man kann das
 Will man dem Tellerstapel (also dem Teller-Stack) einen Teller hinzufügen, ist es einfacher,
 den Teller auf den Stapel dazu zulegen. Will man einen Teller wegnehmen, ist das am einfachsten indem man den obersten Teller wegnimmt.
 Auf dem Stack kann man also nur einen Wert auf die oberste Stelle abspeichern und eben genau den obersten, also den als letztes hinzugefügten
-Wert entfernen. Alle auf dem Stack speicherbaren Daten müssen eine bekannte und konstante Größe aufweisen, also eine genau definierte Anzahl
+Wert, entfernen. Alle auf dem Stack speicherbaren Daten müssen eine bekannte und konstante Größe aufweisen, also eine genau definierte Anzahl
 an Bits einnehmen. Zur Speicherung von Daten mit einer zur Kompilierzeit unbekannten oder variablen Größe muss der Heap verwendet werden.
 
 Auf dem Heap herrscht nur minimale Ordnung. Will man Daten auf dem Heap ablegen, muss sich das Computerprogramm einen Teil des Heaps
 reservieren. Um erst mal einen Teil des Heaps verwenden zu können, muss ein \textit{memory allocator} (ein Teil des Programms) einen nicht
 verwendeten und groß genugen Teilbereich des Heaps finden und als benutzt markieren. Der memory allocator liefert im Anschluss einen Pointer zurück,
-also eine Speicheraddresse, welche auf den Beginn des neu belegten Heapspeicherteils zeigt. Den Pointer kann man dann auf den Stack speichern, da eine
+also eine Speicheraddresse, welche auf den Beginn des neu belegten Heapspeicherteils zeigt. Den Pointer kann man dann auf dem Stack speichern, da eine
 Speicheraddresse eine fixe Anzahl an Bits einnimmt. Wichtig: Der Heap erfordert das Freigeben der reservierten Speicherteile, wenn sie nicht
 mehr in Gebrauch sind. Wird der Speicher nicht befreit, kann es zu Problemen kommen. Zum Beispiel könnte der Arbeitsspeicher bei längerer
-Ausführung des Programms voll laufen, da immer mehr und mehr Teile des Heaps als benutzt markiert werden.
+Ausführung des Programms volllaufen, da immer mehr und mehr Teile des Heaps als benutzt markiert werden.
 
 Bei Sprachen wie \textit{C} und teilweise auch \textit{C++} liegt die Verantwortung des Heaps in den Händen der Programmierer. Der Programmierer
 muss manuell Heapspeicher anlegen und befreien. Bugs haben so ein leichtes Spiel, da jeder Mensch Fehler macht. Viele höhere Programmiersprachen setzten
@@ -69,12 +69,12 @@ gebrauchten Speicher. Findet er nicht mehr gebrauchten Speicher, markiert er die
 das Wiederverwenden dieses Speicherabschnitts. Ein Garbage Collector hat aber einen großen Nachteil: Er ist ineffizient.
 
 Um dem Problem der Ineffizienz zu entgehen verwendet Rust das \textit{Ownership-Model}. Das Model besteht
-aus drei Regeln, welche zur \textit{compile time}, also während des Kompilierprozesses, im Quellcode validiert werden. Erfüllt der Rustcode nicht
-alle diese Regeln weist der Compiler auf den Fehler hin und bricht die Kompilation ab. Somit wird das Auftreten von Fehlern in der Speicherverwaltung
+aus drei Regeln, welche zur \textit{compile time}, also während des Kompilierprozesses, im Quellcode validiert werden. Erfüllt der Rustcode diese Regeln nicht,
+weist der Compiler auf den Fehler hin und bricht die Kompilation ab. Somit wird das Auftreten von Fehlern in der Speicherverwaltung
 vollständig behoben. Laut \textit{Google} sind ungefähr 70\% aller Sicherheitsbugs in \textit{Google Chrome} mit inkorrekter Speicherverwaltung verbunden. \cite{googlechrome70}
 Das Ownership-Model allein würde einen Großteil dieser Sicherheitsbugs ausschließen.
 
-Die drei Ownership-Regeln lauten:
+Die drei Regeln des Ownership-Modells lauten:
 
 \begin{itemize}
     \item Jeder Wert ist einer Variable zugeteilt, welche man den \textit{Owner} (Besitzer) nennt
@@ -127,7 +127,7 @@ verändert werden. Man könnte zum Beispiel dem \textit{Shulker}-String eine zuf
 Laufzeit. Somit ist klar, dass Strings auf dem Heap abgelegt werden müssen.
 
 \subsection{Der Drop Trait}
-Wie es in der letzten Regel des Ownership-Models beschrieben wird, werden Variablen die out-of-scope fallen gedropped. Gedropped bedeutet, dass Rust
+Wie es in der letzten Regel des Ownership-Modells beschrieben wird, werden Variablen die out-of-scope fallen gedropped. Gedropped bedeutet, dass Rust
 eine Funktion namens \textit{drop} ausführt, welche den Speicher der out-of-scope gefallenen Variable befreit. Die \textit{drop}-Funktion wurde in
 unserem Fall von den Entwicklern vom String-Typ implementiert. Rust regelt also, wann eine Variable gedropped werden kann und sollte. Der Programmierer
 muss sich keine Gedanken darum machen, den Heap-Speicher zu befreien.
@@ -141,7 +141,7 @@ von wenigen einfachen Beispielen veranschaulicht werden:
 \end{lstlisting}
 Im obigen Beispiel ist die Variable \textit{a} der Owner von den Daten mit dem Wert \textit{10}. In der zweiten Zeile sollte dann die Variable \textit{b}
 der Owner vom Wert in der Variable \textit{a} werden, oder? Wäre das der Fall, würde die zweite Regel des Ownership-Models gebrochen werden. Es würde zwei
-Owner von dem gleichen Speicherort zur gleichen Zeit geben, \textit{a} und \textit{b}.
+Owner vom gleichen Speicherort zur gleichen Zeit geben, \textit{a} und \textit{b}.
 
 \subsubsection{Der Copy Trait}
 Da der Wert 10 einfach kopiert werden kann, wird er auch kopiert. \textit{b} wird also nicht der Owner von den gleichen Daten wie \textit{a}, sondern
@@ -152,10 +152,10 @@ von einer Kopie der Daten in \textit{a}. Das obige Beispiel wäre also equivalen
 \end{lstlisting}
 In Rust nennt man dieses Verfahren des einfachen Kopierens \textit{copy}. Wird ein Wert kopiert, so ruft Rust die Funktion \textit{copy} auf. Das
 ist aber nur möglich, wenn der zu kopierende Wert den Copy-Trait besitzt. Grundsätzlich müssen Daten nur eine Vorraussetzung erfüllen, um den
-Copy Trait besitzen zu dürfen: Der Wert muss vollständig kopierbar sein.
+Copy-Trait besitzen zu dürfen: Der Wert muss vollständig kopierbar sein.
 
 \subsubsection{Das Problem mit Copy}
-Das obige Beispiel hat auf dem Stack gespeicherte, einfach zu kopierende Werte verwendet. Im folgenden Beispiel werden jetzt auf dem Heap gespeicherte,
+Das obige Beispiel hat auf dem Stack gespeicherte, einfach zu kopierende Werte verwendet. Im folgenden Beispiel werden auf dem Heap gespeicherte,
 nicht ganz so einfach zu kopierende Daten verwendet. Strings um genau zu sein:
 \begin{lstlisting}
     let a = String::from("Shulker");
@@ -170,7 +170,7 @@ in Rust aufgebaut sind:
         \caption{Veranschaulichung eines Rust-Strings}
     \end{center}
 \end{figure}
-Würde man den Copy-Trait nutzen, also einfach Bit für Bit kopieren, würde folgende Situation resultieren:
+Würde man den Copy-Trait nutzen, also einfach Bit für Bit kopieren, würde folgende Situation daraus resultieren:
 \begin{figure}[H]
     \begin{center}
         \includegraphics[width=0.55\textwidth]{images/rust/string_copy_repr.png}
@@ -178,7 +178,7 @@ Würde man den Copy-Trait nutzen, also einfach Bit für Bit kopieren, würde fol
     \end{center}
 \end{figure}
 \subsection{move}
-Wie man sieht, würden beide Variablen auf die selben Daten zeigen. Es würde also wieder zwei Owner zur gleichen Zeit geben. Die Regeln des Ownerships würden
+Wie man sieht, würden beide Variablen auf die gleichen Daten zeigen. Es würde also wieder zwei Owner zur gleichen Zeit geben. Die Regeln des Ownership-Modells würden
 nicht eingehalten werden. Um dieses Problem zu umgehen, wird die Variable a als nicht mehr gültig angesehen. Wichtig: a wird nicht gedropped, sonst
 würde b auf nicht existente Daten zeigen. Das nennt man \textit{move}:
 \begin{lstlisting}
@@ -188,7 +188,7 @@ würde b auf nicht existente Daten zeigen. Das nennt man \textit{move}:
     println!("{}", b); // <- funktional, a wurde in b "gemoved"
 \end{lstlisting}
 \textit{Shallow Copy} ist eine wichtige Begrifflichkeit in vielen Sprachen. \textit{Shallow copy} ist dem Verhalten von \textit{move} sehr ähnlich. Einen
-großer Unterschied gibt es jedoch: Die Invalidierung der ersteren Variable. Dieses Verhalten existiert so nur bei \textit{move}.
+großen Unterschied gibt es jedoch: Die Invalidierung der ersten Variable. Dieses Verhalten existiert so nur bei \textit{move}.
 
 \subsection{clone}
 Will man also korrekt den String \textit{a} kopieren, verwendet man \textit{clone}. Clone ist im Grunde genommen das gleiche wie eine \textit{deep copy}.
@@ -291,7 +291,7 @@ Will man den Wert durch eine Referenz verändern, muss die Referenz und der Owne
 Zu beachten ist:
 \begin{itemize}
     \item Es kann entweder eine mutable Referenz oder unendlich viele immutable Referenzen zur gleichen Zeit geben
-    \item Jede Referenz muss valid sein
+    \item Jede Referenz muss valide sein
     \item Referenzen dürfen nicht länger als der Owner leben
 \end{itemize}
 Um den Quellcode von Shulker-Core nachvollziehen zu können, ist es essentiell, die bereits genannten Konzepte zu verstehen.
