@@ -11,7 +11,6 @@ use std::path::Path;
 
 use lazy_static::lazy_static;
 use messaging::Command;
-use qr_code::QrCode;
 use slint::Image;
 
 mod core;
@@ -56,7 +55,7 @@ lazy_static! {
 
 fn main() {
     let mut count = 0;
-    while let Some(_e) = match std::fs::remove_file("qr_code.bmp") {
+    while let Some(_e) = match std::fs::remove_file("qr_code.png") {
         Ok(_) => Some(()),
         Err(_) => None,
     } {
@@ -67,33 +66,13 @@ fn main() {
         count += 1;
     }
 
-    let code = match QrCode::new(
-        crate::CONFIGURATION
+    let code = crate::CONFIGURATION
             .read()
             .unwrap()
             .get_str("qr_code_link")
-            .unwrap(),
-    ) {
-        Ok(code) => code,
-        Err(e) => {
-            eprintln!("Unable to create QRCode: {e}");
-            return;
-        }
-    };
-    let bmp = code.to_bmp();
-    match bmp.write(match std::fs::File::create("qr_code.bmp") {
-        Ok(f) => f,
-        Err(e) => {
-            eprintln!("Unable to create/write qr_code.bmp file: {e}");
-            return;
-        }
-    }) {
-        Ok(_) => {}
-        Err(e) => {
-            eprintln!("Unable to save QR-Code: {e}");
-            return;
-        }
-    };
+            .unwrap();
+
+    qrcode_generator::to_png_to_file_from_str(code, qrcode_generator::QrCodeEcc::Medium, 1024, "qr_code.png").unwrap();
 
     let ui = MainWindow::new();
     let core = Arc::new(Mutex::new(ShulkerCore::new(ui.as_weak())));
@@ -182,11 +161,11 @@ fn main() {
 
     let ui_handle = ui.as_weak();
     ui_handle.upgrade_in_event_loop(move |ui| {
-        while !Path::new("qr_code.bmp").exists() {
+        while !Path::new("qr_code.png").exists() {
             std::thread::sleep(Duration::from_millis(100));
         }
         let qr = ui.global::<qr_code_ui>();
-        qr.set_qr_code(match Image::load_from_path(Path::new("qr_code.bmp")) {
+        qr.set_qr_code(match Image::load_from_path(Path::new("qr_code.png")) {
             Ok(qr) => qr,
             Err(_e) => panic!("Unable to set QrCode Image"),
         });
@@ -197,5 +176,5 @@ fn main() {
         let mut lock = core.lock().unwrap();
         lock.shulker_db.save();
     }
-    std::fs::remove_file("qr_code.bmp").unwrap()
+    std::fs::remove_file("qr_code.png").unwrap()
 }
