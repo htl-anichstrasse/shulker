@@ -17,7 +17,7 @@ Nachdem der Nutzer das Türschloss erstmalig verbunden hat, werden die Verbindun
 
 \begin{figure}[H]
     \begin{center}
-        \includegraphics[width=.6\textwidth]{images/mobile/ConnectLockOptions.png}
+        \includegraphics[width=.5\textwidth]{images/mobile/ConnectLockOptions.png}
         \caption{Optionen zum verbinden des Türschlosses}
     \end{center}
 \end{figure}
@@ -28,7 +28,7 @@ auch der Port des vom Shulker-Connect laufenden Web-Servers angegeben werden.
 
 \begin{figure}[H]
     \begin{center}
-        \includegraphics[width=.6\textwidth]{images/mobile/ManualConnect.png}
+        \includegraphics[width=.5\textwidth]{images/mobile/ManualConnect.png}
         \caption{Eingabefelder um das Türschloss manuell zu verbinden}
     \end{center}
 \end{figure}
@@ -50,17 +50,16 @@ gesteuert werden können.
 Um dies zu ermöglichen, muss auf dem Router des Heimnetzes ein VPN-Server eingerichtet werden.
 Da die Konfiguration eines VPN-Servers von Router zu Router unterschiedlich ist, gehen wir auf dies nicht genauer ein.
 Im Internet finden sich viele Anleitungen, die dies für diverse Router erklären.
-
+\pagebreak
 \subsubsection{Überprüfung der Verbindung in der Applikation}
 Beim Start der Applikation müssen einige Dinge überprüft werden, um sicherzustellen, dass die Kommunikation mit 
 dem Türschloss reibungslos funktioniert. Dies ist in folgendem Ablaufdiagramm ersichtlich:
 \begin{figure}[H]
     \begin{center}
-        \includegraphics[width=1\textwidth]{images/mobile/Startup.png}
-        \caption{Schritte der Überprüfung um eine Verbindung zum Türschloss herzustellen}
+        \includegraphics[width=0.8\textwidth]{images/mobile/Startup.png}
+        \caption{Workflow um eine Verbindung zum Türschloss herzustellen}
     \end{center}
 \end{figure}
-
 Als erstes überprüft die Applikation nach ihrem Start, ob die Verbindungsparameter bereits lokal gespeichert sind.
 Ist das nicht der Fall, öffnet sich die Ansicht, um die Verbindungsparameter zu konfigurieren.
 
@@ -68,7 +67,7 @@ Im zweiten Schritt sendet die Applikation eine Testanfrage an die \textit{/api/S
 zum Türschloss zu überprüfen.
 Befindet sich das Smartphone aktuell im selben Netzwerk wie der Raspberry PI, wird diese Testanfrage erfolgreich sein, 
 und somit kann nun der Authentifizierungs-Bildschirm geöffnet werden.
-
+\pagebreak
 Falls diese Anfrage scheitert, und sich das Smartphone somit nicht im Heimnetzwerk befindet, 
 wird nun eine Ansicht geöffnet, in der der Nutzer mittels eines Buttons
 die Smartphone-Einstellungsseite öffnen kann, in der die aktive VPN-Verbindung verwaltet werden kann.
@@ -81,15 +80,15 @@ Dort wird der User aufgefordert, das Master-Passwort des Türschlosses einzugebe
 
 \begin{figure}[H]
     \begin{center}
-        \includegraphics[width=.6\textwidth]{images/mobile/AuthScreen.png}
-        \caption{Ansicht zur Authentifikation}
+        \includegraphics[width=.5\textwidth]{images/mobile/AuthScreen.png}
+        \caption{Ansicht zur Authentifikation.}
     \end{center}
 \end{figure}
 
 Das eingegebene Master-Passwort wird dazu verwendet, um auf der \textit{/api/Session/getToken/\{secret\}}-Route
 eine neue Session anzufragen. Zusätzlich dient diese Eingabe auch als Schutz der App vor unbefugtem Zugriff.
 Die App ist somit kein Angriffsvektor, da ohne eine aktive Session keine Befehle an das Türschloss gesendet werden können.
-
+\pagebreak
 \subsection{Startbildschirm}
 Der Startbildschirm der Applikation wird nach erfolgreichem anfragen der Session aufgerufen.
 Dort lässt sich das Türschloss jederzeit öffnen bzw. schließen.
@@ -98,28 +97,28 @@ Links befindet sich ein kleiner Knopf, mit dem eine Sidebar geöffnet werden kan
 
 \begin{figure}[H]
     \begin{center}
-        \includegraphics[width=.6\textwidth]{images/mobile/Homescreen.png}
-        \caption{Der Startbildschirm von Shulker-Mobile}
+        \includegraphics[width=.5\textwidth]{images/mobile/Homescreen.png}
+        \caption{Der Startbildschirm von Shulker-Mobile.}
     \end{center}
 \end{figure}
-
+\pagebreak
 \subsection{Sidebar}
 Die Sidebar öffnet sich links am Bildschirm und gibt eine Übersicht der verschiedenen Ansichten,
 die geöffnet werden können.
 
 \begin{figure}[H]
     \begin{center}
-        \includegraphics[width=.6\textwidth]{images/mobile/Sidenav.png}
-        \caption{Die Sidebar zeigt verschiedene Ansichten von Shulker-Mobile an.}
+        \includegraphics[width=.5\textwidth]{images/mobile/Sidenav.png}
+        \caption{Die Sidebar listet verschiedene Ansichten von Shulker-Mobile an.}
     \end{center}
 \end{figure}
-
+\pagebreak
 \subsection{PIN-Verwaltung}
 Die PIN-Verwaltungs-Ansicht bietet einen Überblick aller erstellten Pins.
 
 \begin{figure}[H]
     \begin{center}
-        \includegraphics[width=.6\textwidth]{images/mobile/PinManager.png}
+        \includegraphics[width=.5\textwidth]{images/mobile/PinManager.png}
         \caption{Die PIN-Verwaltungs-Ansicht von Shulker-Mobile}
     \end{center}
 \end{figure}
@@ -132,8 +131,8 @@ Außerdem lassen sich Pins von diesem Menü aus löschen.
 
 \begin{figure}[H]
     \begin{center}
-        \includegraphics[width=.6\textwidth]{images/mobile/ClickedPin.png}
-        \caption{Geöffnetes Menü nachdem ein Pin angeklickt wurde}
+        \includegraphics[width=.5\textwidth]{images/mobile/ClickedPin.png}
+        \caption{Geöffnetes Menü, nachdem ein Pin angeklickt wurde.}
     \end{center}
 \end{figure}
 
@@ -152,7 +151,7 @@ Nachdem dieser gedrückt wurde, öffnet sich ein Fenster, das einem Formular bei
 
 \begin{figure}[H]
     \begin{center}
-        \includegraphics[width=.6\textwidth]{images/mobile/CreatePin.png}
+        \includegraphics[width=.5\textwidth]{images/mobile/CreatePin.png}
         \caption{Fenster zum erstellen eines Pins}
     \end{center}
 \end{figure}
@@ -182,30 +181,31 @@ Nachdem ein Pin hinzugefügt wurde, erscheint dieser in der Pin-Verwaltungs-Ansi
 \end{figure}
 
 \subsection{Einstellungen}
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=.4\textwidth]{images/mobile/Settings.png}
+        \caption{Einstellungs-Ansicht}
+    \end{center}
+\end{figure}
+
 Die Einstellungs-Ansicht ist von der Sidebar aus aufrufbar. Dort befindet sich ein Knopf, um das Türschloss neu
 zu Verbinden, und ein weiterer, um Informationen über die App, wie Versionsnummer und Lizenzen der verwendeten
 Software, anzuzeigen.
 
 \begin{figure}[H]
     \begin{center}
-        \includegraphics[width=.6\textwidth]{images/mobile/Settings.png}
-        \caption{Einstellungs-Ansicht}
+        \includegraphics[width=.4\textwidth]{images/mobile/AboutTheApp.png}
+        \caption{Fenster, dass Informationen über die App anzeigt. Wird von Flutter bereitgestellt. }
     \end{center}
 \end{figure}
 
-\begin{figure}[H]
-    \begin{center}
-        \includegraphics[width=.6\textwidth]{images/mobile/AboutTheApp.png}
-        \caption{Fenster, das Informationen über die App anzeigt. Wird von Flutter bereitgestellt. }
-    \end{center}
-\end{figure}
-
-Das Menü, das nach einem klick auf den "Über die App"-Knopf aufgerufen wird, wird von Flutter bereitgestellt.
-Der Knopf "Lizenzen Anzeigen" listet die Lizenzen der im Projekt verwendeten Software. 
+Das Menü, dass nach einem Klick auf den „Über die App“-Knopf aufgerufen wird, wird von Flutter bereitgestellt.
+Der Knopf „Lizenzen Anzeigen“ listet die Lizenzen der im Projekt verwendeten Software. 
 
 \begin{figure}[H]
     \begin{center}
-        \includegraphics[width=.6\textwidth]{images/mobile/Licences.png}
-        \caption{Fenster, das Informationen über die App anzeigt. Wird von Flutter bereitgestellt. }
+        \includegraphics[width=.4\textwidth]{images/mobile/Licences.png}
+        \caption{Fenster, dass alle verwendeten Software-Komponenten und dessen Lizenzen anzeigt. 
+        Wird von Flutter bereitgestellt. }
     \end{center}
 \end{figure}

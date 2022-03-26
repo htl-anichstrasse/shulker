@@ -37,7 +37,7 @@ eines Session-Tokens an.
 \begin{figure}[H]
     \begin{center}
         \includegraphics[width=.6\textwidth]{images/connect/AblaufGetToken.png}
-        \caption{Ablauf der Abfrage zum generieren einer neuen Session}
+        \caption{Workflow der Abfrage zum generieren einer neuen Session}
     \end{center}
 \end{figure}
 
@@ -76,14 +76,14 @@ Shulker-Core sendet nun Beispielhaft folgende Nachricht an Shulker-Connect zurü
             "uses_left":-1
         }
     ]
-    }
+}
 \end{lstlisting}
 Somit kann Shulker-Connect anhand der method \textit{PinList} erkennen, dass es sich bei dieser Nachricht um die Liste
 aller Pins, also einer Antwort der vorherigen Anfrage, haltet.
 
-
-\section{Routen der Interprozesskommunikation}
-In Shulker-Connect und Shulker-Core haben wir folgende Routen für die lokale Interprozesskommunikation implementiert:
+\pagebreak
+\section{Tasks der Interprozesskommunikation}
+In Shulker-Connect und Shulker-Core haben wir folgende \textit{Tasks} für die lokale Interprozesskommunikation implementiert:
 
 \subsection{CreatePin}
 \begin{lstlisting}
