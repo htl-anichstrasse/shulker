@@ -1,10 +1,10 @@
 \chapter{Der Touchscreen}
-Der Touchscreen von Shulker kann grundsätzlich jeder Touchscreen mit akzeptabler Größe sein.
+Als Bildschirm von Shulker kann grundsätzlich jeder Touchscreen mit akzeptabler Größe verwendet werden.
 Die Steuerung des Touchscreens wird von Shulker-Core mithilfe des crates \textbf{slint} (Version 0.2) übernommen.
 
 \section{Funktionsweise von slint}
-Um mit slint eine grafische Benutzeroberfläche bereitstellen zu können, wird empfohlen, eine slint-Datei erstellen.
-In dieser Datei wird mittels der .slint-Sprache eine Benutzeroberfläche beschrieben und programmiert. Diese Datei wird vom 
+Um mit slint eine grafische Benutzeroberfläche bereitstellen zu können, wird empfohlen, eine slint-Datei zu erstellen.
+In dieser Datei wird mittels der slint-Sprache eine Benutzeroberfläche beschrieben und programmiert. Diese Datei wird vom 
 slint-Compiler in Binärcode umgewandelt. Da die .slint-Datei und der eigentliche Anwendungscode also getrennt sind, muss man sich
 mittels Callbacks, Models und Eigenschaften verständigen.
 \begin{figure}[H]
@@ -22,7 +22,7 @@ lesbar und stromsparend zu sein. Deshalb entschieden wir uns für die Farben Sch
 Die grafische Oberfläche besteht aus drei Teilen:
 \begin{itemize}
     \item Menü-Selektor
-    \item Hauptsicht
+    \item Hauptansicht
     \item Unlocked-Ansicht
 \end{itemize}
 
@@ -48,20 +48,20 @@ ermöglicht. Ein QR-Code zur Verbindung mit Shulker-Mobile lässt sich auch anze
 
 \subsection{Unlocked-Ansicht}
 Die Unlocked-Ansicht zeigt dem Nutzer, dass das Schloss momentan offen ist. Sie nimmt den ganzen Bildschirm in Anspruch und weicht
-als einzige Komponente vom standart Farbschema ab; grelles Grün vermittelt ein klares Signal. Auf ihr ist auch ersichtlich,
+als einzige Komponente vom standardmäßigen Farbschema ab; grelles Grün vermittelt ein klares Signal. Auf ihr ist auch ersichtlich,
 wie lange das Schloss noch offen bleibt. Die Ansicht kann über mehrere Wege in den Vordergrund geschoben werden, grundsätzlich aber dann,
 wenn an Shulker-Core ein Öffnen-Signal oder ein korrekter Pin gesendet wurde.
 
 \section{Die Hardware}
 
 \subsection{Vorzeigemodell}
-Im Vorzeige Modell wird das offizielle \textit{Raspberry Pi Touch Display} verwendet. Das Display besitzt eine Auflösung von
-800x480 Pixeln und hat eine diagonale Größe von sieben Zoll. Natürlich unterstützt es auch Berührungseingaben, um die Nutzbarkeit
+Im Vorzeigemodell wird das offizielle \textit{Raspberry Pi Touch Display} verwendet. Der Bildschirm besitzt eine Auflösung von
+800x480 Pixeln und hat eine diagonale Größe von sieben Zoll. Natürlich unterstützt er auch Berührungseingaben, um die Nutzbarkeit
 von Shulker zu ermöglichen.
 
 \subsection{Mögliche Displays}
 Grundsätzlich kann Shulker-Core mit jedem Display, das mit dem Raspberry Pi kompatibel ist, arbeiten. Sollte ein besonders kleiner
-Bildschirm gewählt werden, ist es äußerst wahrscheinlich, dass die Standart-Implementation des User-Interfaces nicht mehr
-den Verhältnissen entspricht. Da das gesamte Projekt Open-Source und die Slint-Sprache nicht besonders komplex ist, kann
-in solchen Fällen der Admin selbst eine eigenen Implementation der grafischen Benutzeroberfläche nutzen. Das ist natürlich auch von
-Vorteil, wenn man zusätzliche Funktionen hinzugefügen will.
+Bildschirm gewählt werden, ist es äußerst wahrscheinlich, dass die standardmäßige Implementation des User-Interfaces nicht mehr
+den Verhältnissen entspricht. Da das gesamte Projekt Open-Source und die Slint-Sprache nicht besonders komplex sind, kann
+in solchen Fällen der Admin selbst eine eigenen Implementation der grafischen Benutzeroberfläche einbaun. Das ist natürlich auch von
+Vorteil, wenn man zusätzliche Funktionen hinzufügen will.

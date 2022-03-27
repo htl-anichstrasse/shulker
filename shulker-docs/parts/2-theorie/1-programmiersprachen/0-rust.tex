@@ -36,7 +36,7 @@ ernannt. Ob das im Jahr 2022 so der Fall bleibt, wird sich zeigen.
 
 
 \subsection{Programmierparadigmen}
-Rust bietet verschiedenste Möglichkeiten, seinen Code zu gestalten. Unter
+Rust bietet verschiedenste Möglichkeiten seinen Code zu gestalten. Unter
 anderem borgt sich die Sprache Ideen von der funktionalen und objektorientierten
 Programmierung. Auch das nebenläufige Programmieren, unter Rust-Nutzern als
 \textit{Fearless Concurrency} bekannt, ist möglich. Man programmiert in Rust
@@ -44,37 +44,37 @@ primär imperativ, deklaratives Programmieren ist trotzdem auch ein wichtiger
 Teil der Programmiersprache.
 
 \subsection{Ownership-Model}
-Jedes auf auf einem herkömmlichen Computer ausgeführte Programm muss den eigenen Arbeitsspeicher selbst verwalten.
+Jedes auf einem herkömmlichen Computer ausgeführte Programm muss den eigenen Arbeitsspeicher selbst verwalten.
 Der Arbeitsspeicher wird in Stack und Heap eingeteilt. \cite{rustlangbookownership1}
 
 Der Stack funktioniert auf dem \textit{First-In-First-Out}-Prinzip. Man kann das Prinzip mit einem Stapel Teller vergleichen.
 Will man dem Tellerstapel (also dem Teller-Stack) einen Teller hinzufügen, ist es einfacher,
-den Teller auf den Stapel dazu zulegen. Will man einen Teller wegnehmen, ist das am einfachsten indem man den obersten Teller wegnimmt.
+den Teller auf den Stapel dazuzulegen. Will man einen Teller wegnehmen, ist das am einfachsten, indem man den obersten Teller wegnimmt.
 Auf dem Stack kann man also nur einen Wert auf die oberste Stelle abspeichern und eben genau den obersten, also den als letztes hinzugefügten
 Wert, entfernen. Alle auf dem Stack speicherbaren Daten müssen eine bekannte und konstante Größe aufweisen, also eine genau definierte Anzahl
 an Bits einnehmen. Zur Speicherung von Daten mit einer zur Kompilierzeit unbekannten oder variablen Größe muss der Heap verwendet werden.
 
 Auf dem Heap herrscht nur minimale Ordnung. Will man Daten auf dem Heap ablegen, muss sich das Computerprogramm einen Teil des Heaps
 reservieren. Um erst mal einen Teil des Heaps verwenden zu können, muss ein \textit{memory allocator} (ein Teil des Programms) einen nicht
-verwendeten und groß genugen Teilbereich des Heaps finden und als benutzt markieren. Der memory allocator liefert im Anschluss einen Pointer zurück,
+verwendeten und geeigneten Teilbereich des Heaps finden und als benutzt markieren. Der memory allocator liefert im Anschluss einen Pointer zurück,
 also eine Speicheraddresse, welche auf den Beginn des neu belegten Heapspeicherteils zeigt. Den Pointer kann man dann auf dem Stack speichern, da eine
 Speicheraddresse eine fixe Anzahl an Bits einnimmt. Wichtig: Der Heap erfordert das Freigeben der reservierten Speicherteile, wenn sie nicht
 mehr in Gebrauch sind. Wird der Speicher nicht befreit, kann es zu Problemen kommen. Zum Beispiel könnte der Arbeitsspeicher bei längerer
 Ausführung des Programms volllaufen, da immer mehr und mehr Teile des Heaps als benutzt markiert werden.
 
-Bei Sprachen wie \textit{C} und teilweise auch \textit{C++} liegt die Verantwortung des Heaps in den Händen der Programmierer. Der Programmierer
+Bei Sprachen wie \textit{C} und teilweise auch \textit{C++} liegt die Verantwortung des Heaps in den Händen des Programmierers. Der Programmierer
 muss manuell Heapspeicher anlegen und befreien. Bugs haben so ein leichtes Spiel, da jeder Mensch Fehler macht. Viele höhere Programmiersprachen setzten
 deshalb zur Vereinfachung und Fehlervermeidung auf einen \textit{Garbage Collector}. Der Garbage Collector scannt regelmäßig nach nicht mehr
 gebrauchten Speicher. Findet er nicht mehr gebrauchten Speicher, markiert er diesen Teil des Arbeitsspeichers als ungenutzt und ermöglicht so 
 das Wiederverwenden dieses Speicherabschnitts. Ein Garbage Collector hat aber einen großen Nachteil: Er ist ineffizient.
 
-Um dem Problem der Ineffizienz zu entgehen verwendet Rust das \textit{Ownership-Model}. Das Model besteht
+Um dem Problem der Ineffizienz zu entgehen, verwendet Rust das \textit{Ownership-Model}. Das Modell besteht
 aus drei Regeln, welche zur \textit{compile time}, also während des Kompilierprozesses, im Quellcode validiert werden. Erfüllt der Rustcode diese Regeln nicht,
 weist der Compiler auf den Fehler hin und bricht die Kompilation ab. Somit wird das Auftreten von Fehlern in der Speicherverwaltung
 vollständig behoben. Laut \textit{Google} sind ungefähr 70\% aller Sicherheitsbugs in \textit{Google Chrome} mit inkorrekter Speicherverwaltung verbunden. \cite{googlechrome70}
 Das Ownership-Model allein würde einen Großteil dieser Sicherheitsbugs ausschließen.
 
-Die drei Regeln des Ownership-Modells lauten:
+Die drei Regeln des Ownership-Models lauten:
 
 \begin{itemize}
     \item Jeder Wert ist einer Variable zugeteilt, welche man den \textit{Owner} (Besitzer) nennt
@@ -127,7 +127,7 @@ verändert werden. Man könnte zum Beispiel dem \textit{Shulker}-String eine zuf
 Laufzeit. Somit ist klar, dass Strings auf dem Heap abgelegt werden müssen.
 
 \subsection{Der Drop Trait}
-Wie es in der letzten Regel des Ownership-Modells beschrieben wird, werden Variablen die out-of-scope fallen gedropped. Gedropped bedeutet, dass Rust
+Wie es in der letzten Regel des Ownership-Models beschrieben wird, werden Variablen die out-of-scope fallen gedropped. Gedropped bedeutet, dass Rust
 eine Funktion namens \textit{drop} ausführt, welche den Speicher der out-of-scope gefallenen Variable befreit. Die \textit{drop}-Funktion wurde in
 unserem Fall von den Entwicklern vom String-Typ implementiert. Rust regelt also, wann eine Variable gedropped werden kann und sollte. Der Programmierer
 muss sich keine Gedanken darum machen, den Heap-Speicher zu befreien.
@@ -178,7 +178,7 @@ Würde man den Copy-Trait nutzen, also einfach Bit für Bit kopieren, würde fol
     \end{center}
 \end{figure}
 \subsection{move}
-Wie man sieht, würden beide Variablen auf die gleichen Daten zeigen. Es würde also wieder zwei Owner zur gleichen Zeit geben. Die Regeln des Ownership-Modells würden
+Wie man sieht, würden beide Variablen auf die gleichen Daten zeigen. Es würde also wieder zwei Owner zur gleichen Zeit geben. Die Regeln des Ownership-Models würden
 nicht eingehalten werden. Um dieses Problem zu umgehen, wird die Variable a als nicht mehr gültig angesehen. Wichtig: a wird nicht gedropped, sonst
 würde b auf nicht existente Daten zeigen. Das nennt man \textit{move}:
 \begin{lstlisting}
@@ -207,7 +207,7 @@ Es werden nicht nur die Daten auf dem Stack kopiert, sondern auch die auf dem He
 \end{figure}
 
 \subsection{Ownership und Funktionen}
-Eine Funktion ist ein eigener Scope. Daraus resultiert sich, dass Variablen am Ende einer Funktion out-of-scope fallen und gedropped werden müssen:
+Eine Funktion ist ein eigener Scope. Daraus resultiert, dass Variablen am Ende einer Funktion out-of-scope fallen und gedropped werden müssen:
 \begin{lstlisting}
     fn sag_hallo(name: String) {
         println!("Hallo {}", name);
@@ -218,7 +218,7 @@ Eine Funktion ist ein eigener Scope. Daraus resultiert sich, dass Variablen am E
         sag_hallo(mein_name);
     }
 \end{lstlisting}
-Es gibt hierbei ein Problem. Man kann die Variable \textit{mein\_name} nicht wiederverwenden:
+Es gibt hierbei ein Problem. Man kann die Variable \textit{mein\_name} nicht weiterverwenden:
 \begin{lstlisting}
     fn sag_hallo(name: String) {
         println!("Hallo {}", name);
@@ -231,7 +231,7 @@ Es gibt hierbei ein Problem. Man kann die Variable \textit{mein\_name} nicht wie
         // ^ Fehler, da mein_name gedropped wurde
     }
 \end{lstlisting}
-Anzumerken ist hierbei jedoch, dass Variablen welche den copy trait besitzen, also nicht gemoved werden müssen, einfach kopiert werden. Das
+Anzumerken ist hierbei jedoch, dass Variablen, welche den copy trait besitzen, also nicht gemoved werden müssen, einfach kopiert werden. Das
 Problem gibt es also nur, wenn man komplexere Datentypen einer Funktion als Parameter übergeben will.
 
 Es gibt grundsätzlich zwei Lösungswege:
@@ -252,8 +252,8 @@ Man könnte die übergebene Variable wieder zurückgeben:
     }
 \end{lstlisting}
 
-Der elegantere Lösungsweg macht sich Referenzen zu nutze. Referenzen sind in Rust so ähnlich wie Pointer, nur dass Referenzen
-garantieren, dass die Daten auf die gezeigt wird noch valide sind. Referenzen werden durch das Zeichen \& gekennzeichnet. Die Lösung
+Der elegantere Lösungsweg macht sich Referenzen zunutze. Referenzen sind in Rust so ähnlich wie Pointer, nur dass Referenzen
+garantieren, dass die Daten, auf die gezeigt wird, noch valide sind. Referenzen werden durch das Zeichen \& gekennzeichnet. Die Lösung
 ist somit um einiges angenehmer:
 \begin{lstlisting}
     fn sag_hallo(name: &String) {
@@ -294,7 +294,7 @@ Zu beachten ist:
     \item Jede Referenz muss valide sein
     \item Referenzen dürfen nicht länger als der Owner leben
 \end{itemize}
-Um den Quellcode von Shulker-Core nachvollziehen zu können, ist es essentiell, die bereits genannten Konzepte zu verstehen.
+Die bereits genannten Konzepte sind essentiell für den Quellcode von Shulker-Core.
 
 \subsection{Der Cargo Packagemanager}
 \textit{Cargo} ist Rusts Packagemanager. Cargo übernimmt das Herunterladen von Packages (Codebibliotheken), das Kompilieren von Quellcode und weiteres.
@@ -303,4 +303,4 @@ starken Gebrauch von Cargo. Die Installation und Nutzung ist besonders simpel, w
 
 \subsection{Crates.io}
 \textit{crates.io} ist die offizielle Sammlung von Rust-Packages, auch \textit{crates} genannt. Cargo greift standardmäßig auf diese 
-Sammlung zu, um benötigte Packages zu installieren und in die Kompilierte Datei einzubinden.
+Sammlung zu, um benötigte Packages zu installieren und in die kompilierte Datei einzubinden.

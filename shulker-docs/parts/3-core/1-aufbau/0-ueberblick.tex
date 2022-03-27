@@ -36,7 +36,7 @@ auf folgende Dateien aufgeteilt:
 
     \item \textbf{mainwindow.ui}: Der Großteil des Quellcodes, der die grafischen Benutzeroberfläche definiert, ist hier enthalten.
 
-    \item \textbf{core.rs}: Diese Datei ist die Datei, die die bereits genannten Teilbereiche zusammenführt und bildet somit den Kern von
+    \item \textbf{core.rs}: Diese Datei ist der Ort, an dem die bereits genannten Teilbereiche zusammenführt werden. Sie bildet somit den Kern von
     Shulker-Core. In ihr ist Quellcode für die Verwendung der GPIO-Pins, das Öffnen und Schließen des elektronischen Schlosses und das Verarbeiten
     von Nachrichten enthalten.
 \end{itemize}
@@ -55,7 +55,7 @@ Standartwert einprogrammiert ist, muss man nur nötige Änderungen vornehmen. Ma
 wie man jeden Wert in der Konfigurationsdatei definieren möchte.
 
 Die Konfigurationsdatei hat das Dateiformat TOML und den Namen \textbf{config.toml}. Das Programm sucht im lokalen Ordner
-nach dieser Datei. Das bedeutet, dass die config.toml-Datei sich im gleichen Ordner befinden muss, wie die Binary. Findet
+nach dieser Datei. Das bedeutet, dass die config.toml-Datei sich im gleichen Ordner befinden muss wie das kompilierte Binärprogramm. Findet
 Shulker-Core diese Datei nicht, werden alle Standartwerte übernommen. Als Warnung wird eine 
 Warnmeldung an den Standart-Error ausgegeben.
 
@@ -64,7 +64,7 @@ Es folgt eine Auflistung aller Konfigurationsschlüssel und ihrer Standartwerte:
 
 \lstinline{master_password = "master123"}
 
-Das Master-Passwort dient zur Identifikation der Admins. Das standartmäßige Adminpasswort sollte dringend durch 
+Das Master-Passwort dient zur Identifikation des Admins. Das standartmäßige Adminpasswort sollte dringend durch 
 ein Passwort vernünftiger Komplexität ersetzt werden. Es ist das einzige Passwort, das nicht gehashed wird. Dafür
 gibt es drei Gründe: 
 \begin{enumerate}
@@ -75,17 +75,17 @@ gibt es drei Gründe:
 
 \lstinline{send_socket_path = "/tmp/toShulkerServer.sock"}
 
-Gibt den Pfad der Unix-Socket an, die zur Kommunikation mit Shulker-Connect dient; In Richtung Shulker-Core zu Shulker-Connect.
-Um das System möglichst flexibel zu gestalten, wurde diese Konfiguration erschaffen. Man kann so leicht das System anpassen.
+Gibt den Pfad der Unix-Socket an, die zur Kommunikation mit Shulker-Connect dient; in Richtung Shulker-Core zu Shulker-Connect.
+Um das System möglichst flexibel zu gestalten, wurde diese Konfiguration erschaffen.
 
 \lstinline{receive_socket_path = "/tmp/toShulkerCore.sock"}
 
-Gibt den Pfad der Unix-Socket an, die zur Kommunikation mit Shulker-Connect dient; In Richtung Shulker-Connect zu Shulker-Core.
-Um das System möglichst flexibel zu gestalten, wurde diese Konfiguration erschaffen. Man kann so leicht das System anpassen.
+Gibt den Pfad der Unix-Socket an, die zur Kommunikation mit Shulker-Connect dient; in Richtung Shulker-Connect zu Shulker-Core.
+Um das System möglichst flexibel zu gestalten, wurde diese Konfiguration erschaffen.
 
 \lstinline{gpio_pin = 27}
 
-Gibt an, welcher GPIO-Pin des Raspberries für die Ansteuerung des elektronischen Schlosses verwendet werden soll. Zu beachten:
+Gibt an, welcher GPIO-Pin des Raspberriy Pis für die Ansteuerung des elektronischen Schlosses verwendet werden soll. Zu beachten ist:
 soll das Schloss geschlossen sein, ist der GPIO-Pin auf High.
 
 \lstinline{autolock_seconds = 24}
@@ -111,14 +111,14 @@ Anzahl der Hash-Threads. Genaueres wird später erklärt.
 
 
 \section{Abhängigkeiten}
-Shulker-Core baut auf vielen \textit{crates}, also Codebibliotheken auf. Alle direkten Abhängigkeiten sind in der 
+Shulker-Core baut auf vielen \textit{crates}, also Codebibliotheken, auf. Alle direkten Abhängigkeiten sind in der 
 Cargo.toml-Datei nachvollziehbar. Es folgt eine kurze Auflistung und Erklärung der wichtigsten Abhängigkeiten:
 
 \begin{itemize}
     \item \textbf{slint}; früher bekannt als SixtyFPS, ist ein User-Interface-Toolkit. Es ermöglicht relativ simples
     und plattformübergreifendes Programmieren von grafischen Benutzeroberflächen.
 
-    \item \textbf{serde}; steht für \textbf{Ser}ialize und \textbf{De}serialize. Es ist das am bekannteste Framework,
+    \item \textbf{serde}; steht für \textbf{ser}ialize und \textbf{de}serialize. Es ist das am bekannteste Framework,
     um Rust-Strukturen zu serialisieren und zu entserialisieren. Benutzt wird es, um die Kommunikation über Unix-Sockets zu
     ermöglichen.
 
@@ -128,7 +128,7 @@ Cargo.toml-Datei nachvollziehbar. Es folgt eine kurze Auflistung und Erklärung 
     \item \textbf{gpio-cdev}; wird verwendet, um den GPIO-Pin zu benutzen. Dabei wird auf die Linux-Kernel-API namens \textit{GPIO character device ABI}
     aufgebaut.
 
-    \item \textbf{config}; ist ein crate, welches das Einlesen der Konfigurationsdatei erleichter.
+    \item \textbf{config}; ist ein crate, welches das Einlesen der Konfigurationsdatei erleichtert.
     
     \item \textbf{chrono}; stellt Code zur Verfügung, um den Umgang mit Zeit und Datum zu erleichtern.
     
@@ -136,7 +136,6 @@ Cargo.toml-Datei nachvollziehbar. Es folgt eine kurze Auflistung und Erklärung 
     
     \item \textbf{rustbreak}; eine einfache, in sich geschlossene Datenbank. Wird zur Speicherung von Daten verwendet.
     
-    \item \textbf{qr\_code}; ermöglicht schnelles Erstellen von QrCodes. Wird verwendet um die Verbindung mit Shulker-Mobile zu
-    erleichtern. Es ist das einzige crate, welches nicht von crates.io heruntergeladen wird. Das crate wird direkt von der Git-Repository auf
-    Github kopiert.
+    \item \textbf{qrcode\_generator}; ermöglicht schnelles Erstellen von QrCodes. Wird verwendet um die Verbindung mit Shulker-Mobile zu
+    erleichtern.
 \end{itemize}
