@@ -1,30 +1,22 @@
-# SMARTLOCK_PLACEHOLDER
+# SHULKER
 
 <br/>
 <p align="center">
   <a href="https://htl-anichstrasse.tirol">
-    <img src=".github/logo.png" alt="Logo" width="80" height="80">
+    <img src="shulker-docs/images/logo.png" alt="Logo" width="80">
   </a>
 
-  <h3 align="center">SMARTLOCK_PLACEHOLDER</h3>
+  <h3 align="center">SHULKER</h3>
 
   <p align="center">
-    SMARTLOCK_DESCRIPTION_PLACEHOLDER
+    Intelligentes Türschloss für Zuhause
 </p>
 
 ## About the project
-Enter a description about the project, its history and its goals here.
+Shulker ist eine Softwarelösung zur Ansteuerung eines Türschlosses. Man kann mit einer Smartphone-Applikation
+das gesamte Schloss verwalten.
 
-## Installation
-
-Enter a step by step explanation for installing this repository on a local machine.
-
-Clone the repository.
-```
-git clone https://github.com/htl-anichstrasse/template.git
-```
-
-Step 2 here
+In der Diplomschrift wird ebenfalls ein Vorzeigemodell beschrieben.
 
 ## Contact
 
