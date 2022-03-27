@@ -8,10 +8,10 @@ GET /api/Credentials
 \end{lstlisting}
 
 \textbf{Beschreibung:} \\
-Gibt eine Liste aller Pins zurück.
+Gibt eine Liste aller Pins zurück
 
 \textbf{Rückgabe:} \\
-Liste aller Pins im JSON-Format.
+Liste aller Pins im JSON-Format
 
 \begin{figure}[H]
     \begin{center}
@@ -23,7 +23,7 @@ Liste aller Pins im JSON-Format.
 \subsubsection{Parameter}
 \textit{[Erforderlich]} \textbf{session} \\
 Typ: \textbf{string} \\
-Beschreibung: Session-String zur Authentifikation.
+Beschreibung: Session-String zur Authentifikation
 
 \subsubsection{Beispiel}
 \begin{lstlisting}
@@ -56,7 +56,7 @@ POST /api/Credentials/createPin
 \end{lstlisting}
 
 \textbf{Beschreibung:} \\
-Erstellt einen neuen Pin.
+Erstellt einen neuen Pin
 
 \textbf{Rückgabe:} \\
 Bei Erfolg: \textit{HTTP 200 Success} \\
@@ -65,12 +65,12 @@ Bei ungültiger Anfrage: \textit{HTTP 400 Bad Request}
 \subsubsection{Parameter}
 \textit{[Erforderlich]} \textbf{session} \\
 Typ: \textbf{string} \\
-Beschreibung: Session-String zur Authentifikation. \\
+Beschreibung: Session-String zur Authentifikation \\
 
 
 \textit{[Erforderlich]} \textbf{Credential} \\
 Typ: \textbf{Credential} \\
-Beschreibung: Das zu erstellende Credential. \\
+Beschreibung: Das zu erstellende Credential \\
 
 
 \subsubsection{Beispiel}
@@ -97,16 +97,16 @@ DELETE /api/Credentials/deletePin/{uuid}
 \end{lstlisting}
 
 \textbf{Beschreibung:} \\
-Löscht einen existierenden Pin.
+Löscht einen existierenden Pin
 
 \subsubsection{Parameter}
 \textit{[Erforderlich]} \textbf{session} \\
 Typ: \textbf{string} \\
-Beschreibung: Session-String zur Authentifikation. \\
+Beschreibung: Session-String zur Authentifikation \\
 
 \textit{[Erforderlich]} \textbf{uuid} \\
 Typ: \textbf{string} \\
-Beschreibung: UUID des zu löschenden Pins.
+Beschreibung: UUID des zu löschenden Pins
 
 \subsubsection{Beispiel}
 \begin{lstlisting}
@@ -129,7 +129,7 @@ GET /api/Lock/isLocked
 \end{lstlisting}
 
 \textbf{Beschreibung:} \\
-Gibt zurück, ob das Türschloss gerade geöffnet oder geschlossen ist. 
+Gibt zurück, ob das Türschloss gerade geöffnet oder geschlossen ist
 
 \textbf{Rückgabe:} \\
 \textit{boolean}: true/false
@@ -137,7 +137,7 @@ Gibt zurück, ob das Türschloss gerade geöffnet oder geschlossen ist.
 \subsubsection{Parameter}
 \textit{[Erforderlich]} \textbf{session} \\
 Typ: \textbf{string} \\
-Beschreibung: Session-String zur Authentifikation. 
+Beschreibung: Session-String zur Authentifikation
 
 \subsubsection{Beispiel}
 \begin{lstlisting}
@@ -162,11 +162,11 @@ POST /api/Lock/setLockState
 \subsubsection{Parameter}
 \textit{[Erforderlich]} \textbf{session} \\
 Typ: \textbf{string} \\
-Beschreibung: Session-String zur Authentifikation.\\
+Beschreibung: Session-String zur Authentifikation\\
 
 \textit{[Erforderlich]} \textbf{closed} \\
 Typ: \textbf{boolean} \\
-Soll das Schloss geschlossen sein.
+Soll das Schloss geschlossen sein
 
 \subsubsection{Beispiel}
 \begin{lstlisting}
@@ -190,16 +190,16 @@ GET /api/Session/getToken/{secret}
 \end{lstlisting}
 
 \textbf{Beschreibung:} \\
-Generiert eine neue Session für die Authentifikation.
+Generiert eine neue Session für die Authentifikation
 
 \subsubsection{Parameter}
 \textit{[Erforderlich]} \textbf{session} \\
 Typ: \textbf{string} \\
-Beschreibung: Session-String zur Authentifikation.\\
+Beschreibung: Session-String zur Authentifikation\\
 
 \textit{[Erforderlich]} \textbf{secret} \\
 Typ: \textbf{string} \\
-Das Master-Passwort des Türschlosses.
+Das Master-Passwort des Türschlosses
 
 \subsubsection{Beispiel}
 \begin{lstlisting}
@@ -219,7 +219,7 @@ GET /api/Status
 \end{lstlisting}
 
 \textbf{Beschreibung:} \\
-Kann verwendet werden, um zu überprüfen, ob die Kommunikation zum API-Server funktioniert.
+Kann verwendet werden, um zu überprüfen, ob die Kommunikation zum API-Server funktioniert
 
 \textbf{Rückgabe:} \\
 \textit{HTTP 200 Success}

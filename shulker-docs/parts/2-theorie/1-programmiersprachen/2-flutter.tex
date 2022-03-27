@@ -24,9 +24,9 @@ Die wichtigsten Komponenten des Flutter-Frameworks bilden folgende Bausteine: \c
 \begin{itemize}
     \item Dart-Plattform: Die Programmiersprache Dart bildet die Basis für das Flutter-Framework
     \item Flutter-Engine: Die Flutter-Engine ist eine portable Laufzeitumgebung für das Ausführen von Flutter-Applikationen
-    \item Foundation-Library: Dieser Komponente stellt grundlegende Klassen und Funktionen, die für 
+    \item Foundation-Library: Diese Komponente stellt grundlegende Klassen und Funktionen, die für 
     Flutter-Applikationen benötigt werden, dar.
-    \item Design-specific-widgets: Diese Designspezifische Widgets definieren das grundlegende Aussehen
+    \item Design-specific-widgets: Diese designspezifischen Widgets definieren das grundlegende Aussehen
     bestimmter grafischer Elemente des Zielsystems (z.B.: IOS, Android).
 \end{itemize}
 
@@ -36,13 +36,13 @@ Widgets sind Komponente in einem grafischen Anzeigesystem.
 In Flutter beinhalten ein Widget die Darstellung, Logik und Interaktion, die dieses Widget in der Applikation einnimmt.
 
 
-Flutter stellt eine große Anzahl an vorgefertigten Widgets, die oft benötigt und im Kontext von Grafischen
+Flutter stellt eine große Anzahl an vorgefertigten Widgets, die oft benötigt und im Kontext von grafischen
 Benutzeroberflächen bekannt sind, bereit. Diese Widgets können von Entwicklern beliebig verwendet werden.
 Widgets in Flutter folgen den Designrichtlinien der jeweiligen Plattform (z.B.: Material Design für Android), 
 definieren die Darstellung dieser allerdings selbst.
 
 Aus Widgets lassen sich wiederum eigene, benutzerdefinierte Widgets erstellen.
-Diese Benutzerdefinierten Widgets setzten sich aus beliebigen anderen Widgets zusammen 
+Diese benutzerdefinierten Widgets setzten sich aus beliebigen anderen Widgets zusammen 
 und ermöglichen eine Wiederverwendung von Programmcode. \cite{flutterwikipediaDE}
 
 \subsection{Arten von Flutter Widgets}
@@ -54,7 +54,7 @@ Grundsätzlich lassen sich Flutter Widgets in drei Arten unterteilen:
  \end{itemize}
 
 \subsubsection{Stateless Widgets}
-Stateless widgets sind statische Widgets die nur bei ihrer Erstellung aktualisiert werden.
+Stateless widgets sind statische Widgets, die nur bei ihrer Erstellung aktualisiert werden.
 Das bedeutet, sie können nicht während der Laufzeit aktualisiert oder geändert werden. \cite{flutterstatelesswidgets}
 Beispiele hierfür sind:
 \begin{itemize}
@@ -82,12 +82,13 @@ class LoadingScreen extends StatelessWidget {
 \end{lstlisting}
 
 Die erste Zeile des Programmcodes definiert eine neue Klasse namens \textit{LoadingScreen}.
-Diese Klasse erbt von \textit{StatelessWidget} um ein Stateless-Widget zu definieren.
+Diese Klasse erbt von \textit{StatelessWidget}, um ein Stateless-Widget zu definieren.
 Die build Methode, mit dem Rückgabewert \text{Widget}, wird unter anderem bei der erstmaligen
 Darstellung des Widgets aufgerufen. \cite{flutterstatelesswidgets}
 Diese build Methode gibt ein \textit{Scaffold-Widget} zurück.
+
 Ein Scaffold ist eine Implementierung der grundlegenden visuellen Layout-Struktur. 
-Innerhalb dieses Scaffolds wurde ein body definiert, diesen zeigt das Scaffold-Widget am Bildschirm an.
+Innerhalb dieses Scaffolds wurde ein \textit{body} definiert, diesen zeigt das Scaffold-Widget am Bildschirm an.
 In diesem body befindet sich ein \textit{Column-Widget}, dieses ordnet seine Unterobjekte vertikal an.
 Letztlich befindet sich darin ein einfaches \textit{Text-Widget} und ein \textit{CircularProgressIndicator-Widget}, 
 dieses Widget ist ein sich drehender Ladekreis. 
@@ -100,9 +101,9 @@ gelesen wird, und sich während der Existenz des Widgets ändern kann.
 
 Eine Änderung des Zustandes muss in Flutter mittels 
 \begin{lstlisting}
-    State.setState()
+State.setState()
 \end{lstlisting} gekennzeichnet werden. Wird mittels setState eine Variable des Zustandes geändert,
-wird ein neuer Aufbau des dazugehörigen Objektes geplant. So kann z.B.: der Text eines Stateful-Widgets 
+wird ein neuer Aufbau des dazugehörigen Objektes geplant. So kann z.B. der Text eines Stateful-Widgets 
 dynamisch geändert werden. Deshalb werden Stateful-Widgets immer dann verwendet, wenn sich Widgets während 
 ihrer Existenz dynamisch ändern sollen. 
 
@@ -125,34 +126,34 @@ QR-Codes gescannt und ausgelesen werden können. Wir haben dieses Paket verwende
 Verbindungs-Prozess zum Türschloss zu erleichtern. Indem auf dem Touchscreen des Schlosses
 ein QR-Code angezeigt wird, welcher die lokale IPv4-Adresse des dazugehörigen Raspberry-PI's
 beinhaltet, kann dieser in der App gescannt werden, um eine manuelle Eingabe dieser Verbindungs-Parameter
-zu vermeiden, und den Kopplungs-Prozess mit dem Türschloss für den Nutzer zu erleichtern. 
+zu vermeiden und den Kopplungs-Prozess mit dem Türschloss für den Nutzer zu erleichtern. 
 
 \subsubsection{shared\_preferences}
-Das \textit{shared\_preferences}-Paket ermöglicht die Platform-Spezifische dauerhafte Speicherung
+Das \textit{shared\_preferences}-Paket ermöglicht die platformspezifische, dauerhafte Speicherung
 von Daten auf dem Mobilen-Endgeräten der Nutzer. In Shulker-Mobile kommt es zum Einsatz, um die 
 Verbindungs-Parameter, also die lokale IPv4 des Raspberry-PI's des Türschlosses, zu speichern.
 
 \subsubsection{check\_vpn\_connection}
 Das \textit{check\_vpn\_connection}-Paket haben wir in Shulker-Mobile verwendet, um zu überprüfen, ob 
 das Smartphone eine aktive VPN-Verbindung hergestellt hat. Dies zu wissen ist wichtig, da für die Verbindung zum Türschloss 
-ein VPN-Tunnel in das Lokale Heimnetzwerk, in dem das Türschloss steht, benötigt wird. Diese VPN-Verbindung ermöglicht eine
-sichere und verschlüsselte Verbindung, und erlaubt überhaupt erst die Netzwerk-Kommunikation zu dem sich in einem lokalen-Netzwerk
+ein VPN-Tunnel in das lokale Heimnetzwerk, in dem das Türschloss steht, benötigt wird. Diese VPN-Verbindung ermöglicht eine
+sichere und verschlüsselte Verbindung und erlaubt überhaupt erst die Netzwerk-Kommunikation zu dem sich in einem lokalen-Netzwerk
 befindendem Türschloss.
 
 \subsubsection{open\_settings}
 Das \textit{open\_settings}-Paket verwenden wir, um dem Nutzer eine Abkürzung zur Einstellungs-Seite zu bieten, 
-wo die derzeitige VPN-Verbindung verwaltet werden kann. Diese Abkürzung wird dem Nutzer dann angeboten, falls 
-keine Verbindung zum Türschloss hergestellt werden konnte (Das bedeutet, das Smartphone befindet sich nicht im gleichen
-Netzwerk wie das Türschloss), und keine aktive VPN-Verbindung herrscht. So kann sich der Nutzer komfortabel beim Start
+in der die derzeitige VPN-Verbindung verwaltet werden kann. Diese Abkürzung wird dem Nutzer dann angeboten, falls 
+keine Verbindung zum Türschloss hergestellt werden konnte (das bedeutet das Smartphone befindet sich nicht im gleichen
+Netzwerk wie das Türschloss) und keine aktive VPN-Verbindung herrscht. So kann sich der Nutzer komfortabel beim Start
 der App mittels 2 Klicks mit dem VPN-Server des Routers im lokalen Netzwerk des Raspberry-PI's verbinden. 
 
 \subsubsection{flutter\_localizations}
-Das \textit{flutter\_localizations}-Paket wird in Shulker-Mobile verwendet, um eine Menü, das zur Auswahl von
-Daten und Zeitpunkten verwendet wird, auf Deutsch zu setzten.  
+Das \textit{flutter\_localizations}-Paket wird in Shulker-Mobile verwendet, um ein Menü, das zur Auswahl von
+Daten und Uhrzeiten verwendet wird, auf Deutsch zu setzten.  
 
 \subsubsection{cupertino\_icons}
 Dieses Paket wird verwendet, um Cupertino-Icons (also IOS-Icons) in die Applikation einzubinden.
 
 \subsubsection{uuid}
 Das \textit{uuid}-Paket haben wir in das Projekt eingebunden, um UUID's der 4. Version zu erstellen.
-Dies wird benötigt, um für neue Pin-Codes Universell eindeutige Bezeichnungen zu generieren.
+Dies wird benötigt, um für neue Pin-Codes universell eindeutige Bezeichnungen zu generieren.

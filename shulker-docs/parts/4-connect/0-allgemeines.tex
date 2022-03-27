@@ -1,17 +1,17 @@
 \lstset{language=[Sharp]C}
 \chapter{Allgemeines}
-\textit{Shulker-Connect} ist die Softwarelösung, um von externen Ressourcen aus mit das Türschloss zu steuern.
+\textit{Shulker-Connect} ist die Softwarelösung, um von externen Ressourcen aus das Türschloss zu steuern.
 
 Dies haben wir mittels eines ASP.NET Core Web API Servers umgesetzt. Dieser Server stellt eine REST-API zur Verfügung, 
 auf die von beliebigen Applikationen aus zugegriffen werden kann, um Shulker-Core Befehle mitzuteilen und Abfragen zu stellen.
 
 In der Shulker-Zutrittsmanagement-Lösung wird der Shulker-Connect API-Server von Shulker-Mobile verwendet. 
 Durch die Implementierung von Shulker-Connect könnten allerdings auch beliebige andere Applikationen, 
-wie z.B.: eine Steuerungs-Website, das Türschloss steuern. 
-So könnten später auf einfacher weise die Steuerungsmöglichkeiten des Schlosses erweitert werden.
+wie z.B. eine Steuerungs-Website, das Türschloss steuern. 
+So könnten später auf einfache Weise die Steuerungsmöglichkeiten des Schlosses erweitert werden.
 
 \section{Authentifizierung am Server}
-Immer dann, wenn Shulker-Mobile auf Routen von Shulker-Connect zugreifen möchte, muss sich der Client Authentifizieren.
+Immer dann, wenn Shulker-Mobile auf Routen von Shulker-Connect zugreifen möchte, muss sich der Client authentifizieren.
 Diese Authentifizierung haben wir mittels eines Session-Systems umgesetzt.
 
 Um dies am Server umzusetzen, haben wir eine \textit{SessionManager}-Klasse programmiert. Diese Klasse folgt dem
@@ -27,7 +27,7 @@ aus steuerbar sein.
 
 Um dieses Problem zu lösen und eine definitiv sichere und verschlüsselte Kommunikation zu gewährleisten, haben wir uns dazu 
 entschieden, den Nutzer zu zwingen, einen VPN-Tunnel zum lokalen Netzwerk, in dem auch das Türschloss steht, herstellen
-zu müssen, falls dieser sich nicht im lokalen Netzwerk befindet. So sicher wie das VPN-Protokoll, dass zur Verbindung genützt
+zu müssen, falls dieser sich nicht im lokalen Netzwerk befindet. So sicher wie das VPN-Protokoll, das zur Verbindung genützt
 wird ist, ist somit auch die Verbindung zum Türschloss.
 
 Als zusätzlichen Vorteil bietet diese Lösung auch, dass das Türschloss nicht vom öffentlichen Internet aus erreichbar sein muss.
